@@ -50,7 +50,7 @@ export default function Sidebar() {
           <Link
             href="/guide-management"
             className={`flex items-center gap-2 lg:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
-              pathName == "/guide-management" && "bg-pink on"
+              pathName.startsWith('/guide-management') && "bg-pink on"
             }`}
           >
             <GuideIcon />
@@ -148,34 +148,34 @@ export default function Sidebar() {
           </Link>
           <Link
             href="/platform-earnings"
-            className={`flex items-center gap-2 p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
+            className={`flex items-center gap-2 lg:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
               pathName == "/platform-earnings" && "bg-pink on"
             }`}
           >
             <PlatformEarnings />
-            <h6 className="text-sm text-white font-normal group-hover:text-primary">
+            <h6 className=" lg:text-xs xl:text-sm 2xl:text-base text-white font-normal font-sans group-hover:text-primary whitespace-nowrap">
               Platform Earnings
             </h6>
           </Link>
           <Link
             href="/notification-management"
-            className={`flex items-center gap-2 p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
+            className={`flex items-center gap-2 lg:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
               pathName == "/notification-management" && "bg-pink on"
             }`}
           >
             <NotificationManagement />
-            <h6 className="text-sm text-white font-normal whitespace-nowrap group-hover:text-primary">
+            <h6 className="lg:text-xs xl:text-sm 2xl:text-base text-white font-normal whitespace-nowrap group-hover:text-primary">
               Notifications Management
             </h6>
           </Link>
           <Link
             href="/badges&rewards"
-            className={`flex items-center gap-2 p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
+            className={`flex items-center gap-2 lg:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
               pathName == "/badges&rewards" && "bg-pink on"
             }`}
           >
             <BadgesandRewards />
-            <h6 className="text-sm text-white font-normal group-hover:text-primary">
+            <h6 className="lg:text-xs xl:text-sm 2xl:text-base text-white font-normal group-hover:text-primary">
               Badges and Rewards
             </h6>
           </Link>

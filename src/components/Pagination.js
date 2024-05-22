@@ -18,7 +18,6 @@ function Pagination() {
         <option value="4">20</option>
       </select>
     </div>
-    {/* <Pagination/> */}
     <div className="border border-[#DCDBE1] rounded-lg flex flex-row items-center">
       <button className="py-[10px] px-[14px] border-r rounded-l-lg border-[#DCDBE1] bg-white">
         <LeftBlackarrow />

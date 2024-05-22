@@ -33,7 +33,7 @@ module.exports = {
         userblack: "#17161D",
       },
       gridTemplateColumns: {
-        userTable: "208px 151px 172px 168px 150px 150px 150px",
+        userTable: "258px 151px 200px 168px 180px 200px 80px",
         guideTable: "208px 351px 272px 268px 180px 200px 80px",
         contentTable: "308px 350px 172px 268px 150px 200px 150px 80px",
         categoryTable: "228px 320px 382px 168px 150px 250px 50px",
@@ -44,6 +44,11 @@ module.exports = {
         revenueTable : "200px 350px 250px 250px 250px 180px 50px",
         notificationTable : "250px 300px 300px 250px 400px 50px",
         badgeTable : "150px 300px 300px 250px 500px 50px",
+        challengeTable : "300px 300px 100px 100px 100px 100px 150px 200px",
+        sessionTable : "150px 150px 250px 150px 150px 150px 150px 150px 100px",
+        liveCreatedTable : "200px 200px 200px 600px 100px ",
+        quickreadsTable : "400px 250px 250px 300px 100px ",
+        contentUploadedTable : "400px 400px 100px 100px 100px 50px ",
       },
 
       fontSize: {

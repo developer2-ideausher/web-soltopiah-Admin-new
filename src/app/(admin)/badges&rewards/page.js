@@ -90,7 +90,7 @@ function page() {
               <span className="text-userblack font-sans font-semibold text-sm">
                 15
               </span>
-              <span className="text-userblack font-sans w-[400px]  font-semibold text-sm">
+              <span className="text-[#AE445A] font-sans w-[400px]  font-semibold text-sm">
                 Unlock your full potential! Earn badges and rewards by taking
                 small steps towards your goals every day.
               </span>
@@ -112,7 +112,7 @@ function page() {
               <span className="text-userblack font-sans font-semibold text-sm">
                 15
               </span>
-              <span className="text-userblack font-sans w-[400px]  font-semibold text-sm">
+              <span className="text-[#AE445A] font-sans w-[400px]  font-semibold text-sm">
                 Unlock your full potential! Earn badges and rewards by taking
                 small steps towards your goals every day.
               </span>
@@ -134,7 +134,7 @@ function page() {
               <span className="text-userblack font-sans font-semibold text-sm">
                 15
               </span>
-              <span className="text-userblack font-sans w-[400px]  font-semibold text-sm">
+              <span className="text-[#AE445A] font-sans w-[400px]  font-semibold text-sm">
                 Unlock your full potential! Earn badges and rewards by taking
                 small steps towards your goals every day.
               </span>

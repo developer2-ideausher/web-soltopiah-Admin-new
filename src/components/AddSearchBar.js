@@ -5,7 +5,7 @@ import Sort from "../../icons/Sort";
 import Export from "../../icons/Export";
 import Plus from "../../icons/Plus";
 
-function SearchBar() {
+function SearchBar({title="Add"}) {
   return (
     <div className="bg-white py-3 px-5 rounded-t-lg w-full flex flex-row items-center justify-between">
       <div className="flex flex-row gap-4 items-center">
@@ -29,7 +29,7 @@ function SearchBar() {
         </div>
       </div>
       <button className="rounded-lg py-2 px-3 flex flex-row items-center gap-3 border border-[#DCDBE1]" >
-        <p>Add</p>
+        <p>{title}</p>
         <Plus/>
       </button>
     </div>
