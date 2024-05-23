@@ -14,7 +14,7 @@ function Header() {
   return (
     <div className="w-ful bg-[#D4D8F0] p-6 flex justify-end gap-6 ">
       <div className="flex items-center">
-        <Bellicon />
+        <Bellicon/>
       </div>
       <button onClick={handleClick} className="flex items-center gap-2">
         <div className="size-8 rounded-full	bg-[#AE445A] flex items-center justify-center text-white text-sm font-black ">
@@ -26,7 +26,7 @@ function Header() {
         <div className="absolute top-16 p-3 bg-white rounded-lg w-[176px] shadow-lg flex flex-col gap-6">
           <div className="flex flex-row gap-2">
             <div className="bg-[#AE445A] p-3 rounded-full flex items-center">
-              <ProfileIcon />
+              <ProfileIcon/>
             </div>
             <div className="flex flex-col gap-1">
               <p className="text-sm font-semibold font-sans text-deepBlue">

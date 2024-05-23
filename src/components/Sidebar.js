@@ -23,7 +23,7 @@ export default function Sidebar() {
       <div className="flex flex-col p-3 justify-center h-full w-full gap-1">
         <Image src="/logo.svg" width="200" height="100" />
 
-        <div className="flex  flex-col gap-1  overflow-y-scroll booking-table-wrapper">
+        <div className="flex  flex-col gap-1  overflow-y-scroll sidebar-wrapper">
           <Link
             href="/dashboard"
             className={`flex items-center gap-2 lg:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
@@ -39,7 +39,7 @@ export default function Sidebar() {
           <Link
             href="/user-management"
             className={`flex items-center gap-2 lg:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
-              pathName == "/user-management" && "bg-pink on"
+              pathName.startsWith("/user-management")  && "bg-pink on"
             }`}
           >
             <UserIcon />
@@ -94,7 +94,7 @@ export default function Sidebar() {
           <Link
             href="/live-manage"
             className={`flex items-center gap-2 lg:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
-              pathName == "/live-manage" && "bg-pink on"
+              pathName.startsWith("/live-manage" ) && "bg-pink on"
             }`}
           >
             <Quickreads />

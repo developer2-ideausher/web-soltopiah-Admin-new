@@ -23,12 +23,12 @@ function SearchBar() {
           Sort
           </p>
         </div>
-        <div className="bg-white border border-[#DCDBE1] py-2 px-3 rounded-lg flex flex-row items-center gap-2">
+        {/* <div className="bg-white border border-[#DCDBE1] py-2 px-3 rounded-lg flex flex-row items-center gap-2">
             <Export/>
           <p className="text-sm font-sans font-normal text-userblack">
           Export
           </p>
-        </div>
+        </div> */}
       </div>
   )
 }

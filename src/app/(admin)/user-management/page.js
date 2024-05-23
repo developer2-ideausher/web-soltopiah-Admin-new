@@ -36,12 +36,42 @@ function page() {
               <span className="text-[#666576] font-sans font-normal text-sm">
                 Action
               </span>
-
-              <span className="text-[#666576] font-sans font-normal text-sm"></span>
             </div>
           </div>
           <div className="flex flex-col bg-white min-w-fit w-full ">
-          <div className=" grid grid-cols-userTable justify-between border-b border-[#E9E9EC] items-center p-4">
+            <Link href="/user-management/users">
+              <div className=" grid grid-cols-userTable justify-between border-b border-[#E9E9EC] items-center p-4">
+                <div className="flex flex-row items-center gap-2">
+                  <img src="Profile.png" alt="" />
+                  <div className="flex flex-col ">
+                    <p className="text-sm font-sans font-bold text-[#252322]">
+                      Henry Fiat
+                    </p>
+                    <p className="text-base font-normal font-sans text-[#666576]">
+                      (406) 555-0120
+                    </p>
+                  </div>
+                </div>
+                <span className="text-userblack  font-sans font-semibold text-sm">
+                  012364
+                </span>
+                <span className="text-userblack font-sans font-semibold text-sm">
+                  Feb 27, 2022, 23:57
+                </span>
+                <span className="text-userblack font-sans font-semibold text-sm">
+                  Subscribed
+                </span>
+                <div className=" py-1 px-3 w-[100px] rounded-md border-[#B9F4C8] border font-sans  font-semibold text-sm flex flex-row items-center gap-2 text-[#2BAB4B]">
+                  <GreenDot />
+                  <p>Active</p>
+                </div>
+                <span className="text-userblack font-sans font-semibold text-sm flex flex-row items-center gap-5">
+                  <p>Unblock</p>
+                  <p>Block</p>
+                </span>
+              </div>
+            </Link>
+            <div className=" grid grid-cols-userTable justify-between border-b border-[#E9E9EC] items-center p-4">
               <div className="flex flex-row items-center gap-2">
                 <img src="Profile.png" alt="" />
                 <div className="flex flex-col ">
@@ -53,7 +83,7 @@ function page() {
                   </p>
                 </div>
               </div>
-              <span className="text-userblack w-[250px] font-sans font-semibold text-sm">
+              <span className="text-userblack  font-sans font-semibold text-sm">
                 012364
               </span>
               <span className="text-userblack font-sans font-semibold text-sm">
@@ -63,18 +93,13 @@ function page() {
                 Subscribed
               </span>
               <div className=" py-1 px-3 w-[100px] rounded-md border-[#B9F4C8] border font-sans  font-semibold text-sm flex flex-row items-center gap-2 text-[#2BAB4B]">
-                <GreenDot/>
+                <GreenDot />
                 <p>Active</p>
               </div>
-              <span className="text-userblack font-sans w-[300px] font-semibold text-sm flex flex-row items-center gap-5">
+              <span className="text-userblack font-sans font-semibold text-sm flex flex-row items-center gap-5">
                 <p>Unblock</p>
                 <p>Block</p>
               </span>
-              
-
-              <button className="text-white  font-sans font-semibold text-sm">
-                <MenuDots/>
-              </button>
             </div>
             <div className=" grid grid-cols-userTable justify-between border-b border-[#E9E9EC] items-center p-4">
               <div className="flex flex-row items-center gap-2">
@@ -88,7 +113,7 @@ function page() {
                   </p>
                 </div>
               </div>
-              <span className="text-userblack w-[250px] font-sans font-semibold text-sm">
+              <span className="text-userblack  font-sans font-semibold text-sm">
                 012364
               </span>
               <span className="text-userblack font-sans font-semibold text-sm">
@@ -97,56 +122,15 @@ function page() {
               <span className="text-userblack font-sans font-semibold text-sm">
                 Subscribed
               </span>
-              <div className=" py-1 px-3 w-[100px] rounded-md border-[#FFB8BC] border font-sans  font-semibold text-sm flex flex-row items-center gap-2 text-[#E43A42]">
-                <RedDot/>
-                <p>Expired</p>
+              <div className=" py-1 px-3 w-[100px] rounded-md border-[#B9F4C8] border font-sans  font-semibold text-sm flex flex-row items-center gap-2 text-[#2BAB4B]">
+                <GreenDot />
+                <p>Active</p>
               </div>
-              <span className="text-userblack font-sans w-[300px] font-semibold text-sm flex flex-row items-center gap-5">
+              <span className="text-userblack font-sans font-semibold text-sm flex flex-row items-center gap-5">
                 <p>Unblock</p>
                 <p>Block</p>
               </span>
-              
-
-              <button className="text-white  font-sans font-semibold text-sm">
-                <MenuDots/>
-              </button>
             </div>
-            <div className=" grid grid-cols-userTable justify-between border-b border-[#E9E9EC] items-center p-4">
-              <div className="flex flex-row items-center gap-2">
-                <img src="Profile.png" alt="" />
-                <div className="flex flex-col ">
-                  <p className="text-sm font-sans font-bold text-[#252322]">
-                    Henry Fiat
-                  </p>
-                  <p className="text-base font-normal font-sans text-[#666576]">
-                    (406) 555-0120
-                  </p>
-                </div>
-              </div>
-              <span className="text-userblack w-[250px] font-sans font-semibold text-sm">
-                012364
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                Feb 27, 2022, 23:57
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                Subscribed
-              </span>
-              <div className=" py-1 px-3 w-[120px] rounded-md border-[#3090E9] border font-sans  font-semibold text-sm flex flex-row items-center gap-2 text-[#3090E9]">
-                <BlueDot/>
-                <p>Non-Active</p>
-              </div>
-              <span className="text-userblack font-sans w-[300px] font-semibold text-sm flex flex-row items-center gap-5">
-                <p>Unblock</p>
-                <p>Block</p>
-              </span>
-              
-
-              <button className="text-white  font-sans font-semibold text-sm">
-                <MenuDots/>
-              </button>
-            </div>
-            
           </div>
         </div>
       </div>
