@@ -1,8 +1,12 @@
 "use client";
 import Link from "next/link";
 import React, { useState } from "react";
+// import React from 'react'
 
-function page() {
+
+
+
+function Page() {
   const [showLogin, setShowlogin] = useState(false);
   const handleClick = () => {
     setShowlogin(!showLogin);
@@ -95,4 +99,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

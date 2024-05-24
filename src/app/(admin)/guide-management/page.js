@@ -9,7 +9,7 @@ import TopRightArrow from "../../../../icons/TopRightArrow";
 import Backspace from "../../../../icons/Backspace";
 import Link from "next/link";
 
-function page() {
+function Page() {
   const [showPopUp, setShowPopUp] = useState(false);
   const handleClick = () => {
     setShowPopUp(!showPopUp);
@@ -177,4 +177,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;
