@@ -24,9 +24,9 @@ function page() {
             <div className="grid  lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 justify-between items-center">
               <Link href="/user-management/participated-challenges"><GuideCards Title="Participated challenges" /></Link>
               <Link href="/user-management/community-participated"><GuideCards Title="Community participation" /></Link>
-              <Link href=""><GuideCards Title="Communities created"/></Link>
+              <Link href="/user-management/community-created"><GuideCards Title="Communities created"/></Link>
               <Link href="/user-management/challenges-created"><GuideCards Title="Challenges created" /></Link>
-              <GuideCards Title="Friends" />
+              <Link href="/user-management/friends"><GuideCards Title="Friends" /></Link>
             </div>
           </div>
           <div className="flex flex-col gap-2 mb-20">

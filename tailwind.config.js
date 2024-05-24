@@ -37,6 +37,8 @@ module.exports = {
         userParticipatedTable: "258px 500px 200px 200px 200px ",
         userChallengeCreatedTable: "258px 500px 200px 250px 200px 100px ",
         userCommunityParticipatedTable: "258px 500px 250px 250px 200px 100px ",
+        userCommunityCreatedTable: "300px 500px 150px",
+        userFriendsTable: "300px 200px 150px 150px",
         guideTable: "208px 351px 272px 268px 180px 200px 80px",
         contentTable: "308px 350px 172px 268px 150px 200px 150px 80px",
         categoryTable: "228px 320px 382px 168px 150px 250px 50px",
