@@ -7,6 +7,7 @@ import SearchIcon from "../../../../icons/SearchIcon";
 import Edit from "../../../../icons/Edit";
 import MenuDots from "../../../../icons/MenuDots";
 import EarningsChart from "@/components/DashBoardNew/EarrningsChart";
+import Link from "next/link";
 
 function page() {
   return (
@@ -23,6 +24,31 @@ function page() {
             <Export />
             <p className="text-sm font-sans font-normal text-userblack">
               Export
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="flex flex-col gap-4 bg-white midxl:w-3/5  xl:w-3/5 2xl:w-2/5 rounded-xl p-8">
+        <div className="flex flex-row items-center justify-between">
+          <p className="text-base font-sans font-bold text-userblack">
+            Subscription
+          </p>
+          <select className="py-2 px-3 rounded-lg border border-[#DCDBE1]">
+            <option value="1">Weekly</option>
+          </select>
+        </div>
+        <EarningsChart />
+        <div className="flex flex-row justify-center items-center gap-10">
+          <div className=" flex flex-row items-center gap-2">
+            <p className="border border-dashed border-[#0F75BC] w-8"></p>
+            <p className="font-sans text-base font-normal text-userblack">
+              Anually
+            </p>
+          </div>
+          <div className=" flex flex-row items-center gap-2">
+            <p className="border border-[#0F75BC] w-8"></p>
+            <p className="font-sans text-base font-normal text-userblack">
+              Monthly
             </p>
           </div>
         </div>
@@ -58,10 +84,10 @@ function page() {
               <p>Edit Plan</p>
               <Edit />
             </button>
-            <button className="rounded-lg py-2 px-3 flex flex-row items-center gap-3 border border-[#DCDBE1]">
+            <Link href='/subscriptions/add-subscription'><button className="rounded-lg py-2 px-3 flex flex-row items-center gap-3 border border-[#DCDBE1]">
               <p>Add</p>
               <Plus />
-            </button>
+            </button></Link>
           </div>
         </div>
         <div className="w-full overflow-x-scroll booking-table-wrapper">
@@ -167,29 +193,6 @@ function page() {
               </button>
             </div>
           </div>
-        </div>
-      </div>
-      <div className="flex flex-col gap-4 bg-white midxl:w-3/5  xl:w-3/5 2xl:w-2/5 rounded-xl p-8">
-        <div className="flex flex-row items-center justify-between">
-          <p className="text-base font-sans font-bold text-userblack">
-            Subscription
-          </p>
-          <select className="py-2 px-3 rounded-lg border border-[#DCDBE1]">
-            <option value="1">Weekly</option>
-          </select>
-        </div>
-        <EarningsChart />
-        <div className="flex flex-row justify-center items-center gap-10">
-            <div className=" flex flex-row items-center gap-2">
-                <p className="border border-dashed border-[#0F75BC] w-8"></p>
-                <p className="font-sans text-base font-normal text-userblack">Anually</p>
-
-            </div>
-            <div className=" flex flex-row items-center gap-2">
-                <p className="border border-[#0F75BC] w-8"></p>
-                <p className="font-sans text-base font-normal text-userblack">Monthly</p>
-
-            </div>
         </div>
       </div>
     </div>

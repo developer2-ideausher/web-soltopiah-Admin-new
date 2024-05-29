@@ -47,8 +47,12 @@ function page() {
                 23456
               </span>
 
-              <span className="text-userblack  font-sans font-semibold text-base">23456</span>
-              <span className="text-userblack font-sans font-semibold text-base">Subscribed</span>
+              <span className="text-userblack  font-sans font-semibold text-base">
+                23456
+              </span>
+              <span className="text-userblack font-sans font-semibold text-base">
+                Subscribed
+              </span>
             </div>
             <div className=" grid grid-cols-userFriendsTable justify-between border-b border-[#E9E9EC] items-center p-4">
               <span className="text-userblack font-sans font-semibold text-base">
@@ -59,8 +63,12 @@ function page() {
                 23456
               </span>
 
-              <span className="text-userblack  font-sans font-semibold text-base">23456</span>
-              <span className="text-userblack font-sans font-semibold text-base">Non-Subscribed</span>
+              <span className="text-userblack  font-sans font-semibold text-base">
+                23456
+              </span>
+              <span className="text-userblack font-sans font-semibold text-base">
+                Non-Subscribed
+              </span>
             </div>
             <div className=" grid grid-cols-userFriendsTable justify-between border-b border-[#E9E9EC] items-center p-4">
               <span className="text-userblack font-sans font-semibold text-base">
@@ -71,8 +79,12 @@ function page() {
                 23456
               </span>
 
-              <span className="text-userblack  font-sans font-semibold text-base">23456</span>
-              <span className="text-userblack font-sans font-semibold text-base">Subscribed</span>
+              <span className="text-userblack  font-sans font-semibold text-base">
+                23456
+              </span>
+              <span className="text-userblack font-sans font-semibold text-base">
+                Subscribed
+              </span>
             </div>
           </div>
         </div>

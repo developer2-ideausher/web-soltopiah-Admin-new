@@ -50,8 +50,8 @@ function Page() {
             </p>
             <div className="flex flex-col gap-4">
               <p className="text-base font-sans font-semibold text-[#2E2E37]">
-                Please enter the 6-digit code sent to <br />{" "}
-                <span className="font-bold">+91-3434343434</span>{" "}
+                Please enter the 6-digit code sent to <br />
+                <span className="font-bold">+91-3434343434</span>
               </p>
               <div className="flex flex-row items-center  gap-4 xl:w-full 2xl:w-[600px]">
                 <input

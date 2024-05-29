@@ -1,11 +1,10 @@
-import BackButton from '@/components/BackButton'
-import Pagination from '@/components/Pagination'
-import SearchBar from '@/components/SearchBar'
-import UserDetailsBox from '@/components/UserManagement/UserDetailsBox'
-import Link from 'next/link'
-import React from 'react'
+import BackButton from "@/components/BackButton";
+import Pagination from "@/components/Pagination";
+import SearchBar from "@/components/SearchBar";
+import UserDetailsBox from "@/components/UserManagement/UserDetailsBox";
+import Link from "next/link";
+import React from "react";
 import newImage from "../../../../../public/newImage.png";
-
 
 function page() {
   return (
@@ -19,23 +18,21 @@ function page() {
           <span className="text-[#AE445A]"> Community created</span>
         </p>
       </div>
-      <UserDetailsBox/>
+      <UserDetailsBox />
       <div className="flex flex-col">
         <SearchBar />
         <div className="w-full overflow-x-scroll booking-table-wrapper">
           <div className="bg-[#F0F2F5] min-w-fit w-full">
             <div className="items-center grid grid-cols-userCommunityCreatedTable justify-between p-4">
               <span className="text-[#666576] font-sans font-normal text-sm">
-              Community thumbnail
+                Community thumbnail
               </span>
               <span className="text-[#666576] font-sans font-normal text-sm">
-              Description
+                Description
               </span>
               <span className="text-[#666576] font-sans font-normal text-sm">
-              Type
+                Type
               </span>
-
-              
             </div>
           </div>
           <div className="flex flex-col bg-white min-w-fit w-full">
@@ -44,13 +41,11 @@ function page() {
                 <img src={newImage.src} alt="" />
                 <p>14 days meditation challenge</p>
               </div>
-              <span className="text-userblack w-[350px] font-sans font-semibold text-base">
+              <span className="text-userblack font-sans font-semibold text-base">
                 Unsuccessful people make their decisions based on their current
                 situations. Successful people make their....
               </span>
-              
 
-              
               <div className="font-sans font-normal text-base">Public</div>
             </div>
             <div className=" grid grid-cols-userCommunityCreatedTable justify-between border-b border-[#E9E9EC] items-center p-4">
@@ -58,23 +53,19 @@ function page() {
                 <img src={newImage.src} alt="" />
                 <p>14 days meditation challenge</p>
               </div>
-              <span className="text-userblack w-[350px] font-sans font-semibold text-base">
+              <span className="text-userblack  font-sans font-semibold text-base">
                 Unsuccessful people make their decisions based on their current
                 situations. Successful people make their....
               </span>
-              
 
-              
               <div className="font-sans font-normal text-base">Private</div>
             </div>
-            
-            
           </div>
         </div>
         <Pagination />
       </div>
     </div>
-  )
+  );
 }
 
-export default page
+export default page;

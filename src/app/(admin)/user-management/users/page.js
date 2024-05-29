@@ -34,8 +34,8 @@ function page() {
               Mindful hub data
             </p>
             <div className="grid lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 justify-between items-center">
-              <GuideCards Title="15 Video Watched" />
-              <GuideCards Title="12 Audio Listened" />
+              <Link href="/user-management/videos-watched"><GuideCards Title="15 Video Watched" /></Link>
+              <Link href="/user-management/audio-listened"><GuideCards Title="12 Audio Listened" /></Link>
               <GuideCards Title="Course" />
               <Link href="/user-management/user-guide-bookings"><GuideCards Title="Guide bookings" /></Link>
                

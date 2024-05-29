@@ -61,7 +61,7 @@ export default function Sidebar() {
           <Link
             href="/content-manage"
             className={`flex items-center gap-2 lg:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
-              pathName == "/content-manage" && "bg-pink on"
+              pathName.startsWith("/content-manage")   && "bg-pink on"
             }`}
           >
             <ContentManage />
@@ -72,7 +72,7 @@ export default function Sidebar() {
           <Link
             href="/category-management"
             className={`flex items-center gap-2 lg:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
-              pathName == "/category-management" && "bg-pink on"
+              pathName.startsWith("/category-management")  && "bg-pink on"
             }`}
           >
             <Category />
@@ -83,7 +83,7 @@ export default function Sidebar() {
           <Link
             href="/quickreads"
             className={`flex items-center gap-2 lg:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
-              pathName == "/quickreads" && "bg-pink on"
+              pathName.startsWith("/quickreads")  && "bg-pink on"
             }`}
           >
             <Quickreads />
@@ -116,7 +116,7 @@ export default function Sidebar() {
           <Link
             href="/calmness-feedback"
             className={`flex items-center gap-2 lg:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
-              pathName == "/calmness-feedback" && "bg-pink on"
+              pathName.startsWith("/calmness-feedback")  && "bg-pink on"
             }`}
           >
             <Calmess />
@@ -138,7 +138,7 @@ export default function Sidebar() {
           <Link
             href="/community-management"
             className={`flex items-center gap-2 lg:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
-              pathName == "/community-management" && "bg-pink on"
+              pathName.startsWith("/community-management")   && "bg-pink on"
             }`}
           >
             <Community />

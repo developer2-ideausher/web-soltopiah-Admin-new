@@ -7,10 +7,10 @@ function page() {
   return (
     <div className="flex flex-col gap-7 ">
       <p className="text-xl2 font-sans font-semibold text-userblack">
-      Notification Management
+        Notification Management
       </p>
       <div className="flex flex-col">
-        <SearchBar />
+        <SearchBar route={"/notification-management/create-notification"} />
         <div className="w-full overflow-x-scroll booking-table-wrapper">
           <div className="bg-[#F0F2F5] min-w-fit w-full">
             <div className="items-center grid grid-cols-notificationTable justify-between p-4">
@@ -20,18 +20,10 @@ function page() {
               <span className="text-[#666576] font-sans font-normal text-sm">
                 Date
               </span>
-              <span className="text-[#666576] font-sans font-normal text-sm">
-                Schedule
-              </span>
 
-              <span className="text-[#666576] font-sans font-normal text-sm">
-                Schedule
-              </span>
               <span className="text-[#666576] font-sans font-normal text-sm">
                 Message
               </span>
-
-              <span className="text-[#666576] font-sans font-normal text-sm"></span>
             </div>
           </div>
           <div className="flex flex-col bg-white min-w-fit w-full ">
@@ -39,67 +31,43 @@ function page() {
               <span className="text-userblack w-[250px] font-sans font-semibold text-sm">
                 Get Care free!
               </span>
+
               <span className="text-userblack w-[250px] font-sans font-semibold text-sm">
                 Feb 27, 2022, 23:57
               </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                Feb 10 - 12:33 PM
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                Scheduled
-              </span>
+
               <span className="text-userblack font-sans w-[300px] font-semibold text-sm">
                 Successful people make their decisions based on where they want
                 to be.”
               </span>
-
-              <button className="text-[#08A03C] font-sans font-semibold text-sm">
-                <MenuDots />
-              </button>
             </div>
             <div className=" grid grid-cols-notificationTable justify-between border-b border-[#E9E9EC] items-center p-4">
               <span className="text-userblack w-[250px] font-sans font-semibold text-sm">
                 Get Care free!
               </span>
+
               <span className="text-userblack w-[250px] font-sans font-semibold text-sm">
                 Feb 27, 2022, 23:57
               </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                Feb 10 - 12:33 PM
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                Scheduled
-              </span>
+
               <span className="text-userblack font-sans w-[300px] font-semibold text-sm">
                 Successful people make their decisions based on where they want
                 to be.”
               </span>
-
-              <button className="text-[#08A03C] font-sans font-semibold text-sm">
-                <MenuDots />
-              </button>
             </div>
             <div className=" grid grid-cols-notificationTable justify-between border-b border-[#E9E9EC] items-center p-4">
               <span className="text-userblack w-[250px] font-sans font-semibold text-sm">
                 Get Care free!
               </span>
+
               <span className="text-userblack w-[250px] font-sans font-semibold text-sm">
                 Feb 27, 2022, 23:57
               </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                Feb 10 - 12:33 PM
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                Scheduled
-              </span>
+
               <span className="text-userblack font-sans w-[300px] font-semibold text-sm">
                 Successful people make their decisions based on where they want
                 to be.”
               </span>
-
-              <button className="text-[#08A03C] font-sans font-semibold text-sm">
-                <MenuDots />
-              </button>
             </div>
           </div>
         </div>
