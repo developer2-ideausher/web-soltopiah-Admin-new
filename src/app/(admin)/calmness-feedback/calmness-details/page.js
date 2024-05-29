@@ -6,6 +6,7 @@ import communityImage from "../../../../../public/communityImage.png";
 import StarRating from "../../../../../icons/StarRating";
 import CalmnessNotif from "../../../../../icons/CalmnessNotif";
 import CalmnessChart from '../../../../components/CalmnessChart'
+import Recycle from "../../../../../icons/Recycle";
 
 function Page() {
   return (
