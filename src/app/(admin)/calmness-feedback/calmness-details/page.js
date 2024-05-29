@@ -4,8 +4,6 @@ import Link from "next/link";
 import React from "react";
 import communityImage from "../../../../../public/communityImage.png";
 import StarRating from "../../../../../icons/StarRating";
-import PushNotif from "../../../../../icons/PushNotif";
-import Recycle from "../../../../../icons/Recycle";
 import CalmnessNotif from "../../../../../icons/CalmnessNotif";
 import CalmnessChart from '../../../../components/CalmnessChart'
 
