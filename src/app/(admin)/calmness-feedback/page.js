@@ -12,7 +12,7 @@ import TopRightArrow from "../../../../icons/TopRightArrow";
 import GreyCross from "../../../../icons/GreyCross";
 import Backspace from "../../../../icons/Backspace";
 
-function page() {
+function Page() {
   const [showPopUp, setShowPopUp] = useState(false);
   const handleClick = () => {
     setShowPopUp(!showPopUp);
@@ -180,4 +180,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

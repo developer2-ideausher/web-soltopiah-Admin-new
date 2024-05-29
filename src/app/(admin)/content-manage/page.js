@@ -6,7 +6,7 @@ import WhitePlus from "../../../../icons/WhitePlus";
 import SearchBar from "@/components/SearchBar";
 import Link from "next/link";
 
-function page() {
+function Page() {
   const [showTable, setShowTable] = useState(true);
   const handleClcik1 = () => {
     setShowTable(true);
@@ -225,4 +225,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

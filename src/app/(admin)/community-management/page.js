@@ -11,7 +11,7 @@ import Notification from '../../../../icons/Notification'
 import PushNotif from '../../../../icons/PushNotif'
 import Block from '../../../../icons/Block'
 
-function page() {
+function Page() {
   const [showPopUp, setShowPopUp] = useState(false);
   const handleClick = () => {
     setShowPopUp(!showPopUp);
@@ -177,4 +177,4 @@ function page() {
   )
 }
 
-export default page
+export default Page

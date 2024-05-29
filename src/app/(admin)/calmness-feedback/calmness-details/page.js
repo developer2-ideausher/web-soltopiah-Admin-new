@@ -9,7 +9,7 @@ import Recycle from "../../../../../icons/Recycle";
 import CalmnessNotif from "../../../../../icons/CalmnessNotif";
 import CalmnessChart from '../../../../components/CalmnessChart'
 
-function page() {
+function Page() {
   return (
     <div className="flex flex-col gap-7">
       <div className="flex flex-row gap-5 items-center">
@@ -169,4 +169,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;
