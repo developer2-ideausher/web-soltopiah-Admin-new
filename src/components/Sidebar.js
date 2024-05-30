@@ -19,14 +19,14 @@ import DashboardIco from "../../icons/DashboardIco";
 export default function Sidebar() {
   const pathName = usePathname();
   return (
-    <div className="flex flex-col lg:p-3 xl:p-3 2xl:p-3 bg-primary justify-between h-screen ">
+    <div className="flex flex-col lg:p-3 xl:p-2 2xl:p-2 bg-primary justify-between h-screen ">
       <div className="flex flex-col p-3 justify-center h-full w-full gap-1">
         <Image src="/logo.svg" width="200" height="100" />
 
         <div className="flex  flex-col gap-1  overflow-y-scroll sidebar-wrapper">
           <Link
             href="/dashboard"
-            className={`flex items-center gap-2 lg:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
+            className={`flex items-center gap-2 lg:p-2 xl:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
               pathName == "/dashboard" && "bg-pink on"
             }`}
           >
@@ -38,7 +38,7 @@ export default function Sidebar() {
           </Link>
           <Link
             href="/user-management"
-            className={`flex items-center gap-2 lg:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
+            className={`flex items-center gap-2 lg:p-2 xl:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
               pathName.startsWith("/user-management")  && "bg-pink on"
             }`}
           >
@@ -49,7 +49,7 @@ export default function Sidebar() {
           </Link>
           <Link
             href="/guide-management"
-            className={`flex items-center gap-2 lg:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
+            className={`flex items-center gap-2 lg:p-2 xl:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
               pathName.startsWith('/guide-management') && "bg-pink on"
             }`}
           >
@@ -60,7 +60,7 @@ export default function Sidebar() {
           </Link>
           <Link
             href="/content-manage"
-            className={`flex items-center gap-2 lg:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
+            className={`flex items-center gap-2 lg:p-2 xl:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
               pathName.startsWith("/content-manage")   && "bg-pink on"
             }`}
           >
@@ -71,7 +71,7 @@ export default function Sidebar() {
           </Link>
           <Link
             href="/category-management"
-            className={`flex items-center gap-2 lg:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
+            className={`flex items-center gap-2 lg:p-2 xl:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
               pathName.startsWith("/category-management")  && "bg-pink on"
             }`}
           >
@@ -82,7 +82,7 @@ export default function Sidebar() {
           </Link>
           <Link
             href="/quickreads"
-            className={`flex items-center gap-2 lg:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
+            className={`flex items-center gap-2 lg:p-2 xl:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
               pathName.startsWith("/quickreads")  && "bg-pink on"
             }`}
           >
@@ -93,7 +93,7 @@ export default function Sidebar() {
           </Link>
           <Link
             href="/live-manage"
-            className={`flex items-center gap-2 lg:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
+            className={`flex items-center gap-2 lg:p-2 xl:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
               pathName.startsWith("/live-manage" ) && "bg-pink on"
             }`}
           >
@@ -104,7 +104,7 @@ export default function Sidebar() {
           </Link>
           <Link
             href="/challenge-module"
-            className={`flex items-center gap-2 lg:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
+            className={`flex items-center gap-2 lg:p-2 xl:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
               pathName == "/challenge-module" && "bg-pink on"
             }`}
           >
@@ -115,7 +115,7 @@ export default function Sidebar() {
           </Link>
           <Link
             href="/calmness-feedback"
-            className={`flex items-center gap-2 lg:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
+            className={`flex items-center gap-2 lg:p-2 xl:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
               pathName.startsWith("/calmness-feedback")  && "bg-pink on"
             }`}
           >
@@ -126,7 +126,7 @@ export default function Sidebar() {
           </Link>
           <Link
             href="/subscriptions"
-            className={`flex items-center gap-2 lg:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
+            className={`flex items-center gap-2 lg:p-2 xl:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
               pathName == "/subscriptions" && "bg-pink on"
             }`}
           >
@@ -137,7 +137,7 @@ export default function Sidebar() {
           </Link>
           <Link
             href="/community-management"
-            className={`flex items-center gap-2 lg:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
+            className={`flex items-center gap-2 lg:p-2 xl:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
               pathName.startsWith("/community-management")   && "bg-pink on"
             }`}
           >
@@ -148,7 +148,7 @@ export default function Sidebar() {
           </Link>
           <Link
             href="/platform-earnings"
-            className={`flex items-center gap-2 lg:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
+            className={`flex items-center gap-2 lg:p-2 xl:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
               pathName == "/platform-earnings" && "bg-pink on"
             }`}
           >
@@ -159,7 +159,7 @@ export default function Sidebar() {
           </Link>
           <Link
             href="/notification-management"
-            className={`flex items-center gap-2 lg:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
+            className={`flex items-center gap-2 lg:p-2 xl:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
               pathName == "/notification-management" && "bg-pink on"
             }`}
           >
@@ -170,7 +170,7 @@ export default function Sidebar() {
           </Link>
           <Link
             href="/badgesandrewards"
-            className={`flex items-center gap-2 lg:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
+            className={`flex items-center gap-2 lg:p-2 xl:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
               pathName == "/badgesandrewards" && "bg-pink on"
             }`}
           >
