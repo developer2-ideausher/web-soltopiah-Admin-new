@@ -44,7 +44,7 @@ function Page() {
         setLoading(false);
       });
   };
-
+// debugging
   return (
     <>
       {loading && <Loader />}

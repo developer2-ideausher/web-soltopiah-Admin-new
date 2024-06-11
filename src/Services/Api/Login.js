@@ -57,9 +57,10 @@ export const LoginApi = async (formdata) => {
     body: formdata,
     redirect: "follow",
   };
-
+ 
   try {
-    
+    console.log( process.env.NEXT_PUBLIC_URL
+    )
     const response = await fetch(
       process.env.NEXT_PUBLIC_URL + "/auth/admin-secretSignup",
       requestOptions
