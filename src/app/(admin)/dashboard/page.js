@@ -4,7 +4,7 @@ import SessionBookingChart from "@/components/DashBoardNew/SessionBookingChart";
 import TopAudioChart from "@/components/dashbaord/TopAudioChart";
 import TopCoursesChart from "@/components/dashbaord/TopCoursesChart";
 import TopVedioChart from "@/components/dashbaord/TopVideoCharts";
-import React from "react";
+import React, { useEffect, useInsertionEffect, useLayoutEffect } from "react";
 import LiveButton from "../../../../icons/LiveButton";
 import GreenLive from "../../../../icons/GreenLive";
 import Card from "@/components/DashBoardNew/Card";
@@ -13,12 +13,24 @@ import GuidesPieChart from "@/components/DashBoardNew/GuidePieChart";
 import CategoryChart from "@/components/DashBoardNew/CategoryChart";
 import UseFeature from "@/components/DashBoardNew/UseFeature";
 import { useRouter } from "next/navigation";
+import { getToken } from "@/Services/Cookie/userCookie";
 export default function Page() {
-  const router = useRouter()
+  const router = useRouter();
+
+  const token = getToken();
+  useEffect(() => {
+    console.log(token);
+    if (!token) {
+      router.push("/login");
+    }
+  }, []);
   return (
     <div className=" flex flex-col gap-11 ">
       <div className="flex flex-row justify-between items-center">
-        <p onClick={()=>router.push('/user-management')} className="text-xl2 font-semibold font-sans text-[#17161D]">
+        <p
+          onClick={() => router.push("/user-management")}
+          className="text-xl2 font-semibold font-sans text-[#17161D]"
+        >
           Dashboard
         </p>
         <div className="flex flex-row items-center gap-2">
@@ -67,8 +79,8 @@ export default function Page() {
             textColour="[#2BAB4B]"
           />
         </div>
-        <div className="flex flex-row  items-center gap-4">
-          <div className="w-1/2 bg-white rounded-xl p-5 flex flex-col gap-4">
+        <div className="flex lg:flex-col xl:flex-row 2xl:flex-row items-center gap-4">
+          <div className="lg:w-full xl:w-1/2 2xl:w-1/2 bg-white rounded-xl p-5 flex flex-col gap-4">
             <div className="flex flex-row justify-between items-center ">
               <p className="text-base font-sans font-bold text-[#2A2D3E]">
                 Revenue
@@ -97,7 +109,7 @@ export default function Page() {
               </div>
             </div>
           </div>
-          <div className="w-1/2 bg-white rounded-xl p-5 flex flex-col gap-4">
+          <div className="lg:w-full xl:w-1/2 2xl:w-1/2 bg-white rounded-xl p-5 flex flex-col gap-4">
             <div className="flex flex-row justify-between items-center ">
               <p className="text-base font-sans font-bold text-[#2A2D3E]">
                 Newly Joined
@@ -126,17 +138,17 @@ export default function Page() {
             </div>
           </div>
         </div>
-        <div className="flex flex-row items-cente justify-between gap-4">
-          <div className="w-1/3  bg-white p-5  rounded-xl flex flex-col gap-6">
+        <div className="flex lg:flex-col xl:flex-row 2xl:flex-row  items-cente justify-between gap-4">
+          <div className="lg:w-full xl:w-1/3 2xl:w-1/3 bg-white p-5  rounded-xl flex flex-col gap-6">
             <p className="text-deepBlue  text-base font-sans font-bold">
               Top 5 Guides
             </p>
             <div className="">
-              <CategoryChart/>
+              <CategoryChart />
               {/* <TopAudioChart/> */}
             </div>
           </div>
-          <div className="w-1/3 bg-white p-5 h-auto rounded-xl flex flex-col gap-6">
+          <div className="lg:w-full  xl:w-1/3  2xl:w-1/3  bg-white p-5 h-auto rounded-xl flex flex-col gap-6">
             <p className="text-deepBlue text-base font-sans font-bold">
               Category Performances
             </p>
@@ -144,7 +156,7 @@ export default function Page() {
               <CategoryChart />
             </div>
           </div>
-          <div className="w-1/3 bg-white p-5 h-auto rounded-xl flex flex-col gap-6">
+          <div className="lg:w-full  xl:w-1/3  2xl:w-1/3  bg-white p-5 h-auto rounded-xl flex flex-col gap-6">
             <p className="text-deepBlue text-base font-sans font-bold">
               Most Used Features
             </p>

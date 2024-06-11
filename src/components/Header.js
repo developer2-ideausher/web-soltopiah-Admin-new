@@ -5,12 +5,26 @@ import Bellicon from "../../icons/Bellicon";
 import ProfileIcon from "../../icons/ProfileIcon";
 import Notification from "../../icons/Notification";
 import Logout from "../../icons/Logout";
+import { removeToken } from "@/Services/Cookie/userCookie";
+import { signOut } from "firebase/auth";
+import useFirebaseAuth from "@/Services/Firebase/useFirebaseAuth";
+import { useRouter } from "next/navigation";
 
 function Header() {
   const [showDropDown, setShowDropDown] = useState(false);
   const handleClick = () => {
     setShowDropDown(!showDropDown);
   };
+  const router=useRouter()
+  const {signOut}= useFirebaseAuth()
+  const handleLogOut=()=>{
+    removeToken();
+    signOut()
+    .then(result =>{
+      router.push("/login")
+    })
+    .catch((error)=>console.log("error while logout"+error))
+  }
   return (
     <div className="w-ful bg-[#D4D8F0] p-6 flex justify-end gap-6 ">
       <div className="flex items-center">
@@ -44,13 +58,13 @@ function Header() {
               Notification setting
             </p>
           </div>
-          <Link href="/login">
-            <div className="flex flex-row gap-3 items-center">
+         
+            <div onClick={handleLogOut} className="flex flex-row gap-3 items-center">
               <Logout />
 
               <p className="font-sans font-normal text-black text-sm">Logout</p>
             </div>
-          </Link>
+          
         </div>
       )}
     </div>

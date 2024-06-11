@@ -1,6 +1,8 @@
 // import localFont from 'next/font/local';
 import { Inter } from 'next/font/google'
 import "./global.css";
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 export const metadata = {
   title: 'Soltopia Guide Panel',
   description: 'Soltopia Guide Panel Powered By Ideausher',
@@ -21,7 +23,9 @@ const inter =  Inter({
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={` ${inter.variable}`}>
-      <body>{children}</body>
+      <body>{children}
+      <ToastContainer/>
+      </body>
     </html>
   )
 }

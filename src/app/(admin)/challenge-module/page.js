@@ -3,13 +3,14 @@ import Export from "../../../../icons/Export";
 
 import SearchBar from "@/components/AddSearchBar";
 import Pagination from "@/components/Pagination";
+import Link from "next/link";
 
 function page() {
   return (
     <div className="flex flex-col gap-7 ">
       <div className="flex flex-row justify-between items-center">
         <p className="text-xl2 font-semibold text-userblack font-sans">
-          Calmness Feedback
+        All challenge programs
         </p>
         <div className="flex flex-row items-center gap-5">
           <select className="py-[10px] px-3 border border-[#DCDBE1] rounded-lg text-sm font-sans font-normal text-userblack focus:outline-none">
@@ -24,7 +25,7 @@ function page() {
         </div>
       </div>
       <div className="flex flex-col">
-        <SearchBar title="Add Challenge" />
+        <SearchBar title="Create Challenge" route="/challenge-module/create-challenge" />
         <div className="w-full overflow-x-scroll booking-table-wrapper">
           <div className="bg-[#F0F2F5] min-w-fit w-full">
             <div className="items-center grid grid-cols-challengeTable justify-between p-4">
@@ -55,7 +56,7 @@ function page() {
             </div>
           </div>
           <div className="flex flex-col bg-white min-w-fit w-full ">
-            <div className=" grid grid-cols-challengeTable justify-between border-b border-[#E9E9EC] items-center p-4">
+           <Link href='/challenge-module/challenge-details-page'><div className=" grid grid-cols-challengeTable justify-between border-b border-[#E9E9EC] items-center p-4">
               <div className="flex flex-row items-center gap-4">
                 <img src="image1.png" alt="" />
                 <p className="text-sm font-sans font-semibold text-[#252322]">
@@ -85,7 +86,7 @@ function page() {
               <button className="text-white p-4 rounded-lg w-[150px] bg-[#AE445A] font-sans font-semibold text-sm">
                 Forum
               </button>
-            </div>
+            </div></Link> 
             <div className=" grid grid-cols-challengeTable justify-between border-b border-[#E9E9EC] items-center p-4">
               <div className="flex flex-row items-center gap-4">
                 <img src="image1.png" alt="" />
