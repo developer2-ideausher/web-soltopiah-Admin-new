@@ -11,6 +11,7 @@ import Link from "next/link";
 import { getToken } from "@/Services/Cookie/userCookie";
 import dayjs from "dayjs";
 import Loader from "@/components/Loader";
+import Frame1 from "../../../../public/Frame1.png"
 
 function Page() {
   const [popupIndex, setPopupIndex] = useState(null);
@@ -20,6 +21,24 @@ function Page() {
   useEffect(() => {
     getAllGuideApi();
   }, []);
+  const handleDelete = (id) => {
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer " + token);
+
+    const requestOptions = {
+      method: "DELETE",
+      headers: myHeaders,
+
+      redirect: "follow",
+    };
+
+    fetch(process.env.NEXT_PUBLIC_URL + `/guides/${id}`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {console.log(result)
+        getAllGuideApi()
+      })
+      .catch((error) => console.error(error));
+  };
   const token = getToken();
   const getAllGuideApi = () => {
     const myHeaders = new Headers();
@@ -44,7 +63,7 @@ function Page() {
         setLoading(false);
       });
   };
-// debugging
+  // debugging
   return (
     <>
       {loading && <Loader />}
@@ -89,11 +108,11 @@ function Page() {
                       <span className="text-userblack text-base font-semibold font-sans">
                         {item._id.slice(-4)}
                       </span>
-                      <div className="flex flex-row gap-2">
-                        <img src={item.profilePic} alt="" />
+                      <div className="flex flex-row items-center gap-2">
+                        <img className="w-8 h-8 object-cover rounded-full" src={item.profilePic?item.profilePic:Frame1.src} alt="" />
                         <div className="flex flex-col">
                           <p className="text-base font-semibold font-sans text-userblack">
-                            {item.name}
+                            {item.firstName + " " + item.lastName}
                           </p>
                           <p className="text-base font-sans font-normal text-[#666576]">
                             {item.phone}
@@ -113,7 +132,9 @@ function Page() {
                         32
                       </span>
                       <button
-                         onClick={() => setPopupIndex(popupIndex === index ? null : index)}
+                        onClick={() =>
+                          setPopupIndex(popupIndex === index ? null : index)
+                        }
                         className="text-base font-sans font-semibold text-userblack"
                       >
                         <MenuDots />
@@ -128,7 +149,9 @@ function Page() {
                               <GreyCross />
                             </button>
                           </div>
-                          <Link href={"/guide-management/guide-info"}>
+                          <Link
+                            href={`/guide-management/guide-info?objectID=${item._id}`}
+                          >
                             <div className="flex flex-row items-center gap-3">
                               <TopRightArrow />
                               <p className="text-sm font-sans font-normal text-[#753B5B]">
@@ -137,7 +160,10 @@ function Page() {
                             </div>
                           </Link>
 
-                          <div className="flex flex-row items-center gap-3">
+                          <div
+                            onClick={() => handleDelete(item._id)}
+                            className="flex flex-row items-center gap-3"
+                          >
                             <Backspace />
                             <p className="text-sm font-sans font-normal text-[#EE3E3E]">
                               Remove

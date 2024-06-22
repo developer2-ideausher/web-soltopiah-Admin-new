@@ -14,6 +14,10 @@ function Header() {
   const [showDropDown, setShowDropDown] = useState(false);
   const handleClick = () => {
     setShowDropDown(!showDropDown);
+    if (!showDropDown) {
+      setTimeout(() => {
+        setShowDropDown(false);
+      }, 5000);}
   };
   const router=useRouter()
   const {signOut}= useFirebaseAuth()
@@ -59,7 +63,7 @@ function Header() {
             </p>
           </div>
          
-            <div onClick={handleLogOut} className="flex flex-row gap-3 items-center">
+            <div onClick={handleLogOut} className="flex flex-row gap-3 items-center cursor-pointer">
               <Logout />
 
               <p className="font-sans font-normal text-black text-sm">Logout</p>

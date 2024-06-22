@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import MenuDots from "../../../../icons/MenuDots";
 import Pagination from "@/components/Pagination";
-import Profile2 from "../../../../public/Profile2.png";
+import Frame1 from "../../../../public/Frame1.png";
 import GreenLive from "../../../../icons/GreenLive";
 import LiveButton from "../../../../icons/LiveButton";
 import Link from "next/link";
@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 function Page() {
   const [liveManagementData, setLiveManagementData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [pendingCount, setPendingCount] = useState(0);
 
   useEffect(() => {
     getAllLiveEventApi();
@@ -37,6 +38,11 @@ function Page() {
       .then((result) => {
         console.log(result.data.results);
         setLiveManagementData(result.data.results);
+        const liverequests = result.data.results;
+        const pendingLiveRequests = liverequests.filter(
+          (item) => item.status === "pending"
+        ).length;
+        setPendingCount(pendingLiveRequests);
         setLoading(false);
       })
       .catch((error) => {
@@ -57,7 +63,7 @@ function Page() {
             <button className="py-2 px-3 border border-[#EE3E3E] bg-white flex flex-row items-center gap-2 rounded-lg">
               <LiveButton />
               <p className="text-sm font-sans font-normal text-[#EE3E3E]">
-                Live Requests(21)
+                Live Requests({pendingCount})
               </p>
             </button>
           </Link>
@@ -92,16 +98,34 @@ function Page() {
             <div className="flex flex-col bg-white min-w-fit w-full">
               {liveManagementData &&
                 liveManagementData.map((item, index) => (
-                  <div key={item._id || index}  className=" grid grid-cols-LiveMainTable justify-between border-b border-[#E9E9EC] items-center p-4">
+                  <div
+                    key={item._id || index}
+                    className=" grid grid-cols-LiveMainTable justify-between border-b border-[#E9E9EC] items-center p-4"
+                  >
                     <span className="text-userblack font-sans font-semibold text-base">
                       {item.title}
                     </span>
                     <div className="text-userblack font-sans flex flex-row items-center gap-2 font-semibold text-base">
-                      <img src={item.guide.profilePic?.url || Profile2.src} alt=""
-                       onError={(e) => { e.target.src = Profile2.src; }} // 
-                       className="h-8 w-8 rounded-full object-cover" />
-                      {/* <img src={item.guide.profilePic==null?Profile2.src:item.guide.profilePic} alt=""/> */}
-                      <p>{item.guide.firstName+' '+item.guide.lastName}</p>
+                      <img
+                        src={
+                          item.guide && item.guide.profilePic
+                            ? item.guide.profilePic.url
+                            : Frame1.src
+                        }
+                        alt=""
+                        onError={(e) => {
+                          e.target.src = Profile2.src;
+                        }} //
+                        className="h-8 w-8 rounded-full object-cover"
+                      />
+                      <p>
+                        {item.guide == null
+                          ? "Removed Guide"
+                          : `${
+                              item.guide.firstName ?? item.guide._id.slice(-4)
+                            } ${item.guide.lastName ?? ""}`}
+                      </p>
+                      {/* <p>{item.guide?._id.slice(-4)??"Removed Guide"}</p> */}
                     </div>
                     <span className="text-userblack font-sans font-semibold text-base">
                       {dayjs(item.startDate).format("ddd MMM DD,YY")}

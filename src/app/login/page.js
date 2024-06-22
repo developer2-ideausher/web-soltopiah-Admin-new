@@ -70,7 +70,7 @@ function Page() {
         // });
       })
       .catch((error) => {
-        // setLoading(false)
+        setLoading(false)
         // toast.error(error.message, {
         //   position: "bottom-right",
         //   autoClose: 5000,

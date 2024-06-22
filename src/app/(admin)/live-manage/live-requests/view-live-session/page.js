@@ -1,10 +1,90 @@
+"use client";
 import BackButton from "@/components/BackButton";
 import Link from "next/link";
-import React from "react";
-import LiveSessionImage from '../../../../../../public/LiveSessionImage.png'
-import Profile2 from '../../../../../../public/Profile2.png'
+import React, { useEffect, useState } from "react";
+import LiveSessionImage from "../../../../../../public/LiveSessionImage.png";
+import Frame1 from "../../../../../../public/Frame1.png";
+import { useRouter, useSearchParams } from "next/navigation";
+import { getToken } from "@/Services/Cookie/userCookie";
+import dayjs from "dayjs";
 
-function page() {
+function Page() {
+  const [requestData, setRequestData] = useState(null);
+
+  const searchParams = useSearchParams();
+  const reqId = searchParams.get("requestID");
+  const router = useRouter();
+
+  useEffect(() => {
+    getAllReqApi();
+  }, []);
+  const token = getToken();
+  const getAllReqApi = () => {
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer " + token);
+    const requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(process.env.NEXT_PUBLIC_URL + "/live-events/" + reqId, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result.data);
+        setRequestData(result.data);
+      })
+      .catch((error) => console.error(error));
+  };
+  const handleApprove = () => {
+    const raw = { status: "approved" };
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer " + token);
+    myHeaders.append("Content-Type", "application/json");
+    const requestOptions = {
+      method: "PATCH",
+      headers: myHeaders,
+
+      body: JSON.stringify(raw),
+      redirect: "follow",
+    };
+
+    fetch(
+      process.env.NEXT_PUBLIC_URL + `/live-events/${reqId}/status`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+        router.push("/live-manage/live-requests");
+      })
+      .catch((error) => console.error(error));
+  };
+  const handleDecline = () => {
+    const raw = { status: "declined" };
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer " + token);
+    myHeaders.append("Content-Type", "application/json");
+
+    const requestOptions = {
+      method: "PATCH",
+      headers: myHeaders,
+
+      body: JSON.stringify(raw),
+      redirect: "follow",
+    };
+
+    fetch(
+      process.env.NEXT_PUBLIC_URL + `/live-events/${reqId}/status`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+        router.push("/live-manage/live-requests");
+      })
+      .catch((error) => console.error(error));
+  };
   return (
     <div className="flex flex-col gap-7">
       <div className="flex flex-row items-center gap-5">
@@ -15,43 +95,96 @@ function page() {
           View live session
         </p>
       </div>
-      <div className="flex flex-col gap-5">
-        <img src={LiveSessionImage.src} alt="" className="w-[690px] "/>
-        <div className="flex flex-col gap-5 w-4/5" >
+      {requestData && (
+        <div className="flex flex-col gap-5">
+          <img
+            src={
+              requestData.banner ? requestData.banner.url : LiveSessionImage.src
+            }
+            alt=""
+            className="w-[690px] h-[400px] rounded-md "
+          />
+          <div className="flex flex-col gap-5 w-4/5">
             <div className="flex flex-col gap-1">
-                <p className="text-base font-sans font-semibold text-[#888A94]">Title</p>
-                <p className="text-xl text-[#414554] font-normal font-sans">Sunday Reset</p>
+              <p className="text-base font-sans font-semibold text-[#888A94]">
+                Title
+              </p>
+              <p className="text-xl text-[#414554] font-normal font-sans">
+                {requestData.title}
+              </p>
             </div>
             <div className="flex flex-col gap-1">
-                <p className="text-base font-sans font-semibold text-[#888A94]">Description</p>
-                <p className="text-xl text-[#414554] font-normal font-sans">Qorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis tellus. Sed dignissim, metus nec fringilla accumsan, risus sem sollicitudin lacus, ut interdum tellus elit sed risus. Maecenas eget condimentum velit, sit amet feugiat lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent auctor purus luctus enim egestas, ac scelerisque ante pulvinar. Donec ut rhoncus ex. Suspendisse ac rhoncus nisl, eu tempor urna. Curabitur vel bibendum lorem. Morbi convallis convallis diam sit amet lacinia. Aliquam in elementum tellus.</p>
+              <p className="text-base font-sans font-semibold text-[#888A94]">
+                Description
+              </p>
+              <p className="text-xl text-[#414554] font-normal font-sans">
+                {requestData.description}
+              </p>
             </div>
             <div className="flex flex-col gap-1">
-                <p className="text-base font-sans font-semibold text-[#888A94]">Date</p>
-                <p className="text-xl text-[#414554] font-normal font-sans">Feb 27, 2022</p>
+              <p className="text-base font-sans font-semibold text-[#888A94]">
+                Date
+              </p>
+              <p className="text-xl text-[#414554] font-normal font-sans">
+                {dayjs(requestData.createdAt).format("MMM DD YYYY")}
+              </p>
             </div>
             <div className="flex flex-col gap-1">
-                <p className="text-base font-sans font-semibold text-[#888A94]">Time</p>
-                <p className="text-xl text-[#414554] font-normal font-sans">9:30 AM</p>
+              <p className="text-base font-sans font-semibold text-[#888A94]">
+                Time
+              </p>
+              <p className="text-xl text-[#414554] font-normal font-sans">
+                {dayjs(requestData.createdAt).format("h:mm a")}
+              </p>
             </div>
             <div className="flex flex-col gap-1">
-                <p className="text-base font-sans font-semibold text-[#888A94]">Hosted by</p>
-                <div className="flex flex-row items-center gap-2">
-                    <img src={Profile2.src} alt=""/>
-                <p className="text-xl text-userblack font-semibold font-sans">Albert Flores</p>
-                </div>
-                
+              <p className="text-base font-sans font-semibold text-[#888A94]">
+                Hosted by
+              </p>
+              <div className="flex flex-row items-center gap-2">
+                <img
+                  className="h-8 w-8 object-cover rounded-full"
+                  src={
+                    requestData.guide && requestData.guide.profilePic
+                      ? requestData.guide.profilePic.url
+                      : Frame1.src
+                  }
+                  alt=""
+                />
+                <p className="text-xl text-userblack font-semibold font-sans">
+                  <p>
+                    {requestData.guide === null
+                      ? "Removed Guide"
+                      : (requestData.guide.firstName
+                          ? requestData.guide.firstName
+                          : requestData.guide._id.slice(-4)) +
+                        " " +
+                        (requestData.guide.lastName
+                          ? requestData.guide.lastName
+                          : "")}
+                  </p>
+                </p>
+              </div>
             </div>
             <div className="w-3/5 gap-3 flex flex-row justify-between items-center">
-                <button className="bg-[#EE3E3E] p-3 rounded-md w-full border border-[#EE3E3E] text-base font-sans font-normal text-white">Decline</button>
-                <button className="bg-[#08A03C] p-3 rounded-md w-full border border-[#08A03C] text-base font-sans font-normal text-white">Approve</button>
-                
+              <button
+                onClick={() => handleDecline()}
+                className="bg-[#EE3E3E] p-3 rounded-md w-full border border-[#EE3E3E] text-base font-sans font-normal text-white"
+              >
+                Decline
+              </button>
+              <button
+                onClick={() => handleApprove()}
+                className="bg-[#08A03C] p-3 rounded-md w-full border border-[#08A03C] text-base font-sans font-normal text-white"
+              >
+                Approve
+              </button>
             </div>
+          </div>
         </div>
-        
-      </div>
+      )}
     </div>
   );
 }
 
-export default page;
+export default Page;

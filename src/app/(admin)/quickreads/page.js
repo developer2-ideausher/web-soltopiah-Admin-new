@@ -9,10 +9,13 @@ import Link from "next/link";
 import { getToken } from "@/Services/Cookie/userCookie";
 import dayjs from "dayjs";
 import Loader from "@/components/Loader";
+import Frame1 from "../../../../public/Frame1.png";
+import LoginImage from "../../../../public/LoginImage.png";
 
 function Page() {
   const [quickReadData, setQuickReadData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [pendingCount, setPendingCount] = useState(0);
   useEffect(() => {
     getAllQuickreadsDataApi();
   }, []);
@@ -32,6 +35,11 @@ function Page() {
       .then((result) => {
         console.log(result.data.results);
         setQuickReadData(result.data.results);
+        const quickReads = result.data.results;
+        const pendingQuickReads = quickReads.filter(
+          (item) => item.status === "pending"
+        ).length;
+        setPendingCount(pendingQuickReads);
         setLoading(false);
       })
       .catch((error) => {
@@ -52,7 +60,7 @@ function Page() {
             <button className="py-2 px-3 border border-[#08A03C] bg-white flex flex-row items-center gap-2 rounded-lg">
               <GreenLive />
               <p className="text-sm font-sans font-normal text-[#08A03C]">
-                Quick read Request (21)
+                Quick read Request ({pendingCount})
               </p>
             </button>
           </Link>
@@ -87,12 +95,28 @@ function Page() {
                     key={item._id || index}
                     className=" grid grid-cols-quickreadsMainTable justify-between border-b border-[#E9E9EC] items-center p-4"
                   >
-                    <span className="text-userblack font-sans font-semibold text-sm"> 
+                    <span className="text-userblack font-sans font-semibold text-sm">
                       {item.title}
                     </span>
-                    <span className="text-userblack font-sans font-semibold text-sm">
-                      Wade Warren
-                    </span>
+                    <div className="flex flex-row items-center gap-2">
+                      <img
+                        className={`w-8 h-8  object-cover rounded-full`}
+                        src={
+                          item.creatorRole === "Guide"
+                            ? item.creator.profilePic
+                              ? item.creator.profilePic.url
+                              : Frame1.src
+                            : LoginImage.src
+                        }
+                        alt=""
+                      />
+                      <span className="text-userblack font-sans font-semibold text-sm">
+                        {item.creatorRole == "Guide"
+                          ? item?.creator.firstName
+                          : "Soltopiah"}
+                      </span>
+                    </div>
+
                     <span className="text-userblack font-sans font-semibold text-sm">
                       Free
                     </span>
@@ -100,7 +124,7 @@ function Page() {
                       {dayjs(item.createdAt).format("MMM DD YYYY")}
                     </span>
                     <span className="text-userblack font-sans font-semibold text-sm">
-                      23456
+                      {item.pictures.length}
                     </span>
                   </div>
                 ))}

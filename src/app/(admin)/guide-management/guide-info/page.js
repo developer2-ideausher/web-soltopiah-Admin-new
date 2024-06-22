@@ -1,13 +1,48 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import Export from "../../../../../icons/Export";
 import Phone from "../../../../../icons/Phone";
 import Email from "../../../../../icons/Email";
-import Rectangle from "../../../../../public/Rectangle.png";
+import Frame1 from "../../../../../public/Frame1.png";
 import GuideCards from "@/components/GuideCards";
 import Link from "next/link";
 import BackButton from "@/components/BackButton";
 
-function page() {
+import { useSearchParams } from "next/navigation";
+import { getToken } from "@/Services/Cookie/userCookie";
+
+function Page() {
+  const searchParams = useSearchParams();
+  const search = searchParams.get("objectID");
+  const [IdData, setIdData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    getIdDataApi();
+  }, [search]);
+  const token = getToken();
+
+  const getIdDataApi = () => {
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer " + token);
+    const requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+
+      redirect: "follow",
+    };
+
+    fetch(
+      `${process.env.NEXT_PUBLIC_URL}/guides/${search}`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result.data)
+        setIdData(result.data);
+      })
+      .catch((error) => console.error(error));
+  };
+  console.log(search);
   return (
     <div className="flex flex-col gap-7 ">
       <div className="flex flex-row justify-between items-center">
@@ -35,14 +70,14 @@ function page() {
       <div className="flex flex-col gap-5">
         <div className="bg-white flex flex-row gap-3 justify-between py-3 px-5 rounded-xl ">
           <div className="flex flex-col gap-3 border border-[#CE8F9C] rounded-md p-3 w-5/12">
-            <div className="flex flex-row  gap-3">
-              <img src={Rectangle.src} alt="" />
+            <div className="flex flex-row items-start gap-3">
+              <img className="w-8 h-8 object-cover rounded-md" src={IdData.profilePic?IdData.profilePic.url :Frame1.src} alt="Guide Image" />
               <div className="flex flex-col gap-1">
                 <p className="text-xl font-sans font-semibold text-userblack">
-                  Albert Flores
+                  {IdData?.firstName + " " + IdData?.lastName}
                 </p>
                 <p className="text-base font-sans font-semibold text-[#AE445A]">
-                  Yoga
+                  {IdData?.services}
                 </p>
               </div>
             </div>
@@ -50,13 +85,13 @@ function page() {
               <div className="flex flex-row items-center gap-2">
                 <Phone />
                 <p className="text-base font-sans font-normal text-[#71737F]">
-                  84102947210
+                {IdData.phone?IdData.phone:"No phone added"}
                 </p>
               </div>
               <div className="flex flex-row items-center gap-2">
                 <Email />
                 <p className="text-base font-sans font-normal text-[#71737F]">
-                  jessica.hanson@example.com
+                {IdData.email?IdData.email:"No email added"}
                 </p>
               </div>
             </div>
@@ -75,7 +110,7 @@ function page() {
             <div className="text-base font-sans font-semibold text-userblack">
               <p>12</p>
               <p>12</p>
-              <p>Yoga</p>
+              <p>{IdData.specialization?IdData.specialization:"No Services Added"}</p>
             </div>
           </div>
           <div className="flex flex-row gap-5 border border-[#CE8F9C] rounded-md p-3 w-3/12">
@@ -122,7 +157,9 @@ function page() {
               <Link href="/guide-management/guide-info/session-booked">
                 <GuideCards Title="Session Booked" />
               </Link>
-             <Link href="/guide-management/guide-info/content-uploaded"><GuideCards Title="Content uploaded" /></Link> 
+              <Link href="/guide-management/guide-info/content-uploaded">
+                <GuideCards Title="Content uploaded" />
+              </Link>
             </div>
           </div>
         </div>
@@ -131,4 +168,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;
