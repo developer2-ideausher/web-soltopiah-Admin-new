@@ -1,58 +1,216 @@
-import React,{useState,useRef,useEffect} from 'react'
-import { toast } from 'react-toastify';
+import React, { useState, useRef, useEffect } from "react";
+import { toast } from "react-toastify";
+import ReactAudioPlayer from "react-audio-player";
 export default function AudioVideoUploader(props) {
-    const [file, setFile] = useState(null);
-    const [isUploaded, setIsUploaded] = useState(props.uploaded);
-    const [url,setUrl] = useState(props.fileAdded);
-    const fileRef = useRef(null);
-    const [loading,setLoading] = useState(false)
-    const coverHandler = (e) => {
-        if(e.target.files[0]){
-            setFile(e.target.files[0]);
-        }
-        else{
-            toast.error("No file chosen"),{
-                toastId:"uploaddd-error-1aejdg"
-            }
-        }
+  const [file, setFile] = useState(null);
+  const [isUploaded, setIsUploaded] = useState(props.uploaded);
+  const [url, setUrl] = useState(props.fileAdded);
+  const fileRef = useRef(null);
+  const [loading, setLoading] = useState(false);
+  const [type, setType] = useState(props.type);
+  const coverHandler = (e) => {
+    if (e.target.files[0]) {
+      if (e.target.files[0].type.includes("video")) {
+        setFile(e.target.files[0]);
+        setType("video");
+      } else if (e.target.files[0].type.includes("audio")) {
+        setFile(e.target.files[0]);
+        setType("audio");
+      } else {
+        toast.info("Only audio & video files are allowed", {
+          toastId: "sdjhgf",
+        });
+      }
+    } else {
+      toast.info("No file chosen"),
+        {
+          toastId: "uploaddd-error-1aejdg",
+        };
     }
-    const uploadHandler = () => {
-        props.callback(file)
-        setUrl(URL.createObjectURL(file))
-        setIsUploaded(true)
+  };
+  const uploadHandler = () => {
+    // props.callback(file)
+    setUrl(URL.createObjectURL(file));
+    setIsUploaded(true);
+    setTimeout(() => {
+      calculateDuration();
+    }, [1000]);
+  };
+  const calculateDuration = () => {
+    const video = document.getElementById(type);
+    const duration = video.duration / 60;
+    props.callback(file, duration.toFixed(2), type);
+  };
+  const backImage = {
+    backgroundImage: isUploaded ? `url("${url}")` : ``,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+    // borderColor:"transparent"
+  };
+  const removeHandler = () => {
+    setFile(null);
+    setIsUploaded(false);
+    setUrl("");
+    props.callback("");
+  };
+  useEffect(() => {
+    if (file) {
+      setLoading(true);
+      uploadHandler();
     }
-    const backImage = {
-        backgroundImage: isUploaded?`url("${url}")`:``,
-        backgroundSize:"cover",
-        backgroundPosition:"center",
-        backgroundRepeat:"no-repeat",
-        borderColor:"transparent"
-    }
+  }, [file]);
 
-    useEffect(()=>{
-        if(file){
-            setLoading(true)
-            uploadHandler();
-        }
-    },[file])
-
-    return (
-        <div className='flex items-center cursor-pointer relative justify-center p-4 border border-dashed rounded-lg bg-white border-[#3090e9]'>
-            {!isUploaded && <div className='flex items-center justify-between w-full'>
-                <h6 className='text-sm font-normal text-[#3090e9]'>Upload here</h6>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <path d="M8.09167 5.5917L9.16667 4.50836V14.1667C9.16667 14.3877 9.25446 14.5997 9.41074 14.756C9.56702 14.9122 9.77899 15 10 15C10.221 15 10.433 14.9122 10.5893 14.756C10.7455 14.5997 10.8333 14.3877 10.8333 14.1667V4.50836L11.9083 5.5917C11.9858 5.6698 12.078 5.7318 12.1795 5.77411C12.2811 5.81641 12.39 5.8382 12.5 5.8382C12.61 5.8382 12.7189 5.81641 12.8205 5.77411C12.922 5.7318 13.0142 5.6698 13.0917 5.5917C13.1698 5.51423 13.2318 5.42206 13.2741 5.32051C13.3164 5.21896 13.3382 5.11004 13.3382 5.00003C13.3382 4.89002 13.3164 4.7811 13.2741 4.67955C13.2318 4.578 13.1698 4.48583 13.0917 4.40836L10.5917 1.90836C10.5142 1.83026 10.422 1.76826 10.3205 1.72595C10.2189 1.68365 10.11 1.66187 10 1.66187C9.88999 1.66187 9.78107 1.68365 9.67952 1.72595C9.57797 1.76826 9.4858 1.83026 9.40833 1.90836L6.90833 4.40836C6.75141 4.56528 6.66326 4.77811 6.66326 5.00003C6.66326 5.22195 6.75141 5.43478 6.90833 5.5917C7.06525 5.74862 7.27808 5.83677 7.5 5.83677C7.72192 5.83677 7.93475 5.74862 8.09167 5.5917ZM15 7.50003H13.3333C13.1123 7.50003 12.9004 7.58783 12.7441 7.74411C12.5878 7.90039 12.5 8.11235 12.5 8.33336C12.5 8.55438 12.5878 8.76634 12.7441 8.92262C12.9004 9.0789 13.1123 9.1667 13.3333 9.1667H15C15.221 9.1667 15.433 9.2545 15.5893 9.41078C15.7455 9.56706 15.8333 9.77902 15.8333 10V15.8334C15.8333 16.0544 15.7455 16.2663 15.5893 16.4226C15.433 16.5789 15.221 16.6667 15 16.6667H5C4.77899 16.6667 4.56702 16.5789 4.41074 16.4226C4.25446 16.2663 4.16667 16.0544 4.16667 15.8334V10C4.16667 9.77902 4.25446 9.56706 4.41074 9.41078C4.56702 9.2545 4.77899 9.1667 5 9.1667H6.66667C6.88768 9.1667 7.09964 9.0789 7.25592 8.92262C7.4122 8.76634 7.5 8.55438 7.5 8.33336C7.5 8.11235 7.4122 7.90039 7.25592 7.74411C7.09964 7.58783 6.88768 7.50003 6.66667 7.50003H5C4.33696 7.50003 3.70107 7.76342 3.23223 8.23226C2.76339 8.7011 2.5 9.33699 2.5 10V15.8334C2.5 16.4964 2.76339 17.1323 3.23223 17.6011C3.70107 18.07 4.33696 18.3334 5 18.3334H15C15.663 18.3334 16.2989 18.07 16.7678 17.6011C17.2366 17.1323 17.5 16.4964 17.5 15.8334V10C17.5 9.33699 17.2366 8.7011 16.7678 8.23226C16.2989 7.76342 15.663 7.50003 15 7.50003Z" fill="#3090E9"/>
+  return (
+    <div className={`${isUploaded && "bg-white p-2 rounded-xl"}`}>
+      {!isUploaded && (
+        <div
+          className="flex items-center cursor-pointer relative group justify-center w-full h-44 rounded-lg bg-[#fff] border border-dashed border-[#D3D6EE]"
+          style={backImage}
+        >
+          {!isUploaded && (
+            <div className="w-full flex flex-wrap justify-center">
+              <div className="size-16 bg-[#DADDF1] rounded-full flex justify-center items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="25"
+                  height="24"
+                  viewBox="0 0 25 24"
+                  fill="none"
+                >
+                  <rect
+                    width="24"
+                    height="24"
+                    transform="translate(0.5)"
+                    fill="#DADDF1"
+                  />
+                  <path
+                    d="M20.32 2H4.68C3.47602 2 2.5 2.97602 2.5 4.18V19.82C2.5 21.024 3.47602 22 4.68 22H20.32C21.524 22 22.5 21.024 22.5 19.82V4.18C22.5 2.97602 21.524 2 20.32 2Z"
+                    stroke="#9099D5"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M7.5 2V22"
+                    stroke="#9099D5"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M17.5 2V22"
+                    stroke="#9099D5"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M2.5 12H22.5"
+                    stroke="#9099D5"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M2.5 7H7.5"
+                    stroke="#9099D5"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M2.5 17H7.5"
+                    stroke="#9099D5"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M17.5 17H22.5"
+                    stroke="#9099D5"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M17.5 7H22.5"
+                    stroke="#9099D5"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
                 </svg>
-            </div>}
-            {isUploaded && <h5 className={`text-sm font-normal text-[#AE445A]`}>Edit Picture</h5>}
-            <input 
-                type='file'
-                ref={fileRef}
-                multiple={false}
-                onChange={coverHandler}
-                className={`absolute w-full h-full top-0 left-0 opacity-0 cursor-pointer`} 
-                accept=".jpg,.png,.svg,.gif,.webp,.avif"
-            />
+              </div>
+              <h6 className="text-sm font-normal mt-2 text-[#9C9896] w-full text-center">
+                Drag and drop video or audio(MP3,MP4,AVI or MKI) or
+              </h6>
+              <h6 className="text-sm font-semibold text-[#4655B9] mt-2">
+                Choose file
+              </h6>
+            </div>
+          )}
+          {isUploaded && (
+            <h5
+              className={`text-sm font-normal text-[#AE445A] hidden group-hover:flex`}
+            >
+              Edit Picture
+            </h5>
+          )}
+          <input
+            type="file"
+            ref={fileRef}
+            multiple={false}
+            onChange={coverHandler}
+            className={`absolute w-full h-full top-0 left-0 opacity-0 cursor-pointer`}
+            accept="audio/*,video/*"
+          />
         </div>
-    )
+      )}
+      {isUploaded && type == "video" && (
+        <video
+          id="video"
+          width="100%"
+          className="rounded-xl"
+          controls
+          height="200"
+        >
+          <source src={url} type={file?.type} />
+        </video>
+      )}
+      {isUploaded && type == "audio" && (
+        <div className="w-full">
+          <ReactAudioPlayer
+            src={url}
+            style={{
+              width: "100%",
+            }}
+            className="w-full"
+            controls
+            id="audio"
+          />
+        </div>
+      )}
+      {isUploaded && (
+        <div
+          onClick={removeHandler}
+          className="flex cursor-pointer justify-center items-center bg-[#feecec] mt-4 gap-2 p-2 rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <path
+              d="M10 18C10.2652 18 10.5196 17.8946 10.7071 17.7071C10.8946 17.5196 11 17.2652 11 17V11C11 10.7348 10.8946 10.4804 10.7071 10.2929C10.5196 10.1054 10.2652 10 10 10C9.73478 10 9.48043 10.1054 9.29289 10.2929C9.10536 10.4804 9 10.7348 9 11V17C9 17.2652 9.10536 17.5196 9.29289 17.7071C9.48043 17.8946 9.73478 18 10 18ZM20 6H16V5C16 4.20435 15.6839 3.44129 15.1213 2.87868C14.5587 2.31607 13.7956 2 13 2H11C10.2044 2 9.44129 2.31607 8.87868 2.87868C8.31607 3.44129 8 4.20435 8 5V6H4C3.73478 6 3.48043 6.10536 3.29289 6.29289C3.10536 6.48043 3 6.73478 3 7C3 7.26522 3.10536 7.51957 3.29289 7.70711C3.48043 7.89464 3.73478 8 4 8H5V19C5 19.7956 5.31607 20.5587 5.87868 21.1213C6.44129 21.6839 7.20435 22 8 22H16C16.7956 22 17.5587 21.6839 18.1213 21.1213C18.6839 20.5587 19 19.7956 19 19V8H20C20.2652 8 20.5196 7.89464 20.7071 7.70711C20.8946 7.51957 21 7.26522 21 7C21 6.73478 20.8946 6.48043 20.7071 6.29289C20.5196 6.10536 20.2652 6 20 6ZM10 5C10 4.73478 10.1054 4.48043 10.2929 4.29289C10.4804 4.10536 10.7348 4 11 4H13C13.2652 4 13.5196 4.10536 13.7071 4.29289C13.8946 4.48043 14 4.73478 14 5V6H10V5ZM17 19C17 19.2652 16.8946 19.5196 16.7071 19.7071C16.5196 19.8946 16.2652 20 16 20H8C7.73478 20 7.48043 19.8946 7.29289 19.7071C7.10536 19.5196 7 19.2652 7 19V8H17V19ZM14 18C14.2652 18 14.5196 17.8946 14.7071 17.7071C14.8946 17.5196 15 17.2652 15 17V11C15 10.7348 14.8946 10.4804 14.7071 10.2929C14.5196 10.1054 14.2652 10 14 10C13.7348 10 13.4804 10.1054 13.2929 10.2929C13.1054 10.4804 13 10.7348 13 11V17C13 17.2652 13.1054 17.5196 13.2929 17.7071C13.4804 17.8946 13.7348 18 14 18Z"
+              fill="#EE3E3E"
+            />
+          </svg>
+          <h5 className="text-sm font-semibold text-black">Remove</h5>
+        </div>
+      )}
+    </div>
+  );
 }

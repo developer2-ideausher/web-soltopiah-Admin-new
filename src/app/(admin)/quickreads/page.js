@@ -100,7 +100,7 @@ function Page() {
                     </span>
                     <div className="flex flex-row items-center gap-2">
                       <img
-                        className={`w-8 h-8  object-cover rounded-full`}
+                        className={`w-8 h-8 object-cover rounded-full`}
                         src={
                           item.creatorRole === "Guide"
                             ? item.creator.profilePic

@@ -14,7 +14,8 @@ import { getToken } from "@/Services/Cookie/userCookie";
 
 function Page() {
   const router = useRouter();
-  const [newFile,setNewFile] = useState(null)
+  const [dropDownCategory, setDropDownCategory] = useState([]);
+  const [newFile, setNewFile] = useState(null);
   const [imageSrc1, setImageSrc1] = useState(null);
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
@@ -28,13 +29,15 @@ function Page() {
   const [showModal, setShowModal] = useState(false);
   const [selectedContent, setSelectedContent] = useState(Array(7).fill(null));
   const [currentDay, setCurrentDay] = useState(null);
-  const [dataIds,setDataIds] =useState([])
+  const [dataIds, setDataIds] = useState([]);
 
   const handleModal = (day) => {
     setCurrentDay(day);
     setShowModal(!showModal);
   };
-
+  useEffect(() => {
+    getCategoryApi();
+  }, []);
   const handleSaveContent = (content) => {
     const updatedContent = [...selectedContent];
     updatedContent[currentDay - 1] = content;
@@ -46,9 +49,6 @@ function Page() {
     updatedDataIds[currentDay - 1] = content._id;
     setDataIds(updatedDataIds);
   };
- 
-
-  
 
   const handleRemoveContent = (day) => {
     const updatedContent = [...selectedContent];
@@ -60,11 +60,11 @@ function Page() {
     updatedDataIds[day - 1] = null;
     setDataIds(updatedDataIds);
   };
-  console.log(dataIds)
+  console.log(dataIds);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    createChallengeApi()
+    createChallengeApi();
     setShowPage(true);
   };
 
@@ -93,6 +93,27 @@ function Page() {
     description,
     imageSrc1,
   ]);
+  const getCategoryApi = () => {
+    const token = getToken();
+
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer " + token);
+    const requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+
+      redirect: "follow",
+    };
+
+    fetch(process.env.NEXT_PUBLIC_URL + "/course-categories", requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result.data.results);
+        setDropDownCategory(result.data.results);
+      })
+      .catch((error) => console.error(error));
+  };
+
   const createChallengeApi = () => {
     const token = getToken();
 
@@ -100,13 +121,10 @@ function Page() {
     myHeaders.append("Authorization", "Bearer " + token);
     const formdata = new FormData();
     formdata.append("thumbnail", newFile);
-    formdata.append("title",title );
+    formdata.append("title", title);
     formdata.append("category", category);
     formdata.append("accessibility", access);
-    formdata.append(
-      "description",
-      description
-    );
+    formdata.append("description", description);
     formdata.append("durationInDays", days);
     formdata.append("type", "public");
     formdata.append("startDate", startDate);
@@ -122,13 +140,13 @@ function Page() {
 
     fetch(process.env.NEXT_PUBLIC_URL + "/challenges", requestOptions)
       .then((response) => response.json())
-      .then((result) => {console.log(result)
+      .then((result) => {
+        console.log(result);
         router.push("/challenge-module");
-
       })
       .catch((error) => console.error(error));
   };
-  console.log(selectedContent)
+  console.log(selectedContent);
   const handleSubmit1 = (e) => {
     e.preventDefault();
     if (isFormValid1) {
@@ -151,7 +169,7 @@ function Page() {
 
   const handleImageChange1 = (e) => {
     const file = e.target.files[0];
-    setNewFile(file)
+    setNewFile(file);
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
@@ -159,7 +177,6 @@ function Page() {
       };
       reader.readAsDataURL(file); // Read the file as a data URL
     }
-    
   };
 
   return (
@@ -242,13 +259,19 @@ function Page() {
             <p className="text-sm font-sans font-semibold text-userblack">
               Category
             </p>
-            <input
-              type="text"
-              className="bg-white py-3 px-4 rounded-xl border border-[#E7E5E4]"
-              placeholder="Enter category"
+            <select
+              className="bg-white py-3 px-4 rounded-xl focus:outline-none border border-[#E7E5E4]"
+              // placeholder="Enter category"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-            />
+            >
+              <option disabled value="">Select Category</option>
+              {dropDownCategory.map((item) => (
+                <option key={item._id} value={item._id}>
+                  {item.title}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="flex flex-col gap-1">
             <p className="text-sm font-sans font-semibold text-userblack">

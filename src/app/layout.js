@@ -4,8 +4,8 @@ import "./global.css";
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 export const metadata = {
-  title: 'Soltopia Guide Panel',
-  description: 'Soltopia Guide Panel Powered By Ideausher',
+  title: 'Soltopiah Admin Panel',
+  description: 'Soltopiah Admin Panel Powered By Ideausher',
 }
 // const mfaCustom = localFont({ 
 //   src: [{

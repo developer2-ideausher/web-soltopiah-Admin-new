@@ -59,9 +59,9 @@ export default function Sidebar() {
             </h6>
           </Link>
           <Link
-            href="/content-manage"
+            href="/content-management"
             className={`flex items-center gap-2 lg:p-2 xl:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
-              pathName.startsWith("/content-manage")   && "bg-pink on"
+              pathName.startsWith("/content-management")   && "bg-pink on"
             }`}
           >
             <ContentManage />

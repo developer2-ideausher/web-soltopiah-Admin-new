@@ -3,6 +3,7 @@ import BackButton from "@/components/BackButton";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import Profile2 from "../../../../../public/Profile2.png";
+import Frame1 from "../../../../../public/Frame1.png";
 import LoginImage from "../../../../../public/LoginImage.png";
 
 import image01 from "../../../../../public/image01.png";

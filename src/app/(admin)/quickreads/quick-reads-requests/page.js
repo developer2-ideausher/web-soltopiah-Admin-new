@@ -9,6 +9,7 @@ import dayjs from "dayjs";
 import Loader from "@/components/Loader";
 import Frame1 from "../../../../../public/Frame1.png";
 import LoginImage from "../../../../../public/LoginImage.png";
+import { toast } from "react-toastify";
 
 
 function Page() {
@@ -40,7 +41,10 @@ function Page() {
         setQuickRequestsData(result.data.results);
         setLoading(false);
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {console.error(error)
+        toast.error('Failed to fetch data');
+        setLoading(false)
+      });
   };
 
   return (

@@ -55,7 +55,7 @@ module.exports = {
         revenueTable: "200px 350px 250px 250px 250px 180px 50px",
         notificationTable: "200px 200px 300px",
         badgeTable: "150px 300px 300px 250px 500px 50px",
-        challengeTable: "400px 400px 150px 150px 150px 150px 100px 200px",
+        challengeTable: "400px 400px 150px 150px 150px 150px 100px 200px 50px",
         sessionTable: "150px 150px 250px 150px 150px 150px 150px 150px 100px",
         liveCreatedTable: "200px 200px 200px 600px 100px ",
         quickreadsTable: "400px 250px 250px 300px 100px ",

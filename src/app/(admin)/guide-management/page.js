@@ -109,7 +109,7 @@ function Page() {
                         {item._id.slice(-4)}
                       </span>
                       <div className="flex flex-row items-center gap-2">
-                        <img className="w-8 h-8 object-cover rounded-full" src={item.profilePic?item.profilePic:Frame1.src} alt="" />
+                        <img className="w-8 h-8 object-cover rounded-full" src={item.profilePic?item.profilePic.url:Frame1.src} alt="" />
                         <div className="flex flex-col">
                           <p className="text-base font-semibold font-sans text-userblack">
                             {item.firstName + " " + item.lastName}
@@ -149,7 +149,7 @@ function Page() {
                               <GreyCross />
                             </button>
                           </div>
-                          <Link
+                          <Link 
                             href={`/guide-management/guide-info?objectID=${item._id}`}
                           >
                             <div className="flex flex-row items-center gap-3">

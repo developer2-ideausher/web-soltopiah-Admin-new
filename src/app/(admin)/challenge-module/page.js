@@ -6,14 +6,18 @@ import SearchBar from "@/components/AddSearchBar";
 import Pagination from "@/components/Pagination";
 import Link from "next/link";
 import { getToken } from "@/Services/Cookie/userCookie";
+import RedDustbin from "../../../../icons/RedDustbin";
+import MaroonDustbin from "../../../../icons/MaroonDustbin";
+import { useRouter } from "next/navigation";
 
 function Page() {
   const [challengeData, setChallengeData] = useState([]);
   const [loading, setLoading] = useState(false);
-
+  const [refresh, setRefresh] = useState(false);
+  const router = useRouter();
   useEffect(() => {
     getAllChallengeApi();
-  }, []);
+  }, [refresh]);
   const token = getToken();
   const getAllChallengeApi = () => {
     const myHeaders = new Headers();
@@ -31,6 +35,35 @@ function Page() {
         setChallengeData(result.data.results);
       })
       .catch((error) => console.error(error));
+  };
+  const deleteChallengeApi = (e, challengeId) => {
+    e.stopPropagation();
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer " + token);
+
+    const requestOptions = {
+      method: "DELETE",
+      headers: myHeaders,
+
+      redirect: "follow",
+    };
+
+    fetch(
+      process.env.NEXT_PUBLIC_URL + `/challenges/${challengeId}`,
+      requestOptions
+    )
+      .then((response) => response.text())
+      .then((result) => {
+        console.log(result);
+        setRefresh(prev=>!prev)
+      })
+      .catch((error) => console.error(error));
+  };
+  const truncateDescription = (description) => {
+    if (description.length > 80) {
+      return description.substring(0, 80) + "...";
+    }
+    return description;
   };
   return (
     <div className="flex flex-col gap-7 ">
@@ -87,44 +120,52 @@ function Page() {
           <div className="flex flex-col bg-white min-w-fit w-full ">
             {challengeData &&
               challengeData.map((item, index) => (
-                <Link
+                <div
                   key={item._id || index}
-                  href={`/challenge-module/challenge-details-page?requestID=${item._id}`}
+                  onClick={() =>
+                    router.push(
+                      `/challenge-module/challenge-details-page?requestID=${item._id}`
+                    )
+                  }
+                  className=" grid grid-cols-challengeTable justify-between border-b border-[#E9E9EC] items-center p-4 cursor-pointer"
                 >
-                  <div className=" grid grid-cols-challengeTable justify-between border-b border-[#E9E9EC] items-center p-4">
-                    <div className="flex flex-row items-center gap-4">
-                      <img className="w-12 h-12 object-cover rounded-lg"
-                        src={item.thumbnail ? item.thumbnail.url : "image1.png"}
-                        alt=""
-                      />
-                      <p className="text-sm font-sans font-semibold text-[#252322]">
-                        {item.title}
-                      </p>
-                    </div>
-                    <span className="text-userblack w-[350px] font-sans font-semibold text-sm">
-                      {item.description}
-                    </span>
-                    <span className="text-userblack font-sans font-semibold text-sm">
-                      {item.durationInDays +" "+"days"} 
-                    </span>
-                    <span className="text-userblack font-sans font-semibold text-sm">
-                      Soltopiah
-                    </span>
-                    <span className="text-userblack font-sans w-[300px] font-semibold text-sm">
-                      {(item.accessibility).toUpperCase()}
-                    </span>
-                    <span className="text-userblack font-sans w-[300px] font-semibold text-sm">
-                      {item.participantsCount}
-                    </span>
-                    <span className="text-userblack font-sans w-[300px] font-semibold text-sm">
-                      {item.isActive===true?"Ongoing":"Past/Upcoming"}
-                    </span>
-
-                    <button className="text-white p-4 rounded-lg w-[150px] bg-[#AE445A] font-sans font-semibold text-sm">
-                      Forum
-                    </button>
+                  <div className="flex flex-row items-center gap-4">
+                    <img
+                      className="w-12 h-12 object-cover rounded-lg"
+                      src={item.thumbnail ? item.thumbnail.url : "image1.png"}
+                      alt=""
+                    />
+                    <p className="text-sm font-sans font-semibold text-[#252322]">
+                      {item.title}
+                    </p>
                   </div>
-                </Link>
+                  <span className="text-userblack w-[350px] font-sans font-semibold text-sm">
+                  {truncateDescription(item.description)}
+
+                  </span>
+                  <span className="text-userblack font-sans font-semibold text-sm">
+                    {item.durationInDays + " " + "days"}
+                  </span>
+                  <span className="text-userblack font-sans font-semibold text-sm">
+                    Soltopiah
+                  </span>
+                  <span className="text-userblack font-sans w-[300px] font-semibold text-sm">
+                    {item.accessibility.toUpperCase()}
+                  </span>
+                  <span className="text-userblack font-sans w-[300px] font-semibold text-sm">
+                    {item.participantsCount}
+                  </span>
+                  <span className="text-userblack font-sans w-[300px] font-semibold text-sm">
+                    {item.isActive === true ? "Ongoing" : "Past/Upcoming"}
+                  </span>
+
+                  <button className="text-white p-4 rounded-lg w-[150px] bg-[#AE445A] font-sans font-semibold text-sm">
+                    Forum
+                  </button>
+                  <button onClick={(e) => deleteChallengeApi(e, item._id)}>
+                    <MaroonDustbin />
+                  </button>
+                </div>
               ))}
           </div>
         </div>

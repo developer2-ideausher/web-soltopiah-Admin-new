@@ -5,10 +5,12 @@ import React, { useState } from "react";
 import UploadImage from "../../../../../icons/UploadImage";
 import { getToken } from "@/Services/Cookie/userCookie";
 import { ToastContainer, toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 function Page() {
   const [images, setImages] = useState([]);
   const [title, setTitle] = useState("");
+  const router =useRouter()
 
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
@@ -39,6 +41,7 @@ function Page() {
       .then((response) => response.json())
       .then((result) => {
         console.log(result.data);
+        router.push('/quickreads')
       })
       .catch((error) => console.error(error));
   };
