@@ -142,7 +142,7 @@ function Page() {
                         item.status === "pending"
                           ? "bg-[#F9882433] border-[#F9882436] text-[#B35605]"
                           : "bg-[#DDFDE8] text-[#08A03C] border-[#A8FBC4]"
-                      }  py-1 px-3 text-center rounded-[78px] border  font-sans font-normal  text-base capitalize`}
+                      }  py-1 px-3 text-center rounded-[78px] border  font-sans font-normal text-base capitalize`}
                     >
                       {item.status}
                     </div>

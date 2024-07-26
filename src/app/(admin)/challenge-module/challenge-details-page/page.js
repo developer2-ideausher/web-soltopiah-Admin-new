@@ -104,7 +104,7 @@ function Page() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    createChallengePost(postContent); 
+    createChallengePost(postContent);
   };
   const getCurrentDayThread = () => {
     return postData.length + 1;

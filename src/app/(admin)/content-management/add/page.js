@@ -1,5 +1,4 @@
 "use client";
-import { getToken } from "@/Services/Cookie/userCookie";
 import {
   addChapterInCourse,
   createChapter,
@@ -35,8 +34,10 @@ export default function Add() {
   const [contentTab, setContentTab] = useState("course");
   const [accessibilityTab, setAccessibilityTab] = useState("premium");
   const [courseType, setCourseType] = useState("");
+  const [courseContentType, setCourseContentType] = useState("both");
   // course related data
   const [contentArray, setContentArray] = useState([]);
+
   // file related data
   const [file, setFile] = useState("");
   const [duration, setDuration] = useState("");
@@ -61,6 +62,9 @@ export default function Add() {
     setContentFile(val);
     setContentFileDuration(duration);
     setType(type);
+    if (contentArray.length == 0) {
+      setCourseContentType(type);
+    }
   };
   const contentValidator = () => {
     let res = true;
@@ -150,7 +154,6 @@ export default function Add() {
   const [categoryData, setCategoryData] = useState([]);
 
   const dropdownHandler = (val, duration) => {
-    console.log(val)
     setCategory(val._id);
   };
 
@@ -279,6 +282,7 @@ export default function Add() {
         formdata.append("description", description);
         formdata.append("title", title);
         formdata.append("courseType", courseType);
+        formdata.append("courseContentType", courseContentType);
         setLoading(true);
         const response = await createCourse(formdata);
         if (response?.status) {
@@ -304,7 +308,6 @@ export default function Add() {
     formdata.append("durationInMinutes", obj.durationInMinutes);
     const response = await addChapterInCourse(id, formdata);
   };
- 
   useEffect(() => {
     if (!queryRef.current) {
       dataSetter();
@@ -535,7 +538,10 @@ export default function Add() {
           </h6>
         )}
         {contentTab == "single" && (
-          <AudioVideoUploader callback={audioHandler} />
+          <AudioVideoUploader
+            contentType={courseContentType}
+            callback={audioHandler}
+          />
         )}
         {!showContent && (
           <button
@@ -669,10 +675,16 @@ export default function Add() {
             <h6 className="text-[#252322] font-semibold mt-5 text-sm mb-1">
               Upload content
             </h6>
-            {!edited && <AudioVideoUploader callback={conteFileHandler} />}
+            {!edited && (
+              <AudioVideoUploader
+                callback={conteFileHandler}
+                contentType={courseContentType}
+              />
+            )}
             {edited && (
               <AudioVideoUploader
                 type={type}
+                contentType={courseContentType}
                 uploaded={true}
                 fileAdded={contentFile}
                 callback={conteFileHandler}

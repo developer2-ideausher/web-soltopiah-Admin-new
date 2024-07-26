@@ -53,7 +53,7 @@ module.exports = {
         communityTable: "300px 350px 220px 220px 220px 200px 50px",
         communityDetailsTable: "350px 250px 220px 220px 120px ",
         revenueTable: "200px 350px 250px 250px 250px 180px 50px",
-        notificationTable: "200px 200px 300px",
+        notificationTable: "400px 200px 300px 100px",
         badgeTable: "150px 300px 300px 250px 500px 50px",
         challengeTable: "400px 400px 150px 150px 150px 150px 100px 200px 50px",
         sessionTable: "150px 150px 250px 150px 150px 150px 150px 150px 100px",

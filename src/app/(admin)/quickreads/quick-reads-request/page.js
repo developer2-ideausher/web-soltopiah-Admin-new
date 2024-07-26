@@ -1,7 +1,7 @@
 "use client";
 import BackButton from "@/components/BackButton";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense  } from "react";
 import Profile2 from "../../../../../public/Profile2.png";
 import Frame1 from "../../../../../public/Frame1.png";
 import LoginImage from "../../../../../public/LoginImage.png";
@@ -89,7 +89,8 @@ function Page() {
       .catch((error) => console.error(error));
   };
   return (
-    <div className="flex flex-col gap-7">
+    <Suspense fallback={<div>Loading...</div>}>
+   <div className="flex flex-col gap-7">
       <div className="flex flex-row gap-5 items-center">
         <Link href="/quickreads/quick-reads-requests">
           <BackButton />
@@ -164,7 +165,8 @@ function Page() {
           </div>
         </form>
       )}
-    </div>
+    </div></Suspense>
+    
   );
 }
 

@@ -10,7 +10,7 @@ import { getToken } from "@/Services/Cookie/userCookie";
 import dayjs from "dayjs";
 import Loader from "@/components/Loader";
 import Frame1 from "../../../../public/Frame1.png";
-import LoginImage from "../../../../public/LoginImage.png";
+import LoginImage from "../../../../public/LoginImage.png"; 
 
 function Page() {
   const [quickReadData, setQuickReadData] = useState([]);

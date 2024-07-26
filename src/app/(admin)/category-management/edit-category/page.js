@@ -2,15 +2,22 @@
 import BackButton from "@/components/BackButton";
 import { getToken } from "@/Services/Cookie/userCookie";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 function Page() {
   const [formData, setFormData] = useState({
     thumbnail: null,
     name: "",
   });
+  const [initialData, setInitialData] = useState({
+    thumbnail: null,
+    name: "",
+  });
   const [preview, setPreview] = useState(null);
+  const searchParams = useSearchParams();
+  const reqId = searchParams.get("requestID");
+
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     setFormData({
@@ -18,35 +25,83 @@ function Page() {
       [name]: files ? files[0] : value,
     });
     if (files) {
-      setPreview(URL.createObjectURL(files[0])); 
+      setPreview(URL.createObjectURL(files[0]));
     }
   };
-  const isFormValid = formData.thumbnail && formData.name;
+
+  const isFormChanged =
+    formData.thumbnail !== initialData.thumbnail ||
+    formData.name !== initialData.name;
+
   const router = useRouter();
   const token = getToken();
-  const postCategory = (e) => {
-    e.preventDefault();
+
+  const patchCategoryApi = () => {
     const myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer " + token);
     const formdata = new FormData();
     formdata.append("title", formData.name);
-    formdata.append("image", formData.thumbnail);
+    if (formData.thumbnail instanceof File) {
+      formdata.append("image", formData.thumbnail);
+    }
 
     const requestOptions = {
-      method: "POST",
+      method: "PATCH",
       headers: myHeaders,
 
       body: formdata,
       redirect: "follow",
     };
 
-    fetch(process.env.NEXT_PUBLIC_URL + "/course-categories", requestOptions)
+    fetch(
+      process.env.NEXT_PUBLIC_URL +`/course-categories/${reqId}`,
+      requestOptions
+    )
+    .then((response) => response.json())
+    .then((result) => {
+      console.log(result);
+      router.push("/category-management");
+    })
+    .catch((error) => console.error(error));
+};
+
+  const getOneCategoryData = () => {
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer " + token);
+    const requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(
+      process.env.NEXT_PUBLIC_URL + `/course-categories/${reqId}`,
+      requestOptions
+    )
       .then((response) => response.json())
       .then((result) => {
-        console.log(result);
-        router.push("/category-management");
+        const fetchedData = {
+          thumbnail: result.data.image.url,
+          name: result.data.title,
+        };
+        setFormData(fetchedData);
+        setInitialData(fetchedData);
+        setPreview(result.data.image.url);
       })
       .catch((error) => console.error(error));
+  };
+
+  useEffect(() => {
+    if (reqId) {
+      getOneCategoryData();
+    }
+  }, [reqId]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (isFormChanged) {
+      patchCategoryApi();
+    }
   };
   return (
     <div className="flex flex-col gap-7">
@@ -59,7 +114,7 @@ function Page() {
         </p>
       </div>
 
-      <form onSubmit={postCategory} className="flex flex-col w-1/3 gap-10">
+      <form onSubmit={handleSubmit} className="flex flex-col w-1/3 gap-10">
         <div className="flex flex-col gap-2">
           <p className="text-sm font-sans font-semibold text-userblack">
             Thumbnail
@@ -72,8 +127,12 @@ function Page() {
               className="absolute inset-0 opacity-0 cursor-pointer"
               onChange={handleChange}
             />
-             {preview ? (
-              <img src={preview} alt="Selected Thumbnail" className="h-full w-full object-cover rounded-xl" />
+            {preview ? (
+              <img
+                src={preview}
+                alt="Selected Thumbnail"
+                className="h-full w-full object-cover rounded-xl"
+              />
             ) : (
               "Add Banner"
             )}
@@ -93,14 +152,14 @@ function Page() {
         <div className="w-1/2">
           <button
             type="submit"
-            disabled={!isFormValid}
+            disabled={!isFormChanged}
             className={`text-base font-sans font-semibold w-full p-4 rounded-lg ${
-              isFormValid
+              isFormChanged
                 ? "bg-[#AE445A] text-white"
                 : "bg-[#c08e97] text-white cursor-not-allowed"
             }`}
           >
-            Next
+            Save
           </button>
         </div>
       </form>
