@@ -1,22 +1,24 @@
-"use client"
+"use client";
 import BackButton from "@/components/BackButton";
 import { getToken } from "@/Services/Cookie/userCookie";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-function page() {
+function Page() {
   const [formData, setFormData] = useState({
     title: "",
     type: "",
     description: "",
   });
   const [isFormValid, setIsFormValid] = useState(false);
+
   useEffect(() => {
     const { title, type, description } = formData;
     setIsFormValid(title && type && description);
   }, [formData]);
-  const router= useRouter()
+
+  const router = useRouter();
   const token = getToken();
   const createNotificationApi = () => {
     const myHeaders = new Headers();
@@ -44,7 +46,7 @@ function page() {
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
-        router.push("/notification-management")
+        router.push("/notification-management");
       })
       .catch((error) => console.error(error));
   };
@@ -133,4 +135,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;
