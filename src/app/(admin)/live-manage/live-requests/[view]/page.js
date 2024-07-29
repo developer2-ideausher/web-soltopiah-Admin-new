@@ -11,11 +11,11 @@ import Modal from "@/components/Modal";
 import Declaration from "postcss/lib/declaration";
 import DeclineModal from "@/components/DeclineModal";
 
-function Page() {
+function Page({ params }) {
   const [requestData, setRequestData] = useState(null);
   const [modal, setModal] = useState(false);
-  const searchParams = useSearchParams();
-  const reqId = searchParams.get("requestID");
+  const { view } = params;
+
   const router = useRouter();
 
   useEffect(() => {
@@ -31,7 +31,9 @@ function Page() {
       redirect: "follow",
     };
 
-    fetch(process.env.NEXT_PUBLIC_URL + "/live-events/" + reqId, requestOptions)
+    fetch(
+      process.env.NEXT_PUBLIC_URL + "/live-events/" + view, requestOptions
+    )
       .then((response) => response.json())
       .then((result) => {
         console.log(result.data);
@@ -53,7 +55,7 @@ function Page() {
     };
 
     fetch(
-      process.env.NEXT_PUBLIC_URL + `/live-events/${reqId}/status`,
+      process.env.NEXT_PUBLIC_URL + `/live-events/${view}/status`,
       requestOptions
     )
       .then((response) => response.json())
@@ -78,7 +80,7 @@ function Page() {
     };
 
     fetch(
-      process.env.NEXT_PUBLIC_URL + `/live-events/${reqId}/status`,
+      process.env.NEXT_PUBLIC_URL + `/live-events/${view}/status`,
       requestOptions
     )
       .then((response) => response.json())

@@ -1,16 +1,21 @@
+"use client"
 import React from "react";
 import Export from "../../../../../../icons/Export";
 import SearchBar from "@/components/SearchBar";
 import Pagination from "@/components/Pagination";
 import BackButton from "@/components/BackButton";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-function page() {
+function Page() {
+  const router =useRouter()
   return (
     <div className="flex flex-col gap-7 ">
       <div className="flex flex-row justify-between items-center">
        <div className="flex flex-row items-center gap-5">
-        <Link href="/guide-management/guide-info"><BackButton/></Link>
+        <div onClick={()=>router.back()}>
+        <BackButton/>
+        </div>
        <p className="text-xl2 font-semibold text-userblack font-sans">
           Guide Management -
           <span className="text-[#AE445A]">Live created</span>
@@ -142,4 +147,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

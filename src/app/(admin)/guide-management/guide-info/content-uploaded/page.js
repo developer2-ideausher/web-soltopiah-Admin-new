@@ -1,3 +1,4 @@
+"use client"
 import React from "react";
 import Export from "../../../../../../icons/Export";
 import BackButton from "@/components/BackButton";
@@ -6,15 +7,18 @@ import SearchBar from "@/components/SearchBar";
 import Pagination from "@/components/Pagination";
 import newImage from "../../../../../../public/newImage.png";
 import MenuDots from "../../../../../../icons/MenuDots";
+import { useRouter } from "next/navigation";
 
-function page() {
+function Page() {
+  const router =useRouter()
+
   return (
     <div className="flex flex-col gap-7">
       <div className="flex flex-row justify-between items-center">
         <div className="flex flex-row items-center gap-5">
-          <Link href="/guide-management/guide-info">
+          <div onClick={()=>router.back()}>
             <BackButton />
-          </Link>
+          </div>
           <p className="text-xl2 font-semibold text-userblack font-sans">
             Guide Management -
             <span className="text-[#AE445A]"> Content uploaded</span>
@@ -137,4 +141,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

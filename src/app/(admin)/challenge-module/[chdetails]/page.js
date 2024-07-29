@@ -12,17 +12,18 @@ import { getToken } from "@/Services/Cookie/userCookie";
 import { useSearchParams } from "next/navigation";
 import dayjs from "dayjs";
 
-function Page() {
+function Page({ params }) {
   const [challengeData, setChallengeData] = useState(null);
   const [postData, setPostData] = useState([]);
   const [postContent, setPostContent] = useState("");
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
   const [repliesVisibility, setRepliesVisibility] = useState({});
-  const reqId = searchParams.get("requestID");
+  // const reqId = searchParams.get("requestID");
   const [setVideos, setShowVideos] = useState(false);
   const handleClick = () => {
     setShowVideos(!setVideos);
   };
+  const { chdetails } = params;
   const token = getToken();
 
   const createChallengePost = (content) => {
@@ -41,7 +42,7 @@ function Page() {
     };
 
     fetch(
-      process.env.NEXT_PUBLIC_URL + `/challenges/${reqId}/posts`,
+      process.env.NEXT_PUBLIC_URL + "/challenges/" + chdetails + "/posts",
       requestOptions
     )
       .then((response) => response.json())
@@ -63,7 +64,7 @@ function Page() {
     };
 
     fetch(
-      process.env.NEXT_PUBLIC_URL + `/challenges/${reqId}/posts`,
+      process.env.NEXT_PUBLIC_URL + "/challenges/" + chdetails + "/posts",
       requestOptions
     )
       .then((response) => response.json())
@@ -89,7 +90,10 @@ function Page() {
       redirect: "follow",
     };
 
-    fetch(process.env.NEXT_PUBLIC_URL + "/challenges/" + reqId, requestOptions)
+    fetch(
+      process.env.NEXT_PUBLIC_URL + "/challenges/" + chdetails,
+      requestOptions
+    )
       .then((response) => response.json())
       .then((result) => {
         console.log(result.data);

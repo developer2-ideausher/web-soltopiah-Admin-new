@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-function Page() {
+function Page({params}) {
+  const { edit } = params;
   const [formData, setFormData] = useState({
     thumbnail: null,
     name: "",
@@ -15,8 +16,8 @@ function Page() {
     name: "",
   });
   const [preview, setPreview] = useState(null);
-  const searchParams = useSearchParams();
-  const reqId = searchParams.get("requestID");
+  // const searchParams = useSearchParams();
+  // const reqId = searchParams.get("requestID");
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -54,7 +55,7 @@ function Page() {
     };
 
     fetch(
-      process.env.NEXT_PUBLIC_URL +`/course-categories/${reqId}`,
+      process.env.NEXT_PUBLIC_URL +"/course-categories/" +edit,
       requestOptions
     )
     .then((response) => response.json())
@@ -75,7 +76,7 @@ function Page() {
     };
 
     fetch(
-      process.env.NEXT_PUBLIC_URL + `/course-categories/${reqId}`,
+      process.env.NEXT_PUBLIC_URL + "/course-categories/"+ edit,
       requestOptions
     )
       .then((response) => response.json())
@@ -92,10 +93,10 @@ function Page() {
   };
 
   useEffect(() => {
-    if (reqId) {
+    if (edit) {
       getOneCategoryData();
     }
-  }, [reqId]);
+  }, [edit]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

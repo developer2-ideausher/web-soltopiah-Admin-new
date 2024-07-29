@@ -74,7 +74,7 @@ function Page() {
               liveData.map((item, index) => (
                 <Link
                   key={index}
-                  href={`/live-manage/live-requests/view-live-session?requestID=${item._id}`}
+                  href={`/live-manage/live-requests/${item._id}`}
                 >
                   <div className=" grid grid-cols-LiveReqTable justify-between border-b border-[#E9E9EC] items-center p-4">
                     <span className="text-userblack font-sans font-semibold text-base">

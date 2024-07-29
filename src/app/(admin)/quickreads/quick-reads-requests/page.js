@@ -90,7 +90,9 @@ function Page() {
                 QuickRequestsData.map((item, index) => (
                   <Link
                     key={index}
-                    href={`/quickreads/quick-reads-request?requestID=${item._id}`}
+                   
+                    href={`/quickreads/quick-reads-requests/${item._id}`}
+
                   >
                     <div className=" grid grid-cols-quickReadsRequestTable justify-between border-b border-[#E9E9EC] items-center p-4">
                       <span className="text-userblack  font-sans font-semibold text-base">

@@ -140,7 +140,7 @@ function Page() {
                     key={item._id || index}
                     onClick={() =>
                       router.push(
-                        `/category-management/edit-category?requestID=${item._id}`
+                        `/category-management/${item._id}`
                       )
                     }
                     className=" grid grid-cols-5 justify-between border-b border-[#E9E9EC] items-center p-4 cursor-pointer"

@@ -124,7 +124,7 @@ function Page() {
                   key={item._id || index}
                   onClick={() =>
                     router.push(
-                      `/challenge-module/challenge-details-page?requestID=${item._id}`
+                      `/challenge-module/${item._id}`
                     )
                   }
                   className=" grid grid-cols-challengeTable justify-between border-b border-[#E9E9EC] items-center p-4 cursor-pointer"

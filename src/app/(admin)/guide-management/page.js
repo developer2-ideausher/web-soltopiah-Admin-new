@@ -156,7 +156,7 @@ function Page() {
                             </button>
                           </div>
                           <Link
-                            href={`/guide-management/guide-info?objectID=${item._id}`}
+                            href={`/guide-management/guide-info/${item._id}`}
                           >
                             <div className="flex flex-row items-center gap-3">
                               <TopRightArrow />
