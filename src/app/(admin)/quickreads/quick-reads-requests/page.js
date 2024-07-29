@@ -103,7 +103,7 @@ function Page() {
                           className="w-8 h-8 object-cover rounded-full"
                           src={
                             item.creatorRole === "Guide"
-                              ? item.creator.profilePic
+                              ? item.creator?.profilePic
                                 ? item.creator.profilePic.url
                                 : Frame1.src
                               : LoginImage.src
@@ -111,7 +111,7 @@ function Page() {
                           alt=""
                         />
                         <p> {item.creatorRole == "Guide"
-                          ? item?.creator.firstName
+                          ? item?.creator?.firstName
                           : "Soltopiah"}</p>
                       </div>
 

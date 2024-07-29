@@ -10,7 +10,7 @@ import { getToken } from "@/Services/Cookie/userCookie";
 import dayjs from "dayjs";
 import Loader from "@/components/Loader";
 import Frame1 from "../../../../public/Frame1.png";
-import LoginImage from "../../../../public/LoginImage.png"; 
+import LoginImage from "../../../../public/LoginImage.png";
 
 function Page() {
   const [quickReadData, setQuickReadData] = useState([]);
@@ -103,8 +103,8 @@ function Page() {
                         className={`w-8 h-8 object-cover rounded-full`}
                         src={
                           item.creatorRole === "Guide"
-                            ? item.creator.profilePic
-                              ? item.creator.profilePic.url
+                            ? item.creator?.profilePic
+                              ? item.creator.profilePic?.url
                               : Frame1.src
                             : LoginImage.src
                         }
@@ -112,7 +112,7 @@ function Page() {
                       />
                       <span className="text-userblack font-sans font-semibold text-sm">
                         {item.creatorRole == "Guide"
-                          ? item?.creator.firstName
+                          ? item?.creator?.firstName
                           : "Soltopiah"}
                       </span>
                     </div>

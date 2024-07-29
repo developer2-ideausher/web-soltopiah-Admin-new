@@ -126,8 +126,8 @@ function Page({ params }) {
                   className="w-8 h-8 object-cover rounded-full"
                   src={
                     requestData.creatorRole === "Guide"
-                      ? requestData.creator.profilePic
-                        ? requestData.creator.profilePic.url
+                      ? requestData.creator?.profilePic
+                        ? requestData.creator.profilePic?.url
                         : Frame1.src
                       : LoginImage.src
                   }
@@ -135,7 +135,7 @@ function Page({ params }) {
                 />
                 <p className="text-sm font-sans font-normal text-userblack">
                   {requestData.creatorRole == "Guide"
-                    ? requestData?.creator.firstName
+                    ? requestData?.creator?.firstName
                     : "Soltopiah"}
                 </p>
               </div>
