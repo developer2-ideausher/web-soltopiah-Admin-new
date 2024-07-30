@@ -1,21 +1,21 @@
-"use client"
+"use client";
 import React from "react";
 import Export from "../../../../../../icons/Export";
 import Link from "next/link";
 import BackButton from "@/components/BackButton";
 import SearchBar from "@/components/SearchBar";
 import Pagination from "@/components/Pagination";
-import newImage from "../../../../../../public/newImage.png"
+import newImage from "../../../../../../public/newImage.png";
 import { useRouter } from "next/navigation";
 
 function Page() {
-  const router =useRouter()
+  const router = useRouter();
 
   return (
     <div className="flex flex-col gap-7">
       <div className="flex flex-row justify-between items-center">
         <div className="flex flex-row items-center gap-5">
-          <div onClick={()=>router.back()}>
+          <div onClick={() => router.back()}>
             <BackButton />
           </div>
           <p className="text-xl2 font-semibold text-userblack font-sans">
@@ -36,26 +36,26 @@ function Page() {
         </div>
       </div>
       <div>
-      <SearchBar/>
+        <SearchBar />
 
-      <div className="w-full overflow-x-scroll booking-table-wrapper">
+        <div className="w-full overflow-x-scroll booking-table-wrapper">
           <div className="bg-[#F0F2F5] min-w-fit w-full">
             <div className="items-center grid grid-cols-quickreadsTable justify-between p-4">
               <span className="text-[#666576] font-sans font-normal text-sm">
-              Thumbnail
+                Thumbnail
               </span>
               <span className="text-[#666576] font-sans font-normal text-sm">
-              Category
+                Category
               </span>
               <span className="text-[#666576] font-sans font-normal text-sm">
-              Slides
+                Slides
               </span>
 
               <span className="text-[#666576] font-sans font-normal text-sm">
-              Date
+                Date
               </span>
               <span className="text-[#666576] font-sans font-normal text-sm">
-              Status
+                Status
               </span>
             </div>
           </div>
@@ -64,70 +64,65 @@ function Page() {
               <div className="flex flex-row items-center gap-4">
                 <img src={newImage.src} alt="" />
                 <p className="text-sm font-sans font-semibold text-[#252322]">
-                14 days meditation challenge
+                  14 days meditation challenge
                 </p>
               </div>
               <span className="text-userblack  font-sans font-semibold text-sm">
-              23456
+                23456
               </span>
               <span className="text-userblack font-sans font-semibold text-sm">
-              561
+                561
               </span>
               <span className="text-userblack font-sans  font-semibold text-sm">
-              Feb 27, 2022
+                Feb 27, 2022
               </span>
               <span className="text-userblack font-sans  font-semibold text-sm">
-              Plublished
+                Plublished
               </span>
-              
             </div>
             <div className=" grid grid-cols-quickreadsTable justify-between border-b border-[#E9E9EC] items-center p-4">
               <div className="flex flex-row items-center gap-4">
                 <img src={newImage.src} alt="" />
                 <p className="text-sm font-sans font-semibold text-[#252322]">
-                14 days meditation challenge
+                  14 days meditation challenge
                 </p>
               </div>
               <span className="text-userblack  font-sans font-semibold text-sm">
-              23456
+                23456
               </span>
               <span className="text-userblack font-sans font-semibold text-sm">
-              561
+                561
               </span>
               <span className="text-userblack font-sans  font-semibold text-sm">
-              Feb 27, 2022
+                Feb 27, 2022
               </span>
               <span className="text-userblack font-sans  font-semibold text-sm">
-              Plublished
+                Plublished
               </span>
-              
             </div>
             <div className=" grid grid-cols-quickreadsTable justify-between border-b border-[#E9E9EC] items-center p-4">
               <div className="flex flex-row items-center gap-4">
                 <img src={newImage.src} alt="" />
                 <p className="text-sm font-sans font-semibold text-[#252322]">
-                14 days meditation challenge
+                  14 days meditation challenge
                 </p>
               </div>
               <span className="text-userblack  font-sans font-semibold text-sm">
-              23456
+                23456
               </span>
               <span className="text-userblack font-sans font-semibold text-sm">
-              561
+                561
               </span>
               <span className="text-userblack font-sans  font-semibold text-sm">
-              Feb 27, 2022
+                Feb 27, 2022
               </span>
               <span className="text-userblack font-sans  font-semibold text-sm">
-              Plublished
+                Published
               </span>
-              
             </div>
-          
-            
           </div>
         </div>
-        <Pagination/>
+        <Pagination />
       </div>
     </div>
   );
