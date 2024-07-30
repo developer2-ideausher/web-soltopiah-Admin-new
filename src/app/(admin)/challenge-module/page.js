@@ -162,6 +162,7 @@ function Page() {
                   <button className="text-white p-4 rounded-lg w-[150px] bg-[#AE445A] font-sans font-semibold text-sm">
                     Forum
                   </button>
+                  {/* for testing purpose */}
                   <button onClick={(e) => deleteChallengeApi(e, item._id)}>
                     <MaroonDustbin />
                   </button>
