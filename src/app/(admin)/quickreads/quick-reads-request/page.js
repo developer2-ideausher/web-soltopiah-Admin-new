@@ -166,22 +166,17 @@
 //         </form>
 //       )}
 //     </div></Suspense>
-    
+
 //   );
 // }
 
 // export default Page;
- import { redirect } from "next/navigation";
- import React from 'react'
- 
- function Page() {
-  redirect('/quickreads')
-   return (
-     <div>
-       
-     </div>
-   )
- }
- 
- export default Page
- 
+import { redirect } from "next/navigation";
+import React from "react";
+
+function Page() {
+  redirect("/quickreads");
+  return <div></div>;
+}
+
+export default Page;

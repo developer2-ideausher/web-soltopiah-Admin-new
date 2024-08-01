@@ -10,6 +10,7 @@ import Loader from "@/components/Loader";
 import Frame1 from "../../../../../public/Frame1.png";
 import LoginImage from "../../../../../public/LoginImage.png";
 import { toast } from "react-toastify";
+import LoaderLarge from "@/components/LoaderLarge";
 
 
 function Page() {
@@ -49,7 +50,6 @@ function Page() {
 
   return (
     <>
-      {loading && <Loader />}
       <div className="flex flex-col gap-7">
         <div className="flex flex-row gap-5 items-center">
           <Link href="/quickreads">
@@ -85,6 +85,11 @@ function Page() {
                 </span>
               </div>
             </div>
+            {loading && (
+            <div className="flex justify-center bg-white items-center p-10 w-full ">
+              <LoaderLarge />
+            </div>
+            )}
             <div className="flex flex-col bg-white min-w-fit w-full">
               {QuickRequestsData &&
                 QuickRequestsData.map((item, index) => (

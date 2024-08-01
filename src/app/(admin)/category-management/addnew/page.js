@@ -4,11 +4,13 @@ import { getToken } from "@/Services/Cookie/userCookie";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 
 function Page() {
   const [formData, setFormData] = useState({
     thumbnail: null,
     name: "",
+    pageType: "",
   });
   const [preview, setPreview] = useState(null);
   const handleChange = (e) => {
@@ -18,10 +20,10 @@ function Page() {
       [name]: files ? files[0] : value,
     });
     if (files) {
-      setPreview(URL.createObjectURL(files[0])); 
+      setPreview(URL.createObjectURL(files[0]));
     }
   };
-  const isFormValid = formData.thumbnail && formData.name;
+  const isFormValid = formData.thumbnail && formData.name && formData.pageType;
   const router = useRouter();
   const token = getToken();
   const postCategory = (e) => {
@@ -31,6 +33,7 @@ function Page() {
     const formdata = new FormData();
     formdata.append("title", formData.name);
     formdata.append("image", formData.thumbnail);
+    formdata.append("pageType", formData.pageType);
 
     const requestOptions = {
       method: "POST",
@@ -46,7 +49,9 @@ function Page() {
         console.log(result);
         router.push("/category-management");
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error(error);
+      });
   };
   return (
     <div className="flex flex-col gap-7">
@@ -72,8 +77,12 @@ function Page() {
               className="absolute inset-0 opacity-0 cursor-pointer"
               onChange={handleChange}
             />
-             {preview ? (
-              <img src={preview} alt="Selected Thumbnail" className="h-full w-full object-cover rounded-xl" />
+            {preview ? (
+              <img
+                src={preview}
+                alt="Selected Thumbnail"
+                className="h-full w-full object-cover rounded-xl"
+              />
             ) : (
               "Add Banner"
             )}
@@ -89,6 +98,25 @@ function Page() {
             value={formData.name}
             onChange={handleChange}
           />
+        </div>
+        <div className="flex flex-col gap-2">
+          <p className="text-sm font-sans font-semibold text-userblack">
+            Page Type
+          </p>
+          <select
+            name="pageType"
+            value={formData.pageType}
+            onChange={handleChange}
+            className="py-3 px-4 rounded-xl bg-white border border-[#E7E5E4] text-sm font-sans font-normal text-black focus:outline-none"
+          >
+            <option disabled value="">
+              {" "}
+              Select
+            </option>
+            <option value="homescreen"> Home-Screen</option>
+            <option value="sleep"> Sleep</option>
+            <option value="none"> None</option>
+          </select>
         </div>
         <div className="w-1/2">
           <button

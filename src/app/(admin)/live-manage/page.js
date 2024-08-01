@@ -11,14 +11,23 @@ import Loader from "@/components/Loader";
 import { getToken } from "@/Services/Cookie/userCookie";
 import dayjs from "dayjs";
 import { toast } from "react-toastify";
+import LoaderLarge from "@/components/LoaderLarge";
+import { useRouter } from "next/navigation";
 
 function Page() {
   const [liveManagementData, setLiveManagementData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
+  const router = useRouter()
 
   useEffect(() => {
-    getAllLiveEventApi();
+    if(!token){
+      toast.error("Session expired, login again");
+      router.push("/login");
+    }else{
+      getAllLiveEventApi();
+
+    }
   }, []);
   const token = getToken();
 
@@ -37,12 +46,18 @@ function Page() {
       .then((response) => response.json())
       .then((result) => {
         console.log(result.data.results);
-        setLiveManagementData(result.data.results);
-        const liverequests = result.data.results;
-        const pendingLiveRequests = liverequests.filter(
-          (item) => item.status === "pending"
-        ).length;
-        setPendingCount(pendingLiveRequests);
+        if(result.message === "Failed to authenticate"){
+          toast.error(result.message, { toastId: "1wmdewimmmmm" });
+          router.push("/login");
+        }else{
+          setLiveManagementData(result.data.results);
+          const liverequests = result.data.results;
+          const pendingLiveRequests = liverequests.filter(
+            (item) => item.status === "pending"
+          ).length;
+          setPendingCount(pendingLiveRequests);
+        }
+       
         setLoading(false);
       })
       .catch((error) => {
@@ -53,7 +68,6 @@ function Page() {
   };
   return (
     <>
-      {loading && <Loader />}
       <div className="flex flex-col gap-7">
         <div className="flex flex-row justify-between items-center">
           <p className="text-userblack font-semibold text-xl2 font-sans">
@@ -95,6 +109,11 @@ function Page() {
                 </span>
               </div>
             </div>
+            {loading && (
+            <div className="flex justify-center bg-white items-center p-10 w-full ">
+              <LoaderLarge />
+            </div>
+            )}
             <div className="flex flex-col bg-white min-w-fit w-full">
               {liveManagementData &&
                 liveManagementData.map((item, index) => (

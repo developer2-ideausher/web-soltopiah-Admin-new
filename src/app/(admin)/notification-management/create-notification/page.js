@@ -4,6 +4,7 @@ import { getToken } from "@/Services/Cookie/userCookie";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 function Page() {
   const [formData, setFormData] = useState({
@@ -46,9 +47,12 @@ function Page() {
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
+        toast.success("Notification created")
         router.push("/notification-management");
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {console.error(error)
+        toast.error("Failed to add notification.")
+      });
   };
   const handleChange = (e) => {
     const { name, value } = e.target;

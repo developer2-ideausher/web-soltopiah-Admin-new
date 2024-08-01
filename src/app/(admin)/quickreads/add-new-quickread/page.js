@@ -1,17 +1,28 @@
 "use client";
 import BackButton from "@/components/BackButton";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import UploadImage from "../../../../../icons/UploadImage";
 import { getToken } from "@/Services/Cookie/userCookie";
 import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import LoaderSmall from "@/components/LoaderSmall";
 
 function Page() {
+  const [formData, setFormData] = useState({
+    title : "",
+    pictures : []
+  });
   const [images, setImages] = useState([]);
   const [title, setTitle] = useState("");
-  const router =useRouter()
+  const router = useRouter();
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [loading,setLoading] = useState(false)
 
+  useEffect(()=>{
+    // const {title , pictures} = formData
+    setIsFormValid(title && images.length>0)
+  },[formData,images])
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
   };
@@ -20,6 +31,7 @@ function Page() {
 
   const postNewQuickReadApi = (e) => {
     e.preventDefault();
+    setLoading(true)
     const myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer " + token);
     const formdata = new FormData();
@@ -41,15 +53,19 @@ function Page() {
       .then((response) => response.json())
       .then((result) => {
         console.log(result.data);
-        router.push('/quickreads')
+        setLoading(false)
+        toast.success("Quick read added")
+        router.push("/quickreads");
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {console.error(error)
+        toast.error("Error Occured")
+      });
   };
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
-    if (images.length + files.length > 5) {
-      toast.error("You can only upload up to 5 images");
+    if (images.length + files.length > 12) {
+      toast.error("You can only upload up to 12 images");
       return;
     }
 
@@ -58,7 +74,7 @@ function Page() {
       url: URL.createObjectURL(file),
     }));
 
-    setImages((prevImages) => [...prevImages, ...newImages].slice(0, 5));
+    setImages((prevImages) => [...prevImages, ...newImages].slice(0, 12));
   };
   console.log(images);
   const handleImageRemove = (index) => {
@@ -124,7 +140,7 @@ function Page() {
               Choose File
             </p>
             <p className="text-sm font-sans font-normal text-[#9C9896]">
-              {images.length} / 5 images uploaded
+              {images.length} / 12 images uploaded
             </p>
             <input
               type="file"
@@ -137,10 +153,15 @@ function Page() {
         </div>
 
         <button
+          disabled={!isFormValid}
           type="submit"
-          className="bg-[#AE445A] text-base font-sans rounded-lg font-black p-4 w-2/5 text-white"
+          className={`text-base font-sans font-semibold w-1/3 mt-4 p-4 rounded-lg ${
+            isFormValid
+              ? "bg-[#AE445A] text-white"
+              : "bg-[#c08e97] text-white cursor-not-allowed"
+          } flex justify-center items-center`} 
         >
-          Save and publish
+           {loading ? <LoaderSmall /> : "Save and publish"}
         </button>
       </form>
     </div>

@@ -160,7 +160,7 @@ export default function Sidebar() {
           <Link
             href="/notification-management"
             className={`flex items-center gap-2 lg:p-2 xl:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
-              pathName == "/notification-management" && "bg-pink on"
+              pathName.startsWith("/notification-management") && "bg-pink on"
             }`}
           >
             <NotificationManagement />

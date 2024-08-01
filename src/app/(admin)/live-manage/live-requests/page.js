@@ -6,6 +6,8 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import Frame1 from "../../../../../public/Frame1.png";
 import { getToken } from "@/Services/Cookie/userCookie";
+import { toast } from "react-toastify";
+import LoaderLarge from "@/components/LoaderLarge";
 
 function Page() {
   const [liveData, setLiveData] = useState([]);
@@ -24,7 +26,7 @@ function Page() {
       headers: myHeaders,
       redirect: "follow",
     };
-
+    setLoading(true);
     fetch(
       process.env.NEXT_PUBLIC_URL + "/live-events?status=pending",
       requestOptions
@@ -33,8 +35,14 @@ function Page() {
       .then((result) => {
         console.log(result.data.results);
         setLiveData(result.data.results);
+        setLoading(false);
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error(error);
+        toast.error("Failed to fetch data");
+
+        setLoading(false);
+      });
   };
   return (
     <div className="flex flex-col gap-7">
@@ -69,6 +77,11 @@ function Page() {
               </span>
             </div>
           </div>
+          {loading && (
+            <div className="flex justify-center bg-white items-center p-10 w-full ">
+              <LoaderLarge />
+            </div>
+          )}
           <div className="flex flex-col bg-white min-w-fit w-full">
             {liveData &&
               liveData.map((item, index) => (

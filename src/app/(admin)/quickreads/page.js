@@ -11,13 +11,23 @@ import dayjs from "dayjs";
 import Loader from "@/components/Loader";
 import Frame1 from "../../../../public/Frame1.png";
 import LoginImage from "../../../../public/LoginImage.png";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+import LoaderLarge from "@/components/LoaderLarge";
 
 function Page() {
   const [quickReadData, setQuickReadData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
+  const router = useRouter()
   useEffect(() => {
-    getAllQuickreadsDataApi();
+    if(!token){
+      toast.error("Session expired, login again");
+      router.push("/login");
+    }else{
+      getAllQuickreadsDataApi();
+
+    }
   }, []);
   const token = getToken();
   const getAllQuickreadsDataApi = () => {
@@ -34,23 +44,29 @@ function Page() {
       .then((response) => response.json())
       .then((result) => {
         console.log(result.data.results);
-        setQuickReadData(result.data.results);
+        if(result.message === "Failed to authenticate"){
+          toast.error(result.message, { toastId: "1wmdewimmmmm" });
+          router.push("/login");
+        }else{
+          setQuickReadData(result.data.results);
         const quickReads = result.data.results;
         const pendingQuickReads = quickReads.filter(
           (item) => item.status === "pending"
         ).length;
         setPendingCount(pendingQuickReads);
+        }
+        
         setLoading(false);
       })
       .catch((error) => {
         console.error(error);
+        toast.error("An error occurred while fetching data.", { toastId: "fetchError" });
         setLoading(false);
       });
   };
   return (
     <>
       {" "}
-      {loading && <Loader />}
       <div className="flex flex-col gap-7">
         <div className="flex flex-row justify-between items-center">
           <p className="text-userblack font-semibold text-xl2 font-sans">
@@ -88,6 +104,11 @@ function Page() {
                 </span>
               </div>
             </div>
+            {loading && (
+            <div className="flex justify-center bg-white items-center p-10 w-full ">
+              <LoaderLarge />
+            </div>
+            )}
             <div className="flex flex-col bg-white min-w-fit w-full ">
               {quickReadData &&
                 quickReadData.map((item, index) => (

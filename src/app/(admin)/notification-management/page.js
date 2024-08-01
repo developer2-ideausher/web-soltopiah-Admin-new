@@ -43,7 +43,7 @@ function Page() {
         return response.json();
       })
       .then((result) => {
-        console.log(result);
+        console.log(result); 
         if (result.message === "Failed to authenticate") {
           toast.error(result.message, { toastId: "1wmdewim" });
           router.push("/login");
@@ -74,10 +74,12 @@ function Page() {
     )
       .then((response) => response.text())
       .then((result) => {console.log(result)
+        toast.success("Notification Deleted")
         setRefresh((prev) => !prev);
         setLoading(false)
       })
       .catch((error) => {console.error(error)
+        toast.error("Unable to delete")
         setLoading(false)
       });
   };
