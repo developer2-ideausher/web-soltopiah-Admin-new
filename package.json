@@ -18,8 +18,10 @@
     "react-apexcharts": "^1.4.1",
     "react-audio-player": "^0.17.0",
     "react-dom": "^18",
+    "react-slick": "^0.30.2",
     "react-spinners": "^0.13.8",
-    "react-toastify": "^10.0.5"
+    "react-toastify": "^10.0.5",
+    "slick-carousel": "^1.8.1"
   },
   "devDependencies": {
     "eslint": "^8",

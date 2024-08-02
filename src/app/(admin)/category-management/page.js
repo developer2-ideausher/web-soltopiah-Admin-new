@@ -12,6 +12,7 @@ import DeleteModal from "@/components/DeleteModal";
 import Modal from "@/components/Modal";
 import LoaderLarge from "@/components/LoaderLarge";
 import dayjs from "dayjs";
+import { toast } from "react-toastify";
 
 function Page() {
   const [showModal, setShowModal] = useState(false);
@@ -73,6 +74,7 @@ function Page() {
       })
       .catch((error) => {
         console.error(error);
+        toast.error("Error Occured")
         setLoading(false);
       });
   };
@@ -84,6 +86,8 @@ function Page() {
   const handleConfirmDelete = () => {
     setLoading(true);
     deleteCategoryApi(selectedCategoryId);
+    toast.success("Category Deleted")
+
     setLoading(false);
     setShowModal(false);
   };

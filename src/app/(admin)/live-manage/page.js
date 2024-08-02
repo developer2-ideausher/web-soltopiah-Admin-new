@@ -52,10 +52,12 @@ function Page() {
         }else{
           setLiveManagementData(result.data.results);
           const liverequests = result.data.results;
+          console.log("new", liverequests)
           const pendingLiveRequests = liverequests.filter(
             (item) => item.status === "pending"
-          ).length;
-          setPendingCount(pendingLiveRequests);
+          )
+          console.log("hi",pendingLiveRequests)
+          setPendingCount(pendingLiveRequests.length);
         }
        
         setLoading(false);

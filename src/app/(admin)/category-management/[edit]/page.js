@@ -4,6 +4,7 @@ import { getToken } from "@/Services/Cookie/userCookie";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 function Page({params}) {
   const { edit } = params;
@@ -60,10 +61,13 @@ function Page({params}) {
     )
     .then((response) => response.json())
     .then((result) => {
+      toast.success("Category Edited")
       console.log(result);
       router.push("/category-management");
     })
-    .catch((error) => console.error(error));
+    .catch((error) => {console.error(error)
+      toast.error("Error Occured")
+    });
 };
 
   const getOneCategoryData = () => {

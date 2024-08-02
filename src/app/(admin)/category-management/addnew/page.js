@@ -47,10 +47,13 @@ function Page() {
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
+        toast.success("Category Created")
         router.push("/category-management");
       })
       .catch((error) => {
+        toast.error("error occured")
         console.error(error);
+
       });
   };
   return (

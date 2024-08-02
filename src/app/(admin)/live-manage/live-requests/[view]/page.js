@@ -142,7 +142,7 @@ function Page({ params }) {
                   Date
                 </p>
                 <p className="text-xl text-[#414554] font-normal font-sans">
-                  {dayjs(requestData.createdAt).format("MMM DD YYYY")}
+                  {dayjs(requestData.startDate).format("MMM DD YYYY")}
                 </p>
               </div>
               <div className="flex flex-col gap-1">
@@ -150,7 +150,7 @@ function Page({ params }) {
                   Time
                 </p>
                 <p className="text-xl text-[#414554] font-normal font-sans">
-                  {dayjs(requestData.createdAt).format("h:mm a")}
+                  {dayjs(requestData.startDate).format("h:mm a")}
                 </p>
               </div>
               <div className="flex flex-col gap-1">
