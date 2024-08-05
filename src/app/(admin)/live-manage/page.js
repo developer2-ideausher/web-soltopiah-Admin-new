@@ -10,9 +10,13 @@ import SearchBar from "@/components/SearchBar";
 import Loader from "@/components/Loader";
 import { getToken } from "@/Services/Cookie/userCookie";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+
 import { toast } from "react-toastify";
 import LoaderLarge from "@/components/LoaderLarge";
 import { useRouter } from "next/navigation";
+
+dayjs.extend(utc);
 
 function Page() {
   const [liveManagementData, setLiveManagementData] = useState([]);
@@ -152,7 +156,7 @@ function Page() {
                       {dayjs(item.startDate).format("ddd MMM DD,YY")}
                     </span>
                     <span className="text-userblack font-sans font-semibold text-base">
-                      {dayjs(item.startDate).format("HH:mm")}
+                    {dayjs(item.startDate).utc().format("hh:mm A")}
                     </span>
                     <span className="text-userblack font-sans font-semibold text-base">
                       Meditatation

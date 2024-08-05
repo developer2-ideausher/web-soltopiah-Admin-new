@@ -10,19 +10,21 @@ import { toast } from "react-toastify";
 import LoaderLarge from "@/components/LoaderLarge";
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 function Page() {
   const [liveData, setLiveData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
-    if(!token){
+    if (!token) {
       toast.error("Session expired, login again");
       router.push("/login");
-    }else{
+    } else {
       getAllLiveApi();
-
     }
   }, []);
   const token = getToken();
@@ -127,7 +129,7 @@ function Page() {
                       {dayjs(item.startDate).format("DD / MM / YY")}
                     </span>
                     <span className="text-userblack font-sans font-semibold text-base">
-                    {dayjs(item.startDate).format("h : mm A")}
+                      {dayjs(item.startDate).utc().format("hh:mm A")}
                     </span>
                     <span className="text-userblack font-sans font-semibold text-base">
                       Meditatation

@@ -191,7 +191,7 @@ function Page({ params }) {
                 </button>
               </div>
             </form>
-            <div className="bg-[#F4F5FB] flex  flex-col justify-center mt-20 w-2/5 mr-20 rounded-[32px]">
+            <div className="bg-[#F4F5FB] flex  flex-col justify-center mt-20 w-2/5 mr-20 rounded-[32px] relative">
               <div className="flex flex-row justify-between items-center w-full p-8">
                 <button
                   onClick={handlePrevImage}
@@ -213,7 +213,7 @@ function Page({ params }) {
                   <RightBlackArrow />
                 </button>
               </div>
-              <div className=" flex justify-center items-center">
+              <div className=" flex justify-center items-center absolute bottom-0 left-0 right-0">
                 <p className="bg-white p-3 mt-10 font-normal rounded-md font-sans text-sm ">
                   <span className="font-bold font-sans text-sm">{currentImageIndex + 1}</span>/{requestData.pictures.length}
                 </p>{" "}

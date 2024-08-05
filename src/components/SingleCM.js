@@ -23,7 +23,7 @@ export default function SingleCM(props) {
         {props.data?.description.substring(0, 50)}
       </h6>
       <h6 className="text-[#17161D] font-normal w-1/12 text-center text-base">
-        {props.data.category.title}
+        {props.data.category?.title}
       </h6>
       <h6 className="text-[#17161D] font-normal w-1/12 text-center text-base">
         {dayjs(props.data.createdAt).format("DD MMM, YYYY")}

@@ -7,9 +7,13 @@ import Frame1 from "../../../../../../public/Frame1.png";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getToken } from "@/Services/Cookie/userCookie";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+
 import Modal from "@/components/Modal";
 import Declaration from "postcss/lib/declaration";
 import DeclineModal from "@/components/DeclineModal";
+
+dayjs.extend(utc);
 
 function Page({ params }) {
   const [requestData, setRequestData] = useState(null);
@@ -150,7 +154,7 @@ function Page({ params }) {
                   Time
                 </p>
                 <p className="text-xl text-[#414554] font-normal font-sans">
-                  {dayjs(requestData.startDate).format("h:mm a")}
+                {dayjs(requestData.startDate).utc().format("hh:mm A")}
                 </p>
               </div>
               <div className="flex flex-col gap-1">
