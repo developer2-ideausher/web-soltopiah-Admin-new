@@ -27,7 +27,6 @@ export default function ViewPage() {
     setDeleteModal(!deleteModal)
   }
   const deleteHandler = async () => {
-    alert("pushed")
     setLoading(true)
     const response = await deleteSingleCourse(params.id)
     if(response?.status){
