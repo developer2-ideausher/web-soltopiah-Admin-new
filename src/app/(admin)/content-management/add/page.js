@@ -237,9 +237,10 @@ export default function Add() {
   };
 
   // files related data
-  const audioHandler = (val, duration) => {
+  const audioHandler = (val, duration, type) => {
     setFile(val);
     setDuration(duration);
+    setCourseContentType(type)
   };
   const submitHanlder = async (e) => {
     e.preventDefault();
@@ -255,6 +256,7 @@ export default function Add() {
         formdata.append("accessibility", accessibilityTab);
         formdata.append("durationInMinutes", duration);
         formdata.append("courseType", courseType);
+        formdata.append("courseContentType", courseContentType);
         setLoading(true);
         const response = await createUnitaryCourse(formdata);
         if (response?.status) {

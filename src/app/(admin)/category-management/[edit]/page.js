@@ -54,7 +54,6 @@ function Page({params}) {
       body: formdata,
       redirect: "follow",
     };
-
     fetch(
       process.env.NEXT_PUBLIC_URL +"/course-categories/" +edit,
       requestOptions

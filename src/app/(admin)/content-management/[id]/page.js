@@ -27,6 +27,7 @@ export default function ViewPage() {
     setDeleteModal(!deleteModal)
   }
   const deleteHandler = async () => {
+    alert("pushed")
     setLoading(true)
     const response = await deleteSingleCourse(params.id)
     if(response?.status){
@@ -44,7 +45,7 @@ export default function ViewPage() {
   },[])
   return (
     <div className='w-full'>
-        {deleteModal && <DeleteModal loading={loading} handler={deleteModalHandler} delete={deleteHandler} />}
+        {deleteModal && <DeleteModal loading={loading} onClose={deleteModalHandler} onDelete={deleteHandler} />}
         <div className='w-full flex items-center justify-between pb-5 border-b border-solid border-[#CDCDCD]'>
           <div className=' flex items-center gap-3'>
             <Link href="/content-management" className='btn-back'>
@@ -74,7 +75,7 @@ export default function ViewPage() {
           <h5 className='text-[#414554] font-normal text-lg'>Course</h5> */}
 
           <h6 className='text-sm font-semibold text-[#121616] mt-5'>Category</h6>
-          <h5 className='text-[#414554] font-normal text-lg'>{data?.category.title}</h5>
+          <h5 className='text-[#414554] font-normal text-lg'>{data?.category?.title}</h5>
 
           <h6 className='text-sm font-semibold text-[#121616] mt-5'>Content Added</h6>
           {data?.chapters?.map((item,index)=><div key={index} className='flex flex-wrap w-full mt-1 gap-5 items-center'>

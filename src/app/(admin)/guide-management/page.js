@@ -12,15 +12,21 @@ import { getToken } from "@/Services/Cookie/userCookie";
 import dayjs from "dayjs";
 import Loader from "@/components/Loader";
 import Frame1 from "../../../../public/Frame1.png";
+import LoaderLarge from "@/components/LoaderLarge";
+import DeleteModal from "@/components/DeleteModal";
 
 function Page() {
   const [popupIndex, setPopupIndex] = useState(null);
   const [guideData, setGuideData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [guideToDelete, setGuideToDelete] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     getAllGuideApi();
-  }, []);
+  }, [refresh]);
   const handleDelete = (id) => {
     const myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer " + token);
@@ -31,14 +37,27 @@ function Page() {
 
       redirect: "follow",
     };
-
+    setDeleteLoading(true);
     fetch(process.env.NEXT_PUBLIC_URL + `/guides/${id}`, requestOptions)
-      .then((response) => response.json())
+  
+      // .then((response) => {
+      //   console.log(response)
+      //   response.json()
+      // })
+
       .then((result) => {
         console.log(result);
-        getAllGuideApi();
+       
+        setDeleteLoading(false);
+        setShowModal(false);
+        setGuideToDelete(null);
+        setRefresh((prev) => !prev);
+        
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error("error while deleting",error);
+        setDeleteLoading(false);
+      });
   };
   const token = getToken();
   const getAllGuideApi = () => {
@@ -64,9 +83,33 @@ function Page() {
         setLoading(false);
       });
   };
+  const confirmDelete = (id) => {
+    setGuideToDelete(id);
+    setShowModal(true);
+    setPopupIndex(null);
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+    setGuideToDelete(null);
+  };
+
+  const handleModalDelete = () => {
+    setShowModal(false);
+    if (guideToDelete) {
+      handleDelete(guideToDelete);
+    }
+  };
   return (
     <>
-      {loading && <Loader />}
+      {showModal && (
+        <DeleteModal onDelete={handleModalDelete} onClose={handleModalClose} />
+      )}
+      {deleteLoading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-opacity-50 bg-gray-500 z-50">
+          <LoaderLarge />
+        </div>
+      )}
       <div className="flex flex-col gap-7">
         <p className="text-userblack font-semibold text-xl2 font-sans">
           Guide Management
@@ -97,6 +140,11 @@ function Page() {
                 <span className="text-[#666576] font-sans font-normal text-sm"></span>
               </div>
             </div>
+            {loading && (
+              <div className="flex justify-center bg-white items-center p-10 w-full ">
+                <LoaderLarge />
+              </div>
+            )}
             <div className="flex flex-col bg-white min-w-fit w-full ">
               {guideData &&
                 guideData.map((item, index) => {
@@ -142,7 +190,7 @@ function Page() {
                           setPopupIndex(popupIndex === index ? null : index)
                         }
                         className="text-base font-sans font-semibold text-userblack"
-                      >
+                      > 
                         <MenuDots />
                       </button>
                       {popupIndex === index && (
@@ -167,7 +215,7 @@ function Page() {
                           </Link>
 
                           <div
-                            onClick={() => handleDelete(item._id)}
+                            onClick={() => confirmDelete(item._id)}
                             className="flex flex-row items-center gap-3"
                           >
                             <Backspace />

@@ -276,6 +276,7 @@ export default function Add() {
       formdata.append("accessibility", accessibilityTab);
       formdata.append("description", description);
       formdata.append("title", title);
+      
       setLoading(true);
       const response = await updateCourse(formdata, params.id);
       if (response?.status) {

@@ -143,7 +143,7 @@ export default function Page() {
             <SingleCM key={index} data={item} />
           ))}
 
-        {chapters && tab == "singles" && chapters?.results.length == 0 && (
+        {chapters && tab == "singles" && chapters?.results?.length == 0 && (
           <h5 className="text-black p-5 w-full text-center text-sm font-normal">
             No data found!
           </h5>

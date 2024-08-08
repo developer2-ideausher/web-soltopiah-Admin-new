@@ -114,8 +114,9 @@ export default function Add() {
     }
     
     // files related data
-    const audioHandler = (val,duration) => {
+    const audioHandler = (val,duration,type) => {
         setFile(val)
+        setCourseContentType(type)
         setDuration(duration)
     }
     const submitHanlder = async (e) => {
