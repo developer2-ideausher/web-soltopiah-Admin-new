@@ -21,11 +21,18 @@ function Page() {
 
   const [loading, setLoading] = useState(false);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
-  useEffect(() => {
-    getCategoryData();
-  }, [refresh]);
-  const router = useRouter();
   const token = getToken();
+
+  useEffect(() => {
+    if(!token){
+      toast.error("Session expired, login again")
+      router.push("/login")
+    }else{
+      getCategoryData();
+
+    }
+  }, [token,refresh]);
+  const router = useRouter();
   const getCategoryData = () => {
     setLoading(true);
     const myHeaders = new Headers();
@@ -40,12 +47,20 @@ function Page() {
     fetch(process.env.NEXT_PUBLIC_URL + "/course-categories", requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result.data.results);
-        setCategoryData(result.data.results);
+        if (result.message === "Failed to authenticate") {
+          toast.error(result.message, { toastId: "1wmdewilmh" });
+          router.push("/login");
+        } else{
+          console.log(result.data.results);
+          setCategoryData(result.data.results);
+        }
+       
         setLoading(false);
       })
       .catch((error) => {
         console.error(error);
+        toast.error(result.message, { toastId: "1wmoikk" });
+
         setLoading(false);
       });
   };

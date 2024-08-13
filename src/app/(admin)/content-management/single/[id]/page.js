@@ -42,7 +42,7 @@ export default function ViewPage() {
   },[])
   return (
     <div className='w-full'>
-        {deleteModal && <DeleteModal loading={loading} handler={deleteModalHandler} delete={deleteHandler} />}
+        {deleteModal && <DeleteModal loading={loading} onClose={deleteModalHandler} onDelete={deleteHandler} />}
         <div className='w-full flex items-center justify-between pb-5 border-b border-solid border-[#CDCDCD]'>
           <div className=' flex items-center gap-3'>
             <Link href="/content-management" className='btn-back'>
