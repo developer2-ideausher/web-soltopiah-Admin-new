@@ -1,3 +1,4 @@
+import { useRouter } from "next/navigation"
 import { toast } from "react-toastify"
 
 export const responseValidator = async (response , isToaster=false,message=null) => {
@@ -39,13 +40,14 @@ export const responseValidator = async (response , isToaster=false,message=null)
     }
     
     else if(response?.status == 401){
-        toast.error("Session Expired.",{
+        toast.error("Session Expired, Login Again",{
             toastId:"API-error-session-expired"
         })
+       
         return {status: false, code:401, message: "Session Expired."}
     }
     else if(response?.status == 413){
-        toast.error("Media file which you attach is too large.",{
+        toast.error("Media file is too large.",{
             toastId:"API-error-file-size-too-large"
         })
         return {status: false, code:413, message: "file-size-too-large"}
@@ -62,7 +64,7 @@ export const responseValidator = async (response , isToaster=false,message=null)
         toast.error(res,{
             toastId:`API-500-error${Math.random()}`
         })
-        return {status: false, code:response?.status, message: "Encounter Server Side Error."}
+        return {status: false, code:response?.status, message: "Encountering Server Side Error."}
     }
     else{
         toast.error("Something went wrong",{
@@ -75,7 +77,7 @@ export const apiError = (e) => {
     if(e.name === "AbortError"){
     }
     else{
-        toast.error("Takes more than the usual time. Please refresh the page.",{
+        toast.error("Taking more than the usual time. Please refresh the page.",{
             toastId:`API-Timeout-error`
         })
     }

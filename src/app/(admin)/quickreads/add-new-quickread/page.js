@@ -10,19 +10,19 @@ import LoaderSmall from "@/components/LoaderSmall";
 
 function Page() {
   const [formData, setFormData] = useState({
-    title : "",
-    pictures : []
+    title: "",
+    pictures: [],
   });
   const [images, setImages] = useState([]);
   const [title, setTitle] = useState("");
   const router = useRouter();
   const [isFormValid, setIsFormValid] = useState(false);
-  const [loading,setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
-  useEffect(()=>{
+  useEffect(() => {
     // const {title , pictures} = formData
-    setIsFormValid(title && images.length>0)
-  },[formData,images])
+    setIsFormValid(title && images.length > 0);
+  }, [formData, images]);
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
   };
@@ -31,7 +31,7 @@ function Page() {
 
   const postNewQuickReadApi = (e) => {
     e.preventDefault();
-    setLoading(true)
+    setLoading(true);
     const myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer " + token);
     const formdata = new FormData();
@@ -53,12 +53,13 @@ function Page() {
       .then((response) => response.json())
       .then((result) => {
         console.log(result.data);
-        setLoading(false)
-        toast.success("Quick read added")
+        setLoading(false);
+        toast.success("Quick read added");
         router.push("/quickreads");
       })
-      .catch((error) => {console.error(error)
-        toast.error("Error Occured")
+      .catch((error) => {
+        console.error(error);
+        toast.error("Error Occured");
       });
   };
 
@@ -159,9 +160,9 @@ function Page() {
             isFormValid
               ? "bg-[#AE445A] text-white"
               : "bg-[#c08e97] text-white cursor-not-allowed"
-          } flex justify-center items-center`} 
+          } flex justify-center items-center`}
         >
-           {loading ? <LoaderSmall /> : "Save and publish"}
+          {loading ? <LoaderSmall /> : "Save and publish"}
         </button>
       </form>
     </div>

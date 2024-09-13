@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Export from "../../../../icons/Export";
 import SearchBar from "@/components/SearchBar";
 import MenuDots from "../../../../icons/MenuDots";
@@ -11,12 +11,32 @@ import PushNotif from "../../../../icons/PushNotif";
 import TopRightArrow from "../../../../icons/TopRightArrow";
 import GreyCross from "../../../../icons/GreyCross";
 import Backspace from "../../../../icons/Backspace";
+import newImage from "../../../../public/newImage.png";
+import { getChapters } from "@/Services/Api/CalmnessFeedback/GetCalmness";
+import dayjs from "dayjs";
+import LoaderLarge from "@/components/LoaderLarge";
 
 function Page() {
-  const [showPopUp, setShowPopUp] = useState(false);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const handleClick = () => {
     setShowPopUp(!showPopUp);
   };
+
+  const fetchData = async () => {
+    setLoading(true);
+    const result = await getChapters();
+    if (result.status) {
+      console.log(result.data.results);
+      setData(result.data.results);
+    } else {
+      console.log(result.message);
+    }
+    setLoading(false);
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
   return (
     <div className="flex flex-col gap-7">
       <div className="flex flex-row justify-between items-center">
@@ -63,115 +83,57 @@ function Page() {
               <span className="text-[#666576] font-sans font-normal text-sm"></span>
             </div>
           </div>
+          {loading && (
+            <div className="flex justify-center bg-white items-center p-10 w-full ">
+              <LoaderLarge />
+            </div>
+          )}
           <div className="flex flex-col bg-white min-w-fit w-full ">
-            <div className=" grid grid-cols-calmnessTable justify-between border-b border-[#E9E9EC] items-center p-4 relative">
-              <div className="text-[#252322] font-sans font-semibold text-base flex flex-row items-center gap-2">
-                <img src="newImage.png" alt="" />
-                <p>Designed to give you mental peace </p>
-              </div>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                Meditation
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                John
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                Blog
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                Feb 27, 2022, 23:57
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm flex flex-row items-center gap-2">
-                <StarRating />
-                <p>4.5</p>
-              </span>
-
-              <button
-                onClick={handleClick}
-                className="text-[#08A03C] font-sans font-semibold text-sm"
-              >
-                <MenuDots />
-              </button>
-              {showPopUp && (
-                <div className="bg-[#FDF8F9] border-[#D7A1AC] border p-3 rounded-xl shadow-lg w-[166px]  absolute right-10 top-6 flex flex-col gap-3">
-                  <div className="flex flex-row items-center justify-between">
-                    <p className="text-sm font-sans font-normal text-userblack">
-                      Action
-                    </p>
-                    <button onClick={handleClick}>
-                      <GreyCross />
-                    </button>
+            {data &&
+              data.map((item, index) => (
+                <div
+                  key={item._id || index}
+                  className=" grid grid-cols-calmnessTable justify-between border-b border-[#E9E9EC] items-center p-4 relative"
+                >
+                  <div className="text-[#252322] font-sans font-semibold text-base flex flex-row items-center gap-2">
+                    <img
+                      src={item.thumbnail?.url || "/newImage.png"}
+                      alt="calmness image"
+                      className="w-11 h-11 rounded-md"
+                    />
+                    <p>{item.title} </p>
                   </div>
-                  <Link href={"/calmness-feedback/calmness-details"}>
-                    <div className="flex flex-row items-center gap-3">
-                      <TopRightArrow />
-                      <p className="text-sm font-sans font-normal text-[#753B5B]">
-                        Open full view
-                      </p>
-                    </div>
-                  </Link>
+                  <span className="text-userblack font-sans font-semibold text-sm">
+                    {item.category?.title}
+                  </span>
+                  <span className="text-userblack font-sans font-semibold text-sm">
+                    {item.creator?.firstName
+                      ? `${item.creator.firstName}${
+                          item.creator?.lastName
+                            ? " " + item.creator.lastName
+                            : ""
+                        }`
+                      : item.creatorRole}
+                  </span>
+                  <span className="text-userblack font-sans font-semibold text-sm capitalize">
+                    {item.type}
+                  </span>
+                  <span className="text-userblack font-sans font-semibold text-sm">
+                    {dayjs(item.createdAt).format("DD/MM/YYYY")}
+                  </span>
+                  <span className="text-userblack font-sans font-semibold text-sm flex flex-row items-center gap-2">
+                    <StarRating />
+                    <p>{item.ratingsAverage}</p>
+                  </span>
 
-                  <div className="flex flex-row items-center gap-3">
-                    <Backspace />
-                    <p className="text-sm font-sans font-normal text-[#EE3E3E]">
-                      Remove
-                    </p>
-                  </div>
+                  {/* <button
+                    onClick={handleClick}
+                    className="text-[#08A03C] font-sans font-semibold text-sm"
+                  >
+                    <MenuDots />
+                  </button> */}
                 </div>
-              )}
-            </div>
-            <div className=" grid grid-cols-calmnessTable justify-between border-b border-[#E9E9EC] items-center p-4">
-              <div className="text-[#252322] font-sans font-semibold text-base flex flex-row items-center gap-2">
-                <img src="newImage.png" alt="" />
-                <p>Designed to give you mental peace </p>
-              </div>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                Meditation
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                John
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                Blog
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                Feb 27, 2022, 23:57
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm flex flex-row items-center gap-2">
-                <StarRating />
-                <p>4.5</p>
-              </span>
-
-              <button className="text-[#08A03C] font-sans font-semibold text-sm">
-                <MenuDots />
-              </button>
-            </div>
-            <div className=" grid grid-cols-calmnessTable justify-between border-b border-[#E9E9EC] items-center p-4">
-              <div className="text-[#252322] font-sans font-semibold text-base flex flex-row items-center gap-2">
-                <img src="newImage.png" alt="" />
-                <p>Designed to give you mental peace </p>
-              </div>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                Meditation
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                John
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                Blog
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                Feb 27, 2022, 23:57
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm flex flex-row items-center gap-2">
-                <StarRating />
-                <p>4.5</p>
-              </span>
-
-              <button className="text-[#08A03C] font-sans font-semibold text-sm">
-                <MenuDots />
-              </button>
-            </div>
+              ))}
           </div>
         </div>
         <Pagination />

@@ -1,5 +1,5 @@
 "use client"
-import {  getAllCategories, getSingleCourse, updateCourse } from '@/Utilities/Course'
+import {  getAllCategories, getSingleChapter, getSingleCourse, updateChapterInCourse, updateCourse } from '@/Utilities/Course'
 import AudioVideoUploader from '@/components/AUdioVideoUploader'
 import AddContentToCourseModal from '@/components/AddContentToCourseModal'
 import Dropdown from '@/components/Dropdown'
@@ -37,7 +37,7 @@ export default function Add() {
     const [addModal,setAddModal] = useState(false)
 
     // file related data
-    const [file,setFile] = useState('')
+    const [file,setFile] = useState(null)
     const [duration,setDuration] = useState('')
 
     const [categoryData,setCategoryData] = useState([])
@@ -114,9 +114,8 @@ export default function Add() {
     }
     
     // files related data
-    const audioHandler = (val,duration,type) => {
+    const audioHandler = (val,duration) => {
         setFile(val)
-        setCourseContentType(type)
         setDuration(duration)
     }
     const submitHanlder = async (e) => {
@@ -124,18 +123,17 @@ export default function Add() {
         const result = validator()
         if(result){
             if(contentTab == 'single'){
+                if(file != data.chapter.media.url){
+                    updateContent()
+                }
                 const formdata = new FormData();
                 if(thumbnail != data?.thumbnail?.url){
                     formdata.append("thumbnail", thumbnail);
                 }
-                // if(file != data.chapter.media.url){
-                //     formdata.append("media", file);
-                // }
                 formdata.append("category", category);
                 formdata.append("description", description);
                 formdata.append("title", title);
                 formdata.append("accessibility", accessibilityTab);
-                // formdata.append("durationInMinutes",duration)
                 setLoading(true)
                 const response = await updateCourse(formdata,params.id)
                 if(response?.status){
@@ -149,6 +147,24 @@ export default function Add() {
             }
         }
     }
+    const updateContent = async () => {
+        
+        const formdata = new FormData();
+        if(file != data.chapter.media.url){
+            formdata.append("media", file);
+        }
+        formdata.append("durationInMinutes",duration)
+        
+        const response = await updateChapterInCourse(data.chapter._id,formdata)
+        if(response?.status){
+
+        }else{
+            setLoading(false)
+            toast.error(response?.message,{
+                toastId:"jdhg"
+            })
+        }
+    }
     const fetchDetails = async () => {
         const response = await getSingleCourse(params.id)
         if(response?.status){
@@ -160,13 +176,18 @@ export default function Add() {
             setCategoryName(response.data.category.title)
             setData(response.data)
             setDuration(response.data.chapter.durationInMinutes)
-            setFile(response.data.chapter.media.url)
             setCourseType(response.data.courseType)
-
+            singleChapterHandler(response.data.chapter._id)
         }else{
          
         }
-      }
+    }
+    const singleChapterHandler = async (id) => {
+        const response = await getSingleChapter(id)
+        if(response?.status){
+            setFile(response.data.media.url)
+        }
+    }
     useEffect(()=>{
         if(!queryRef.current){
             fetchDetails()
@@ -221,7 +242,7 @@ export default function Add() {
             <textarea rows="4" value={description} onChange={e=>setDescription(e.target.value)} placeholder='Enter title' className='bg-white border border-solid border-[#E7E5E4] w-full rounded-xl py-3 px-4 resize-none'/>
             
             {contentTab == 'single' && <h6 className='text-[#252322] font-semibold mt-5 text-sm mb-1'>Upload content</h6>}
-            {data.chapter.type == 'audio' && <ReactAudioPlayer
+            {/* {data.chapter.type == 'audio' && <ReactAudioPlayer
                 src={data.chapter.media.url}
                 style={{
                     width:"100%"
@@ -232,8 +253,8 @@ export default function Add() {
             />}
             {data.chapter.type == 'video' && <video id="video" width="100%" className='rounded-xl' controls height="200">
                 <source src={file}  />
-            </video>}
-            {/* {contentTab == 'single' && <AudioVideoUploader callback={audioHandler} uploaded={true} type={data.chapter.type} fileAdded={file} />} */}
+            </video>} */}
+            {file != null && <AudioVideoUploader callback={audioHandler} uploaded={true} type={data.chapter.type} fileAdded={file} />}
             <button onClick={submitHanlder} className='p-4 text-white font-black mt-5 bg-[#AE445A] rounded-xl w-3/12 flex justify-center'>
                 {!loading ? "Save":<LoaderSmall color="#fff" size="20" />}
             </button>

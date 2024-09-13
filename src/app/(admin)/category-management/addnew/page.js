@@ -1,5 +1,6 @@
 "use client";
 import BackButton from "@/components/BackButton";
+import LoaderSmall from "@/components/LoaderSmall";
 import { getToken } from "@/Services/Cookie/userCookie";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -7,6 +8,7 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 
 function Page() {
+  const [smallLoading, setSmallLoading] = useState(false);
   const [formData, setFormData] = useState({
     thumbnail: null,
     name: "",
@@ -28,6 +30,7 @@ function Page() {
   const token = getToken();
   const postCategory = (e) => {
     e.preventDefault();
+    setSmallLoading(true)
     const myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer " + token);
     const formdata = new FormData();
@@ -47,13 +50,13 @@ function Page() {
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
-        toast.success("Category Created")
+        toast.success("Category Created");
+        setSmallLoading(false)
         router.push("/category-management");
       })
       .catch((error) => {
-        toast.error("error occured")
+        toast.error("error occured");
         console.error(error);
-
       });
   };
   return (
@@ -125,13 +128,13 @@ function Page() {
           <button
             type="submit"
             disabled={!isFormValid}
-            className={`text-base font-sans font-semibold w-full p-4 rounded-lg ${
+            className={`text-base font-sans font-semibold w-full p-4 rounded-lg flex items-center justify-center ${
               isFormValid
                 ? "bg-[#AE445A] text-white"
                 : "bg-[#c08e97] text-white cursor-not-allowed"
             }`}
           >
-            Next
+            {!smallLoading ? "Save" : <LoaderSmall />}
           </button>
         </div>
       </form>

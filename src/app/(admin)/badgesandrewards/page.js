@@ -1,15 +1,59 @@
-import React from "react";
-import Plus from "../../../../icons/Plus";
-import Export from "../../../../icons/Export";
-import Sort from "../../../../icons/Sort";
-import Filter from "../../../../icons/Filter";
-import SearchIcon from "../../../../icons/SearchIcon";
-import MenuDots from "../../../../icons/MenuDots";
-import Intermediate from "../../../../icons/Intermediate";
-import Beginner from "../../../../icons/Beginner";
-import Advance from "../../../../icons/Advance";
+"use client";
+import React, { useEffect, useState } from "react";
 
-function page() {
+import SearchIcon from "../../../../icons/SearchIcon";
+
+import Profile from "../../../../public/Profile.png";
+import {
+  getAllBadgesApi,
+  getImageCacheRemover,
+  switchBadgeApi,
+} from "@/Services/Api/Badges/BadgesApi";
+import LoaderLarge from "@/components/LoaderLarge";
+import Link from "next/link";
+import { Switch } from "@mui/material";
+
+function Page() {
+  const [badges, setBadges] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const fetchData = async () => {
+    setLoading(true);
+    const result = await getAllBadgesApi();
+    if (result.status) {
+      console.log(result.data.results);
+      setBadges(result.data.results);
+    } else {
+      console.error(result.message);
+    }
+    setLoading(false);
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
+  const handleToggle = async (index) => {
+    const badge = badges[index];
+    console.log(index);
+    const newStatus = !badge.isEnabled;
+
+    setBadges((prevBadges) => {
+      const updatedBadges = [...prevBadges];
+      updatedBadges[index].isEnabled = newStatus;
+      return updatedBadges;
+    });
+
+    const result = await switchBadgeApi(badge._id, newStatus);
+    if (!result.status) {
+      console.error(result.message);
+
+      setBadges((prevBadges) => {
+        const revertedBadges = [...prevBadges];
+        revertedBadges[index].isEnabled = !newStatus;
+        return revertedBadges;
+      });
+    }
+  };
+
   return (
     <div className="flex flex-col gap-7">
       <p className="text-xl2 font-sans font-semibold text-userblack">
@@ -22,127 +66,74 @@ function page() {
               <SearchIcon />
               <input type="text" placeholder="Search in users" />
             </div>
-            <div className="bg-white border border-[#DCDBE1] py-2 px-3 rounded-lg flex flex-row items-center gap-2">
-              <Filter />
-              <p className="text-sm font-sans font-normal text-userblack">
-                Filters
-              </p>
-            </div>
-            <div className="bg-white border border-[#DCDBE1] py-2 px-3 rounded-lg flex flex-row items-center gap-2">
-              <Sort />
-              <p className="text-sm font-sans font-normal text-userblack">
-                Sort
-              </p>
-            </div>
-            <div className="bg-white border border-[#DCDBE1] py-2 px-3 rounded-lg flex flex-row items-center gap-2">
-              <Export />
-              <p className="text-sm font-sans font-normal text-userblack">
-                Export
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-row items-center gap-3">
-            <button className="rounded-lg py-2 px-3 bg-[#AE445A]">
-              <p className="text-white font-sans font-semibold text-base">
-                All Rewards
-              </p>
-            </button>
-            <button className="rounded-lg py-2 px-3 flex flex-row items-center gap-3 border border-[#DCDBE1]">
-              <p className="">Add</p>
-              <Plus />
-            </button>
           </div>
         </div>
-        <div className="w-full overflow-x-scroll booking-table-wrapper">
+        <div className="w-full  booking-table-wrapper">
           <div className="bg-[#F0F2F5] min-w-fit w-full">
             <div className="items-center grid grid-cols-badgeTable justify-between p-4">
               <span className="text-[#666576] font-sans font-normal text-sm">
                 Badge
               </span>
               <span className="text-[#666576] font-sans font-normal text-sm">
-                Tittle
+                Awarding Description
               </span>
-              <span className="text-[#666576] font-sans font-normal text-sm">
-                Type
+              <span className="text-[#666576] font-sans font-normal text-sm text-center">
+                Status
               </span>
 
               <span className="text-[#666576] font-sans font-normal text-sm">
-                Total Received
-              </span>
-              <span className="text-[#666576] font-sans font-normal text-sm">
-                Message
+                Action
               </span>
 
               <span className="text-[#666576] font-sans font-normal text-sm"></span>
             </div>
           </div>
-          <div className="flex flex-col bg-white min-w-fit w-full">
-            <div className=" grid grid-cols-badgeTable justify-between border-b border-[#E9E9EC] items-center p-4">
-              <span className="text-userblack  font-sans font-semibold text-sm">
-                <Intermediate />
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                Milestone Achievements
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                Intermediate
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                15
-              </span>
-              <span className="text-[#AE445A] font-sans w-[400px]  font-semibold text-sm">
-                Unlock your full potential! Earn badges and rewards by taking
-                small steps towards your goals every day.
-              </span>
-
-              <button className="text-[#08A03C] font-sans font-semibold text-sm">
-                <MenuDots />
-              </button>
+          {loading && (
+            <div className="flex justify-center bg-white items-center p-10 w-full ">
+              <LoaderLarge />
             </div>
-            <div className=" grid grid-cols-badgeTable justify-between border-b border-[#E9E9EC] items-center p-4">
-              <span className="text-userblack  font-sans font-semibold text-sm">
-                <Beginner />
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                Milestone Achievements
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                Beginner
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                15
-              </span>
-              <span className="text-[#AE445A] font-sans w-[400px]  font-semibold text-sm">
-                Unlock your full potential! Earn badges and rewards by taking
-                small steps towards your goals every day.
-              </span>
+          )}
+          <div>
+            {badges &&
+              badges.map((item, index) => (
+                <div
+                  key={item._id || index}
+                  className="flex flex-col bg-white min-w-fit w-full"
+                >
+                  <div className=" grid grid-cols-badgeTable justify-between border-b border-[#E9E9EC] items-center p-4">
+                    <div className="flex gap-4 items-center ">
+                      <img
+                        src={getImageCacheRemover(item.photo?.url,"Profile.png")
+                        }
+                        alt="badge"
+                        className="w-11 h-11 rounded-full"
+                      />
+                      <p className="text-userblack font-sans font-semibold text-sm capitalize">
+                        {item.name}
+                      </p>
+                    </div>
 
-              <button className="text-[#08A03C] font-sans font-semibold text-sm">
-                <MenuDots />
-              </button>
-            </div>
-            <div className=" grid grid-cols-badgeTable justify-between border-b border-[#E9E9EC] items-center p-4">
-              <span className="text-userblack  font-sans font-semibold text-sm">
-                <Advance />
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                Milestone Achievements
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                Advanced
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                15
-              </span>
-              <span className="text-[#AE445A] font-sans w-[400px]  font-semibold text-sm">
-                Unlock your full potential! Earn badges and rewards by taking
-                small steps towards your goals every day.
-              </span>
-
-              <button className="text-[#08A03C] font-sans font-semibold text-sm">
-                <MenuDots />
-              </button>
-            </div>
+                    <span className="text-userblack font-sans font-semibold text-sm capitalize">
+                      {item.description}
+                    </span>
+                    <div>
+                      <Switch
+                        checked={item.isEnabled}
+                        onChange={() => handleToggle(index)}
+                        color="primary"
+                      />
+                      <span>
+                        {item.isEnabled ? "Activated" : "Deactivated"}
+                      </span>
+                    </div>
+                    <Link href={`/badgesandrewards/${item._id}`}>
+                      <span className="text-[#AE445A] font-sans w-[400px]  font-semibold text-sm">
+                        Edit
+                      </span>
+                    </Link>
+                  </div>
+                </div>
+              ))}
           </div>
         </div>
       </div>
@@ -150,4 +141,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

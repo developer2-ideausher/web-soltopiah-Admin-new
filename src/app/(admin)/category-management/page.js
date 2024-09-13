@@ -13,6 +13,7 @@ import Modal from "@/components/Modal";
 import LoaderLarge from "@/components/LoaderLarge";
 import dayjs from "dayjs";
 import { toast } from "react-toastify";
+import { getImageCacheRemover } from "@/Services/Api/Badges/BadgesApi";
 
 function Page() {
   const [showModal, setShowModal] = useState(false);
@@ -48,7 +49,7 @@ function Page() {
       .then((response) => response.json())
       .then((result) => {
         if (result.message === "Failed to authenticate") {
-          toast.error(result.message, { toastId: "1wmdewilmh" });
+          // toast.error(result.message, { toastId: "1wmdewilmh" });
           router.push("/login");
         } else{
           console.log(result.data.results);
@@ -146,13 +147,11 @@ function Page() {
                 <span className="text-[#666576] font-sans font-normal text-sm"></span>
               </div>
             </div>
-            {loading && (
+            {loading ? (
               <div className="flex justify-center bg-white items-center p-10 w-full ">
                 <LoaderLarge />
               </div>
-            )}
-
-            <div className="flex flex-col bg-white min-w-fit w-full ">
+            ):( <div className="flex flex-col bg-white min-w-fit w-full ">
               {categoryData &&
                 categoryData.map((item, index) => (
                   <div
@@ -167,7 +166,7 @@ function Page() {
                     <div className="flex flex-row items-center gap-4">
                       <img
                         className="h-8 w-8 object-cover rounded-full"
-                        src={item.image ? item.image.url : "image1.png"}
+                        src={getImageCacheRemover(item.image?.url, "image1.png")}
                         alt=""
                       />
                       <p className="text-sm font-sans font-semibold text-[#252322]">
@@ -189,7 +188,9 @@ function Page() {
                     </button>
                   </div>
                 ))}
-            </div>
+            </div>)}
+
+           
           </div>
           <Pagination />
         </div>

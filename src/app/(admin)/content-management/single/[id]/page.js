@@ -1,5 +1,5 @@
 "use client"
-import {  deleteSingleCourse, getSingleCourse } from '@/Utilities/Course'
+import {  deleteSingleCourse, getSingleChapter, getSingleCourse } from '@/Utilities/Course'
 import DeleteModal from '@/components/DeleteModal'
 import LoaderLarge from '@/components/LoaderLarge'
 import Link from 'next/link'
@@ -13,13 +13,21 @@ export default function ViewPage() {
   const router = useRouter()
   const [data,setData] = useState(null)
   const [loading,setLoading] = useState(false)
+  const [file,setFile] = useState('')
   const [deleteModal,setDeleteModal] = useState(false)
   const dataSetter = async () => {
     const response = await getSingleCourse(params.id)
     if(response?.status){
       setData(response.data)
+      singleChapterHandler(response.data.chapter._id)
     }else{
      
+    }
+  }
+  const singleChapterHandler = async (id) => {
+    const response = await getSingleChapter(id)
+    if(response?.status){
+      setFile(response.data.media.url)
     }
   }
   const deleteModalHandler = () => {
@@ -76,11 +84,11 @@ export default function ViewPage() {
 
           <h6 className='text-sm font-semibold text-[#121616] mt-5'>Content Added</h6>
           <h5 className='text-[#414554] font-normal text-lg mb-1'>{data?.chapter?.title}</h5>
-          {data?.chapter.type == 'audio' && <audio id="audio" className='w-2/5' controls>
-            <source src={data?.chapter.media.url}  />
+          {data?.chapter.type == 'audio' && file != '' && <audio id="audio" className='w-2/5' controls>
+            <source src={file}  />
           </audio>}
-          {data?.chapter.type == 'video' && <video id="video" width="40%" className='rounded-xl' controls height="200">
-            <source src={data?.chapter.media.url}  />
+          {data?.chapter.type == 'video' && file != '' && <video id="video" width="40%" className='rounded-xl' controls height="200">
+            <source src={file}  />
           </video>}
         </div>}
         {!data && <div className='w-full py-10 flex justify-center'>

@@ -79,7 +79,7 @@ export default function ViewPage() {
           <h6 className='text-sm font-semibold text-[#121616] mt-5'>Content Added</h6>
           {data?.chapters?.map((item,index)=><div key={index} className='flex flex-wrap w-full mt-1 gap-5 items-center'>
             <h5 className='text-[#414554] font-semibold text-lg'>{item.title}</h5>
-            <h5 className='text-[#414554] font-normal text-sm underline'>{item.media?.url.substring(107,150)}</h5>
+            <h5 className='text-[#414554] font-normal text-sm underline'>{item.media?.url.substring(69,150)}</h5>
           </div>)}
         </div>}
         {!data && <div className='w-full py-10 flex justify-center'>
