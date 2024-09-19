@@ -1,19 +1,18 @@
+"use client"
 import Link from "next/link";
 import React from "react";
-import LeftBlackarrow from "../../../../../../icons/LeftBlackarrow";
+import LeftBlackarrow from "../../../../../../../icons/LeftBlackarrow";
 import SearchBar from "@/components/SearchBar";
 import Pagination from "@/components/Pagination";
 import BackButton from "@/components/BackButton";
 
-function page() {
+function Page({ params }) {
+  const { info } = params;
   return (
     <div className="flex flex-col gap-7">
       <div className="flex flex-row items-center gap-5">
-        <Link
-          
-          href="/guide-management/guide-info"
-        >
-         <BackButton/>
+        <Link href="/guide-management/guide-info">
+          <BackButton />
         </Link>
         <p className="text-userblack font-semibold text-xl2 font-sans">
           Session Booked
@@ -122,4 +121,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

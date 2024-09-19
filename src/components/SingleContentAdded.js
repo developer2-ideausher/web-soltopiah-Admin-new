@@ -41,7 +41,7 @@ export default function SingleContentAdded(props) {
                     </svg>
                 </div>
             </div>
-            {deleteModal && <DeleteModal handler={deletemodalHandler} delete={deleteHandler} />}
+            {deleteModal && <DeleteModal onClose={deletemodalHandler} onDelete={deleteHandler} />}
         </div>
     )
 }

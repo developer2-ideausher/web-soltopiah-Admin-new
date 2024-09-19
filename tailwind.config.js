@@ -41,7 +41,7 @@ module.exports = {
         userFriendsTable: "300px 200px 150px 150px",
         userVideoTable: "350px 450px 200px 200px 250px 100px",
         userAudioTable: "350px 450px 200px 200px 150px ",
-        guideTable: "208px 351px 272px 268px 180px 200px 80px",
+        guideTable: "208px 351px 202px 108px 80px 140px 40px",
         contentTable: "408px 400px 200px 200px 150px 150px 100px ",  
         contentSinglesTable: "350px  200px 200px 150px 150px 100px ",  
         categoryTable: "228px 320px 382px 168px 150px 150px 50px",
@@ -57,10 +57,10 @@ module.exports = {
         badgeTable: "300px 300px 200px 50px ",
         challengeTable: "400px 400px 150px 150px 150px 150px 100px 200px 50px",
         sessionTable: "150px 150px 250px 150px 150px 150px 150px 150px 100px",
-        liveCreatedTable: "200px 200px 200px 600px 100px ",
+        liveCreatedTable: "200px 200px 200px 300px 100px ",
         quickreadsTable: "400px 250px 250px 300px 100px ",
         quickReadsRequestTable: "350px 280px 250px 200px 150px 50px ",
-        contentUploadedTable: "400px 400px 100px 100px 100px 50px ",
+        contentUploadedTable: "300px 300px 150px 80px 80px 50px ",
       },
 
       fontSize: {

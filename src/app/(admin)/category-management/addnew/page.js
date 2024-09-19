@@ -30,7 +30,7 @@ function Page() {
   const token = getToken();
   const postCategory = (e) => {
     e.preventDefault();
-    setSmallLoading(true)
+    setSmallLoading(true);
     const myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer " + token);
     const formdata = new FormData();
@@ -51,7 +51,7 @@ function Page() {
       .then((result) => {
         console.log(result);
         toast.success("Category Created");
-        setSmallLoading(false)
+        setSmallLoading(false);
         router.push("/category-management");
       })
       .catch((error) => {
@@ -116,7 +116,6 @@ function Page() {
             className="py-3 px-4 rounded-xl bg-white border border-[#E7E5E4] text-sm font-sans font-normal text-black focus:outline-none"
           >
             <option disabled value="">
-              {" "}
               Select
             </option>
             <option value="homescreen"> Home-Screen</option>

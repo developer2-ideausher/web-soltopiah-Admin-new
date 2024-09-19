@@ -128,13 +128,13 @@ function Page() {
                 <span className="text-[#666576] font-sans font-normal text-sm">
                   Account Created
                 </span>
-                <span className="text-[#666576] font-sans font-normal text-sm">
+                <span className="text-[#666576] font-sans font-normal text-sm text-center">
                   Type
                 </span>
-                <span className="text-[#666576] font-sans font-normal text-sm">
+                <span className="text-[#666576] font-sans font-normal text-sm text-center">
                   Revenue
                 </span>
-                <span className="text-[#666576] font-sans font-normal text-sm">
+                <span className="text-[#666576] font-sans font-normal text-sm text-center">
                   Total bookings
                 </span>
                 <span className="text-[#666576] font-sans font-normal text-sm"></span>
@@ -176,13 +176,13 @@ function Page() {
                       <span className="text-base font-sans font-semibold text-userblack">
                         {dayjs(item.createdAt).format("MMM DD YYYY")}
                       </span>
-                      <span className="text-base font-sans font-semibold text-userblack">
+                      <span className="text-base font-sans font-semibold text-userblack text-center">
                         Subscribed
                       </span>
-                      <span className="text-base font-sans font-semibold text-userblack">
+                      <span className="text-base font-sans font-semibold text-userblack text-center">
                         $1200
                       </span>
-                      <span className="text-base font-sans font-semibold text-userblack">
+                      <span className="text-base font-sans font-semibold text-userblack text-center">
                         32
                       </span>
                       <button

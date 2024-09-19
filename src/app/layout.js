@@ -6,14 +6,12 @@ import { ToastContainer } from 'react-toastify';
 export const metadata = {
   title: 'Soltopiah Admin Panel',
   description: 'Soltopiah Admin Panel Powered By Ideausher',
+  // icons: {
+  //   icon: "favicon.ico",
+  // }
 }
-// const mfaCustom = localFont({ 
-//   src: [{
-//     path: '../../public/fonts/font.ttf',
-//     weight:"500"
-//   }],
-//   variable: "--font-mfa"
-// })
+
+
 const inter =  Inter({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -23,6 +21,9 @@ const inter =  Inter({
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={` ${inter.variable}`}>
+      <head>
+        <link rel="icon"  type="image/x-icon" href="/favicon.ico" /> 
+      </head>
       <body>{children}
       <ToastContainer/>
       </body>

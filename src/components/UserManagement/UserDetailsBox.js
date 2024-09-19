@@ -1,18 +1,19 @@
 import React from 'react'
 import Profile2 from '../../../public/Profile2.png'
+import dayjs from 'dayjs'
 
-function UserDetailsBox() {
+function UserDetailsBox({user}) {
   return (
     <div className="flex flex-row gap-3 justify-between rounded-xl p-4 bg-white">
           <div className="flex flex-col p-4 w-full gap-4 rounded-md border border-[#CE8F9C]">
             <div className="flex flex-row gap-3">
-              <img src={Profile2.src} alt="" />
+              <img src={user?.profilePic?.url|| Profile2.src} alt="" />
               <div className="flex flex-col">
                 <p className="text-base font-sans font-semibold text-userblack">
-                  Henry Fiat
+                  {user?.firstName} {user?.lastName}
                 </p>
                 <p className="text-[#666576] text-base font-sans font-normal">
-                  (406) 555-0120
+                {user?.phone || '--'}
                 </p>
               </div>
             </div>
@@ -26,8 +27,8 @@ function UserDetailsBox() {
                 <p>:</p>
               </div>
               <div className="flex flex-col gap-4 text-base font-sans font-semibold text-userblack">
-                <p>012364</p>
-                <p>Feb 27, 2022, 23:57</p>
+                <p>{user?._id}</p>
+                <p>{dayjs(user?.createdAt).format("DD/MM/YYYY")}</p>
               </div>
             </div>
           </div>
@@ -45,7 +46,7 @@ function UserDetailsBox() {
               </div>
               <div className="flex flex-col gap-4 text-base font-sans font-semibold text-userblack">
                 <p>Monthly</p>
-                <p>Active</p>
+                <p>{user?.isBlocked ? 'Blocked' : 'Active'}</p>
                 <p>04-06-2024</p>
               </div>
             </div>

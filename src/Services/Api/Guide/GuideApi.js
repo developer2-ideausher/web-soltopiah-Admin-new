@@ -1,7 +1,7 @@
 import { getToken } from "@/Services/Cookie/userCookie";
 import { apiError, responseValidator } from "@/Utilities/helper";
 
-export const getAllUsersApi = async () => {
+export const getLiveCreated = async (id) => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + getToken());
 
@@ -12,17 +12,16 @@ export const getAllUsersApi = async () => {
   };
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL + "/users",
+      process.env.NEXT_PUBLIC_URL + `/guides/${id}/live-events/owned`,
       requestOptions
     );
     const result = await responseValidator(response);
     return result;
   } catch (error) {
-    return apiError(error);
+    apiError(error);
   }
 };
-
-export const getUserInfo = async (id) => {
+export const getQuickReads = async (id) => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + getToken());
 
@@ -33,7 +32,28 @@ export const getUserInfo = async (id) => {
   };
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL + `/users/${id}`,
+      process.env.NEXT_PUBLIC_URL + `/guides/${id}/quick-reads/owned`,
+      requestOptions
+    );
+    const result = await responseValidator(response);
+    return result;
+  } catch (error) {
+    apiError(error);
+  }
+};
+
+export const getContent = async (id) => {
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", "Bearer " + getToken());
+
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+  try {
+    const response = await fetch(
+        process.env.NEXT_PUBLIC_URL + `/guides/${id}/chapters/owned`,
       requestOptions
     );
     const result = await responseValidator(response);
