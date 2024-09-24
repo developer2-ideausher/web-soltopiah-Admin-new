@@ -3,11 +3,12 @@ import Profile2 from '../../../public/Profile2.png'
 import dayjs from 'dayjs'
 
 function UserDetailsBox({user}) {
+  
   return (
     <div className="flex flex-row gap-3 justify-between rounded-xl p-4 bg-white">
           <div className="flex flex-col p-4 w-full gap-4 rounded-md border border-[#CE8F9C]">
             <div className="flex flex-row gap-3">
-              <img src={user?.profilePic?.url|| Profile2.src} alt="" />
+              <img src={user?.profilePic?.url|| Profile2.src} alt="" className='w-11 h-11 rounded-md'/>
               <div className="flex flex-col">
                 <p className="text-base font-sans font-semibold text-userblack">
                   {user?.firstName} {user?.lastName}

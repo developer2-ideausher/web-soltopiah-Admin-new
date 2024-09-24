@@ -84,6 +84,13 @@ function Page({ params }) {
               <LoaderLarge />
             </div>
           )}
+         
+
+            {!loading && data.length === 0 && (
+              <div className="text-center bg-white text-lg font-semibold text-gray-600 p-4">
+                No data yet.
+              </div>
+            )}
           {data &&
             data.map((item, index) => (
               <div key={item._id || index} className="flex flex-col bg-white min-w-fit w-full ">

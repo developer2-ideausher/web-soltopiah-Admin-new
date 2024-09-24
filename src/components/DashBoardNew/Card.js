@@ -13,7 +13,7 @@ function Card({ Heading, Number, color, Percent, textColour }) {
         </p>
         <div className="flex flex-row items-center gap-2">
           <p className="text-xl font-sans font-bold text-[#121616]">{Number}</p>
-          <div
+          {/* <div
             className={`flex flex-row items-center gap-1 py-[2px] px-[6px] rounded-xl ${bgColor}`}
           >
             {color === "[#E6FFEC]" ? <GreenUpArrow /> : <RedDownArrow />}
@@ -24,7 +24,7 @@ function Card({ Heading, Number, color, Percent, textColour }) {
             >
               {Percent}
             </p>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

@@ -1,66 +1,135 @@
 "use client";
-import React, { useState } from 'react';
-import dynamic from 'next/dynamic';
+import React, { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-export default function EarningsChart() {
+export default function EarningsChart({ userData, guideData, timePeriod }) {
   const [data, setData] = useState({
     options: {
       chart: {
         id: "basic-line",
         toolbar: {
-          show: false
-        }
+          show: false,
+        },
       },
       xaxis: {
-        categories: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+        categories: [], // Empty initially, set dynamically based on timePeriod
       },
       yaxis: {
+        min: 0, // Minimum value for y-axis
+        max: undefined, // Leave undefined for auto-scaling
         labels: {
-          formatter: function (value) {
-            return value + "k";
-          }
-        }
+          // Optional formatter for y-axis labels
+        },
       },
       title: {
         style: {
-          fontSize: '16px',
-          fontWeight: '700',
-          color: '#2A2D3E'
-        }
+          fontSize: "16px",
+          fontWeight: "700",
+          color: "#2A2D3E",
+        },
       },
       dataLabels: {
-        enabled: false
+        enabled: false, // Disable data labels
       },
       plotOptions: {
         line: {
-          curve: 'smooth'
+          curve: "smooth", // Smooth curve for the lines
         },
-        
       },
       stroke: {
         width: [3, 3], // Line widths for both series
-        dashArray: [0, 5] // Dash array: solid for first line, dashed for second
+        dashArray: [0, 5], // Solid for first line, dashed for second
       },
       colors: ["#0F75BC", "#0F75BC"], // Colors for the lines
       legend: {
-        show: false}
+        show: false, // Hide legend
+      },
     },
     series: [
       {
         name: "Guides",
-        data: [30, 40, 45, 50, 49, 60, 70]
+        data: [], // Initially empty, set dynamically
       },
       {
         name: "Users",
-        data: [20, 35, 40, 55, 52, 65, 75]
-      }
-    ]
+        data: [], // Initially empty, set dynamically
+      },
+    ],
   });
 
+  // Default weekly and monthly categories
+  const weeklyCategories = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const monthlyCategories = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+  const mapDataToPeriod = (data = [], period = "weekly") => {
+    const defaultWeeklyData = [
+      { day: "sun", count: 0 },
+      { day: "mon", count: 0 },
+      { day: "tue", count: 0 },
+      { day: "wed", count: 0 },
+      { day: "thu", count: 0 },
+      { day: "fri", count: 0 },
+      { day: "sat", count: 0 },
+    ];
+  
+    const defaultMonthlyData = [
+      { month: "jan", count: 0 },
+      { month: "feb", count: 0 },
+      { month: "mar", count: 0 },
+      { month: "apr", count: 0 },
+      { month: "may", count: 0 },
+      { month: "jun", count: 0 },
+      { month: "jul", count: 0 },
+      { month: "aug", count: 0 },
+      { month: "sep", count: 0 },
+      { month: "oct", count: 0 },
+      { month: "nov", count: 0 },
+      { month: "dec", count: 0 },
+    ];
+  
+    if (period === "weekly") {
+      return defaultWeeklyData.map((dayObj) => {
+        const match = data.find((item) => item.day === dayObj.day);
+        return match ? match.count : dayObj.count;
+      });
+    } else if (period === "monthly") {
+      return defaultMonthlyData.map((monthObj) => {
+        const match = data.find((item) => item.month === monthObj.month);
+        return match ? match.count : monthObj.count;
+      });
+    }
+  };
+  
+  useEffect(() => {
+    // Update categories and data based on the timePeriod
+    const categories = timePeriod === "monthly" ? monthlyCategories : weeklyCategories;
+  
+    setData((prevData) => ({
+      ...prevData,
+      options: {
+        ...prevData.options,
+        xaxis: {
+          ...prevData.options.xaxis,
+          categories, // Set categories based on timePeriod
+        },
+      },
+      series: [
+        {
+          name: "Guides",
+          data: mapDataToPeriod(guideData, timePeriod), // Map guide data correctly
+        },
+        {
+          name: "Users",
+          data: mapDataToPeriod(userData, timePeriod), // Map user data correctly
+        },
+      ],
+    }));
+  }, [userData, guideData, timePeriod]);
+  
   return (
-    <div className='w-full bg-white rounded-xl p-3'>
+    <div className="w-full bg-white rounded-xl p-3">
       <Chart
         options={data.options}
         series={data.series}

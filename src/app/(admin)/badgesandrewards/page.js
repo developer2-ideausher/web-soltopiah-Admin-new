@@ -103,8 +103,10 @@ function Page() {
                   <div className=" grid grid-cols-badgeTable justify-between border-b border-[#E9E9EC] items-center p-4">
                     <div className="flex gap-4 items-center ">
                       <img
-                        src={getImageCacheRemover(item.photo?.url,"Profile.png")
-                        }
+                        src={getImageCacheRemover(
+                          item.photo?.url,
+                          "Profile.png"
+                        )}
                         alt="badge"
                         className="w-11 h-11 rounded-full"
                       />

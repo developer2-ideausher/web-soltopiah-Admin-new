@@ -14,7 +14,7 @@ function Page({ params }) {
   const { users } = params;
   const fetchData = async () => {
     setLoading(true);
-    const result =await getUserInfo(users);
+    const result = await getUserInfo(users);
     if (result.status) {
       console.log(result.data);
       setData(result.data);
@@ -24,9 +24,9 @@ function Page({ params }) {
     }
     setLoading(false);
   };
-  useEffect(()=>{
-    fetchData()
-  },[])
+  useEffect(() => {
+    fetchData();
+  }, []);
   return (
     <div className="flex flex-col gap-7">
       <div className="flex flex-row gap-5 items-center">
@@ -36,10 +36,10 @@ function Page({ params }) {
         <p className="text-userblack font-semibold text-xl2 font-sans">Users</p>
       </div>
       {loading && (
-            <div className="flex justify-center bg-white items-center p-10 w-full ">
-              <LoaderLarge />
-            </div>
-          )}
+        <div className="flex justify-center bg-white items-center p-10 w-full ">
+          <LoaderLarge />
+        </div>
+      )}
       <div className="flex flex-col gap-5">
         {data && <UserDetailsBox user={data} />}
         <div className="bg-white  p-5 rounded-xl border flex flex-col gap-10 border-[#E9E9EC]">
@@ -48,19 +48,23 @@ function Page({ params }) {
               Soul module data
             </p>
             <div className="grid  lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 justify-between items-center">
-              <Link href="/user-management/participated-challenges">
+              <Link
+                href={`/user-management/${data?._id}/participated`}
+              >
                 <GuideCards Title="Participated challenges" />
               </Link>
-              <Link href="/user-management/community-participated">
+              <Link
+                href={`/user-management/${data?._id}/community-participated/`}
+              >
                 <GuideCards Title="Community participation" />
               </Link>
-              <Link href="/user-management/community-created">
+              <Link href={`/user-management/${data?._id}/community-created`}>
                 <GuideCards Title="Communities created" />
               </Link>
-              <Link href="/user-management/challenges-created">
+              <Link href={`/user-management/${data?._id}/challenges-created`}>
                 <GuideCards Title="Challenges created" />
               </Link>
-              <Link href="/user-management/friends">
+              <Link href={`/user-management/${data?._id}/friends`}>
                 <GuideCards Title="Friends" />
               </Link>
             </div>
@@ -77,7 +81,7 @@ function Page({ params }) {
                 <GuideCards Title="12 Audio Listened" />
               </Link>
               <GuideCards Title="Course" />
-              <Link href="/user-management/user-guide-bookings">
+              <Link href={`/user-management/${data?._id}/user-guide-bookings`}>
                 <GuideCards Title="Guide bookings" />
               </Link>
             </div>

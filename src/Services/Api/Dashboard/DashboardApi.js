@@ -41,3 +41,44 @@ export const getTopCategories = async () => {
     apiError(error);
   }
 };
+export const getUserGrowth = async (type = "monthly") => {
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", "Bearer " + getToken());
+
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+  try {
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_URL +
+        `/admin/dashboard/users-growth?type=${type}`,
+      requestOptions
+    );
+    const result = await responseValidator(response);
+    return result;
+  } catch (error) {
+    apiError(error);
+  }
+};
+
+export const getStats = async () => {
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", "Bearer " + getToken());
+
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+  try {
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_URL + "/admin/dashboard/stats",
+      requestOptions
+    );
+    return responseValidator(response);
+  } catch (error) {
+    apiError(error);
+  }
+};

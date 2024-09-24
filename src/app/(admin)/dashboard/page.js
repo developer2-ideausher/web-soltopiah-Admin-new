@@ -1,7 +1,7 @@
 "use client";
 import EarningsChart from "@/components/DashBoardNew/EarrningsChart";
 import SessionBookingChart from "@/components/DashBoardNew/SessionBookingChart";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import LiveButton from "../../../../icons/LiveButton";
 import GreenLive from "../../../../icons/GreenLive";
 import Card from "@/components/DashBoardNew/Card";
@@ -10,15 +10,25 @@ import { useRouter } from "next/navigation";
 import { getToken } from "@/Services/Cookie/userCookie";
 import Star from "../../../../icons/Star";
 import {
+  getStats,
   getTopCategories,
   getTopGuides,
+  getUserGrowth,
 } from "@/Services/Api/Dashboard/DashboardApi";
+import LoaderSmall from "@/components/LoaderSmall";
+import LoaderLarge from "@/components/LoaderLarge";
+import NoData from "../../../../icons/NoData";
 export default function Page() {
   const [guideData, setGuideData] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
+  const [userData, setUserData] = useState([]);
+  const [statsData, setStatsData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [userLoading, setUserLoading] = useState(false);
   const router = useRouter();
 
   const fetchGuideData = async () => {
+    setLoading(true);
     const result = await getTopGuides();
     if (result.status) {
       console.log(result.data);
@@ -26,8 +36,11 @@ export default function Page() {
     } else {
       console.error(result.message);
     }
+    setLoading(false);
   };
   const fetchCategroyData = async () => {
+    setLoading(true);
+
     const result = await getTopCategories();
     if (result.status) {
       console.log(result.data);
@@ -35,11 +48,44 @@ export default function Page() {
     } else {
       console.error(result.message);
     }
+    setLoading(false);
   };
+  const [timePeriod, setTimePeriod] = useState("weekly");
+
+  const fetchUserData = async (period) => {
+    setUserLoading(true);
+
+    const result = await getUserGrowth(period);
+    if (result.status) {
+      console.log(result.data);
+      setUserData(result.data);
+    } else {
+      console.error(result.message);
+    }
+    setUserLoading(false);
+  };
+
+  const fetchStatsData = async () => {
+    setLoading(true);
+
+    const result = await getStats();
+    if (result.status) {
+      console.log(result.data);
+      setStatsData(result.data);
+    } else {
+      console.error(result.message);
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
     fetchGuideData();
     fetchCategroyData();
+    fetchStatsData();
   }, []);
+  useEffect(() => {
+    fetchUserData(timePeriod);
+  }, [timePeriod]);
 
   return (
     <div className=" flex flex-col gap-11 ">
@@ -75,31 +121,31 @@ export default function Page() {
         <div className="grid lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 items-center gap-5">
           <Card
             Heading="Total Users"
-            Number="31,583"
+            Number={loading ? <LoaderSmall /> : statsData.totalUsers || "--"}
             color="[#E6FFEC]"
-            Percent="12%"
-            textColour="[#2BAB4B]"
+            // Percent="12%"
+            // textColour="[#2BAB4B]"
           />
           <Card
             Heading="Total Subscribers"
             Number="22,785"
             color="[#E6FFEC]"
-            Percent="12%"
-            textColour="[#2BAB4B]"
+            // Percent="12%"
+            // textColour="[#2BAB4B]"
           />
           <Card
             Heading="Total Guides"
-            Number="10,000"
+            Number={loading ? <LoaderSmall /> : statsData.totalGuides || "--"}
             color="[#FFF0F1]"
-            Percent="5%"
-            textColour="[#E43A42]"
+            // Percent="5%"
+            // textColour="[#E43A42]"
           />
           <Card
             Heading="Revenue generated"
             Number="$87.9K"
             color="[#E6FFEC]"
-            Percent="12%"
-            textColour="[#2BAB4B]"
+            // Percent="12%"
+            // textColour="[#2BAB4B]"
           />
         </div>
         <div className="flex lg:flex-col xl:flex-row 2xl:flex-row items-center gap-4">
@@ -137,12 +183,22 @@ export default function Page() {
                 Newly Joined
               </p>
 
-              <select className="focus:outline-none  py-2 px-3 bg-white border border-[#DCDBE1]  rounded-lg text-sm font-sans font-normal text-[#17161D] flex flex-row gap-2">
-                <option value="1">Weekly</option>
+              <select
+                onChange={(e) => setTimePeriod(e.target.value)}
+                value={timePeriod} // Bind value to state
+                className="focus:outline-none py-2 px-3 bg-white border border-[#DCDBE1] rounded-lg text-sm font-sans font-normal text-[#17161D]"
+              >
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
               </select>
             </div>
+
             <div className="w-full h-auto">
-              <EarningsChart />
+              <EarningsChart
+                userData={userData.NormalUser || []}
+                guideData={userData.Guide || []}
+                timePeriod={timePeriod}
+              />
             </div>
             <div className="flex flex-row justify-center gap-10">
               <div className="gap-2 flex flex-row items-center">
@@ -165,6 +221,11 @@ export default function Page() {
             <p className="text-deepBlue  text-base font-sans font-bold">
               Top 5 Guides
             </p>
+            {loading && (
+              <div className="flex justify-center items-center bg-white">
+                <LoaderLarge />
+              </div>
+            )}
             {guideData &&
               guideData.map((item, index) => (
                 <div
@@ -190,9 +251,17 @@ export default function Page() {
             <p className="text-deepBlue text-base font-sans font-bold">
               Category Performances
             </p>
+            {loading && (
+              <div className="flex justify-center items-center bg-white">
+                <LoaderLarge />
+              </div>
+            )}
             {categoryData &&
               categoryData.map((item, index) => (
-                <div key={item._id || index} className="flex items-center justify-between">
+                <div
+                  key={item._id || index}
+                  className="flex items-center justify-between"
+                >
                   <div className="flex items-center justify-center gap-2">
                     <img src="dash.png" alt="" />
                     <p className="text-[#414554] text-sm font-normal font-sans">

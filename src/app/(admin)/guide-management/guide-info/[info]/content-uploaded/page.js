@@ -80,10 +80,16 @@ function Page({ params }) {
             </div>
           </div>
           {loading && (
-            <div className="flex justify-center bg-white items-center p-10 w-full ">
-              <LoaderLarge />
-            </div>
-          )}
+              <div className="flex justify-center items-center bg-white">
+                <LoaderLarge />
+              </div>
+            )}
+
+            {!loading && data.length === 0 && (
+              <div className="text-center bg-white text-lg font-semibold text-gray-600 p-4">
+                No data yet.
+                </div>
+            )}
 
           {data &&
             data.map((item, index) => (

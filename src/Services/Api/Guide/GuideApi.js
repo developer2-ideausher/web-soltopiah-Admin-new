@@ -53,7 +53,28 @@ export const getContent = async (id) => {
   };
   try {
     const response = await fetch(
-        process.env.NEXT_PUBLIC_URL + `/guides/${id}/chapters/owned`,
+      process.env.NEXT_PUBLIC_URL + `/guides/${id}/chapters/owned`,
+      requestOptions
+    );
+    const result = await responseValidator(response);
+    return result;
+  } catch (error) {
+    apiError(error);
+  }
+};
+
+export const guideSessionBooked = async (id) => {
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", "Bearer " + getToken());
+
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+  try {
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_URL + `/guides/${id}/guide-session-bookings`,
       requestOptions
     );
     const result = await responseValidator(response);
