@@ -18,7 +18,10 @@ function Page({ params }) {
     if (result.status) {
       console.log(result.data);
       setData(result.data);
-      setLoading(false);
+      setLoading(false); 
+      // testing
+
+      //asdfghjk
     } else {
       console.error(result.message);
     }
