@@ -49,7 +49,7 @@ module.exports = {
         LiveMainTable: "250px 200px 150px 200px 150px 100px",
         LiveReqTable: "280px 300px 280px 250px 120px",
         calmnessTable: "300px 200px 200px 150px 200px 100px ",
-        subscriptionTable: "450px 200px 220px 180px 150px 150px 50px",
+        subscriptionTable: "200px 150px 100px 100px 100px 100px 80px 80px",
         communityTable: "300px 350px 220px 220px 220px 200px 50px",
         communityDetailsTable: "350px 250px 220px 220px 100px ",
         revenueTable: "200px 350px 250px 250px 250px 180px 50px",

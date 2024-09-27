@@ -1,15 +1,42 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import Export from "../../../../icons/Export";
 import Plus from "../../../../icons/Plus";
 import Sort from "../../../../icons/Sort";
 import Filter from "../../../../icons/Filter";
 import SearchIcon from "../../../../icons/SearchIcon";
-import Edit from "../../../../icons/Edit";
-import MenuDots from "../../../../icons/MenuDots";
 import EarningsChart from "@/components/DashBoardNew/EarrningsChart";
 import Link from "next/link";
+import { getSubscriptionData } from "@/Services/Api/Subscriptions/Subs";
+import dayjs from "dayjs";
+import { Switch } from "@mui/material";
+import LoaderLarge from "@/components/LoaderLarge";
 
-function page() {
+function Page() {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const fetchData = async () => {
+    setLoading(true);
+
+    const result = await getSubscriptionData();
+    if (result.status) {
+      console.log(result.data);
+      setData(result.data);
+    } else {
+      console.error(result.message);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+  const handleToggle = (index) => {
+    const updatedData = [...data];
+    updatedData[index].isActive = !updatedData[index].isActive;
+    setData(updatedData);
+  };
+
   return (
     <div className="flex flex-col gap-7">
       <div className="flex flex-row justify-between items-center">
@@ -80,14 +107,12 @@ function page() {
             </div>
           </div>
           <div className="flex flex-row items-center gap-3">
-            <button className="rounded-lg py-2 px-3 flex flex-row items-center gap-3 border border-[#DCDBE1]">
-              <p>Edit Plan</p>
-              <Edit />
-            </button>
-            <Link href='/subscriptions/add-subscription'><button className="rounded-lg py-2 px-3 flex flex-row items-center gap-3 border border-[#DCDBE1]">
-              <p>Add</p>
-              <Plus />
-            </button></Link>
+            <Link href="/subscriptions/add-subscription">
+              <button className="rounded-lg py-2 px-3 flex flex-row items-center gap-3 border border-[#DCDBE1]">
+                <p>Add</p>
+                <Plus />
+              </button>
+            </Link>
           </div>
         </div>
         <div className="w-full overflow-x-scroll booking-table-wrapper">
@@ -95,6 +120,9 @@ function page() {
             <div className="items-center grid grid-cols-subscriptionTable justify-between p-4">
               <span className="text-[#666576] font-sans font-normal text-sm">
                 Title
+              </span>
+              <span className="text-[#666576] font-sans font-normal text-sm">
+                Description
               </span>
               <span className="text-[#666576] font-sans font-normal text-sm">
                 Type
@@ -116,82 +144,77 @@ function page() {
               <span className="text-[#666576] font-sans font-normal text-sm"></span>
             </div>
           </div>
+          {loading && (
+            <div className="flex justify-center items-center bg-white">
+              <LoaderLarge />
+            </div>
+          )}
+
+          {!loading && data.length === 0 && (
+            <div className="text-center text-md font-semibold text-gray-600 bg-white p-4">
+              No data yet.
+            </div>
+          )}
           <div className="flex flex-col bg-white min-w-fit w-full ">
-            <div className=" grid grid-cols-subscriptionTable justify-between border-b border-[#E9E9EC] items-center p-4">
-              <div className="text-[#252322] font-sans font-semibold text-base flex flex-row items-center gap-2">
-                <img src="newImage.png" alt="" />
-                <p>Designed to give you mental peace </p>
-              </div>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                Annual
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                Feb 20, 2024
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                158900
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                $2200
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm flex flex-row items-center gap-2">
-                <p>Activate</p>
-              </span>
-
-              <button className="text-[#08A03C] font-sans font-semibold text-sm">
-                <MenuDots />
-              </button>
-            </div>
-            <div className=" grid grid-cols-subscriptionTable justify-between border-b border-[#E9E9EC] items-center p-4">
-              <div className="text-[#252322] font-sans font-semibold text-base flex flex-row items-center gap-2">
-                <img src="newImage.png" alt="" />
-                <p>Designed to give you mental peace </p>
-              </div>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                Annual
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                Feb 20, 2024
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                158900
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                $2200
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm flex flex-row items-center gap-2">
-                <p>Activate</p>
-              </span>
-
-              <button className="text-[#08A03C] font-sans font-semibold text-sm">
-                <MenuDots />
-              </button>
-            </div>
-            <div className=" grid grid-cols-subscriptionTable justify-between border-b border-[#E9E9EC] items-center p-4">
-              <div className="text-[#252322] font-sans font-semibold text-base flex flex-row items-center gap-2">
-                <img src="newImage.png" alt="" />
-                <p>Designed to give you mental peace </p>
-              </div>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                Annual
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                Feb 20, 2024
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                158900
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm">
-                $2200
-              </span>
-              <span className="text-userblack font-sans font-semibold text-sm flex flex-row items-center gap-2">
-                <p>Activate</p>
-              </span>
-
-              <button className="text-[#08A03C] font-sans font-semibold text-sm">
-                <MenuDots />
-              </button>
-            </div>
+            {data &&
+              data.map((item, index) => (
+                <div
+                  key={item._id || index}
+                  className=" grid grid-cols-subscriptionTable justify-between border-b border-[#E9E9EC] items-center p-4"
+                >
+                  <div className="text-[#252322] font-sans font-semibold text-base flex flex-row items-center gap-4">
+                    <img
+                      src={item.thumbnail?.url || "newImage.png"}
+                      alt="thumbnail"
+                      className="w-11 h-11 rounded-md"
+                    />
+                    <p className="capitalize break-all ">{item.displayName}</p>
+                  </div>
+                  <span className="text-userblack font-sans font-semibold text-sm">
+                    {item.description}
+                  </span>
+                  <span className="text-userblack font-sans font-semibold text-sm capitalize">
+                    {item.recurringInterval}
+                  </span>
+                  <span className="text-userblack font-sans font-semibold text-sm">
+                    {dayjs(item.createdAt).format("DD/MM/YYYY")}
+                  </span>
+                  <span className="text-userblack font-sans font-semibold text-sm">
+                    {item.subscribedUsersCount}
+                  </span>
+                  <span className="text-userblack font-sans font-semibold text-sm">
+                    {"$"} {item.totalRevenueGenerated}
+                  </span>
+                  <span
+                    className={`${
+                      item.isActive ? "text-[#2BAB4B]" : "text-[#AB2B2B]"
+                    } font-sans font-semibold text-base flex flex-row items-center gap-2`}
+                  >
+                    <p> {item.isActive ? "Active" : "Inactive"}</p>
+                  </span>
+                  <div>
+                    <Switch
+                      checked={item.isActive}
+                      onChange={() => handleToggle(index)}
+                      sx={{
+                        "& .MuiSwitch-switchBase.Mui-checked": {
+                          color: "#2BAB4B",
+                        },
+                        "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track":
+                          {
+                            backgroundColor: "#2BAB4B",
+                          },
+                        "& .MuiSwitch-switchBase": {
+                          color: "#AB2B2B",
+                        },
+                        "& .MuiSwitch-switchBase + .MuiSwitch-track": {
+                          backgroundColor: "#AB2B2B",
+                        },
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
           </div>
         </div>
       </div>
@@ -199,4 +222,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

@@ -16,8 +16,9 @@ function Page({ params }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const fetchData = async () => {
-    const result = await getParticipatedCommunities(users);
     setLoading(true);
+
+    const result = await getParticipatedCommunities(users);
     if (result.status) {
       console.log(result.data.results);
       setData(result.data.results);
@@ -69,7 +70,7 @@ function Page({ params }) {
             </div>
           </div>
           {loading && (
-            <div className="flex justify-center items-center">
+            <div className="flex justify-center items-center bg-white">
               <LoaderLarge />
             </div>
           )}
@@ -82,13 +83,16 @@ function Page({ params }) {
           <div className="flex flex-col bg-white min-w-fit w-full">
             {data &&
               data.map((item, index) => (
-                <div key={item._id || index} className=" grid grid-cols-userCommunityParticipatedTable justify-between border-b border-[#E9E9EC] items-center p-4">
+                <div
+                  key={item._id || index}
+                  className=" grid grid-cols-userCommunityParticipatedTable justify-between border-b border-[#E9E9EC] items-center p-4"
+                >
                   <div className="text-userblack font-sans flex flex-row items-center gap-3 font-semibold text-base">
                     <img src={newImage.src} alt="" />
                     <p>{item.title}</p>
                   </div>
                   <span className="text-userblack w-[350px] font-sans font-semibold text-base">
-                   {item.description}
+                    {item.description}
                   </span>
                   <span className="text-userblack font-sans font-semibold text-base">
                     {item.firstName}
@@ -97,8 +101,12 @@ function Page({ params }) {
                     {item.createdAt}
                   </span>
 
-                  <div className="font-sans font-normal text-base">{item.members}</div>
-                  <div className="font-sans font-normal text-base">{item.accessibility}</div>
+                  <div className="font-sans font-normal text-base">
+                    {item.members}
+                  </div>
+                  <div className="font-sans font-normal text-base">
+                    {item.accessibility}
+                  </div>
                 </div>
               ))}
           </div>

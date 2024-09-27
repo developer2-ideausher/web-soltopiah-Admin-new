@@ -83,3 +83,5 @@ export const apiError = (e) => {
     }
     return {status: false, message: e}
 }
+
+export const url = process.env.NEXT_PUBLIC_URL
