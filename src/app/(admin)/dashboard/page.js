@@ -18,6 +18,7 @@ import {
 import LoaderSmall from "@/components/LoaderSmall";
 import LoaderLarge from "@/components/LoaderLarge";
 import NoData from "../../../../icons/NoData";
+import NoDataIcon from "../../../../icons/NoDataIcon";
 export default function Page() {
   const [guideData, setGuideData] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
@@ -128,7 +129,9 @@ export default function Page() {
           />
           <Card
             Heading="Total Subscribers"
-            Number="22,785"
+            Number={
+              loading ? <LoaderSmall /> : statsData.totalSubscribers || "--"
+            }
             color="[#E6FFEC]"
             // Percent="12%"
             // textColour="[#2BAB4B]"
@@ -141,8 +144,8 @@ export default function Page() {
             // textColour="[#E43A42]"
           />
           <Card
-            Heading="Revenue generated"
-            Number="$87.9K"
+            Heading="Revenue generated $"
+            Number={loading ? <LoaderSmall /> : statsData.totalRevenue || "--"}
             color="[#E6FFEC]"
             // Percent="12%"
             // textColour="[#2BAB4B]"
@@ -226,6 +229,14 @@ export default function Page() {
                 <LoaderLarge />
               </div>
             )}
+            {!loading && guideData.length === 0 && (
+              <div className="flex flex-col items-center justify-center mt-10 gap-4">
+                <NoDataIcon />
+                <p className="text-[#AE445A] text-base font-sans font-semibold">
+                  OOPS! No data found
+                </p>
+              </div>
+            )}
             {guideData &&
               guideData.map((item, index) => (
                 <div
@@ -254,6 +265,14 @@ export default function Page() {
             {loading && (
               <div className="flex justify-center items-center bg-white">
                 <LoaderLarge />
+              </div>
+            )}
+            {!loading && categoryData.length === 0 && (
+              <div className="flex flex-col items-center justify-center mt-10 gap-4">
+                <NoDataIcon />
+                <p className="text-[#AE445A] text-base font-sans font-semibold">
+                  OOPS! No data found
+                </p>
               </div>
             )}
             {categoryData &&

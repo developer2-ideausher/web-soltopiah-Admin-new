@@ -53,17 +53,17 @@ export const LoginApi = async (formdata) => {
   myHeaders.append("Authorization", `Bearer ${Cookies.get("auth")}`);
 
   const requestOptions = {
-    method: "Post",
+    method: "GET",
     headers: myHeaders,
-    body: formdata,
-    redirect: "follow",
+    // body: formdata,
+    // redirect: "follow",
   };
  
   try {
     console.log( process.env.NEXT_PUBLIC_URL
     )
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL + "/auth/admin-secretSignup",
+      process.env.NEXT_PUBLIC_URL + "/users/me",
       // GET /users/me
       requestOptions
     );
