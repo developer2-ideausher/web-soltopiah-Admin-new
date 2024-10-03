@@ -164,7 +164,7 @@ export default function Add() {
 
   const [categoryData, setCategoryData] = useState([]);
   const dropdownHandler = (val) => {
-    setCategory(val);
+    setCategory(val._id);
     setSaveEdit(true);
   };
 
@@ -407,6 +407,7 @@ export default function Add() {
   useEffect(() => {
     if (!queryRef.current) {
       fetchDetails();
+      dataSetter()
     }
     queryRef.current = true;
   }, []);

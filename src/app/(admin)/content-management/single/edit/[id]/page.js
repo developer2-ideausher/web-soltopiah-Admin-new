@@ -48,9 +48,9 @@ export default function Add() {
 
   const [categoryData, setCategoryData] = useState([]);
   const dropdownHandler = (val) => {
-    setCategory(val);
+    setCategory(val._id);
   };
-
+  console.log(category);
   // mutual related data
   const accessibilityTabHandler = (e) => {
     setAccessibilityTab(e.target.value);
@@ -153,12 +153,15 @@ export default function Add() {
       }
     }
   };
+  console.log(data,file)
   const updateContent = async () => {
     const formdata = new FormData();
-    if (file != data.chapter.media.url) {
+    const temp = file.split("?")
+    if (temp[0] != data.chapter.media.url) {
       formdata.append("media", file);
     }
     formdata.append("durationInMinutes", duration);
+   
 
     const response = await updateChapterInCourse(data.chapter._id, formdata);
     if (response?.status) {
@@ -194,6 +197,7 @@ export default function Add() {
   useEffect(() => {
     if (!queryRef.current) {
       fetchDetails();
+      dataSetter();
     }
     queryRef.current = true;
   }, []);
