@@ -19,14 +19,13 @@ function Page() {
   const [quickReadData, setQuickReadData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
-  const router = useRouter()
+  const router = useRouter();
   useEffect(() => {
-    if(!token){
+    if (!token) {
       toast.error("Session expired, login again");
       router.push("/login");
-    }else{
+    } else {
       getAllQuickreadsDataApi();
-
     }
   }, []);
   const token = getToken();
@@ -44,23 +43,25 @@ function Page() {
       .then((response) => response.json())
       .then((result) => {
         console.log(result.data.results);
-        if(result.message === "Failed to authenticate"){
+        if (result.message === "Failed to authenticate") {
           toast.error(result.message, { toastId: "1wmdewimmmmm" });
           router.push("/login");
-        }else{
+        } else {
           setQuickReadData(result.data.results);
-        const quickReads = result.data.results;
-        const pendingQuickReads = quickReads.filter(
-          (item) => item.status === "pending"
-        ).length;
-        setPendingCount(pendingQuickReads);
+          const quickReads = result.data.results;
+          const pendingQuickReads = quickReads.filter(
+            (item) => item.status === "pending"
+          ).length;
+          setPendingCount(pendingQuickReads);
         }
-        
+
         setLoading(false);
       })
       .catch((error) => {
         console.error(error);
-        toast.error("An error occurred while fetching data.", { toastId: "fetchError" });
+        toast.error("An error occurred while fetching data.", {
+          toastId: "fetchError",
+        });
         setLoading(false);
       });
   };
@@ -105,9 +106,9 @@ function Page() {
               </div>
             </div>
             {loading && (
-            <div className="flex justify-center bg-white items-center p-10 w-full ">
-              <LoaderLarge />
-            </div>
+              <div className="flex justify-center bg-white items-center p-10 w-full ">
+                <LoaderLarge />
+              </div>
             )}
             <div className="flex flex-col bg-white min-w-fit w-full ">
               {quickReadData &&

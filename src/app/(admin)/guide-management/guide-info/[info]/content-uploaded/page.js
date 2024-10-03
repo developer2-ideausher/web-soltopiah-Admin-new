@@ -80,16 +80,16 @@ function Page({ params }) {
             </div>
           </div>
           {loading && (
-              <div className="flex justify-center items-center bg-white">
-                <LoaderLarge />
-              </div>
-            )}
+            <div className="flex justify-center items-center bg-white">
+              <LoaderLarge />
+            </div>
+          )}
 
-            {!loading && data.length === 0 && (
-              <div className="text-center bg-white text-lg font-semibold text-gray-600 p-4">
-                No data yet.
-                </div>
-            )}
+          {!loading && data.length === 0 && (
+            <div className="text-center bg-white text-lg font-semibold text-gray-600 p-4">
+              No data yet.
+            </div>
+          )}
 
           {data &&
             data.map((item, index) => (
@@ -99,13 +99,17 @@ function Page({ params }) {
               >
                 <div className=" grid grid-cols-contentUploadedTable justify-between border-b border-[#E9E9EC] items-center p-4">
                   <div className="flex flex-row items-center gap-4">
-                    <img src={item.thumbnail?.url||newImage.src} alt="thumbnail" className="w-11 h-11 rounded-md" />
+                    <img
+                      src={item.thumbnail?.url || newImage.src}
+                      alt="thumbnail"
+                      className="w-11 h-11 rounded-md"
+                    />
                     <p className="text-sm font-sans font-semibold text-[#252322]">
                       {item.title}
                     </p>
                   </div>
                   <span className="text-userblack w-[300px] font-sans font-semibold text-sm">
-                   {item.description}
+                    {item.description}
                   </span>
                   <span className="text-userblack font-sans font-semibold text-sm capitalize">
                     {item.category?.title}

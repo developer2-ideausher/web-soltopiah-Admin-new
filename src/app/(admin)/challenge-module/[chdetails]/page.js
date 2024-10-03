@@ -48,7 +48,7 @@ function Page({ params }) {
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
-        getChallengesPost(); // Refresh posts after creating a new one
+        getChallengesPost(); 
         setPostContent("");
       })
       .catch((error) => console.error(error));
@@ -216,10 +216,10 @@ function Page({ params }) {
                         </p>
                       </div>
                     </div>
-                    <div className="flex flex-row items-center gap-3">
+                    {/* <div className="flex flex-row items-center gap-3">
                       <RedEdit />
                       <RedRecycle />
-                    </div>
+                    </div> */}
                   </div>
                 ))}
               </div>

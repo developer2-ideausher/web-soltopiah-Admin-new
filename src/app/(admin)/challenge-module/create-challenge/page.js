@@ -11,6 +11,9 @@ import AddContentModal from "@/components/AddContentModal";
 
 import RedRecycle from "../../../../../icons/RedRecycle";
 import { getToken } from "@/Services/Cookie/userCookie";
+import dayjs from "dayjs";
+import { toast } from "react-toastify";
+import LoaderSmall from "@/components/LoaderSmall";
 
 function Page() {
   const router = useRouter();
@@ -30,6 +33,7 @@ function Page() {
   const [selectedContent, setSelectedContent] = useState(Array(7).fill(null));
   const [currentDay, setCurrentDay] = useState(null);
   const [dataIds, setDataIds] = useState([]);
+  const [loading,setLoading] = useState(false)
 
   const handleModal = (day) => {
     setCurrentDay(day);
@@ -44,7 +48,6 @@ function Page() {
     setSelectedContent(updatedContent);
     setShowModal(false);
 
-    // Update dataIds with the new content ID
     const updatedDataIds = [...dataIds];
     updatedDataIds[currentDay - 1] = content._id;
     setDataIds(updatedDataIds);
@@ -55,7 +58,6 @@ function Page() {
     updatedContent[day - 1] = null;
     setSelectedContent(updatedContent);
 
-    // Update dataIds to remove the content ID
     const updatedDataIds = [...dataIds];
     updatedDataIds[day - 1] = null;
     setDataIds(updatedDataIds);
@@ -65,8 +67,18 @@ function Page() {
   const handleSubmit = (e) => {
     e.preventDefault();
     createChallengeApi();
-    setShowPage(true);
+    // setShowPage(true);
+    setSelectedContent(Array(days).fill(null));
   };
+
+  useEffect(() => {
+    if (startDate && endDate) {
+      const calculatedDays = dayjs(endDate).diff(dayjs(startDate), "day");
+      setDays(calculatedDays);
+    } else {
+      setDays(""); 
+    }
+  }, [startDate, endDate]);
 
   useEffect(() => {
     if (
@@ -115,6 +127,7 @@ function Page() {
   };
 
   const createChallengeApi = () => {
+    setLoading(true)
     const token = getToken();
 
     const myHeaders = new Headers();
@@ -142,9 +155,13 @@ function Page() {
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
+        setLoading(false)
+        toast.success("Challenge Created")
         router.push("/challenge-module");
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {console.error(error)
+        setLoading(false)
+      });
   };
   console.log(selectedContent);
   const handleSubmit1 = (e) => {
@@ -160,10 +177,8 @@ function Page() {
         description,
         imageSrc1,
       };
-      // localStorage.setItem("formData", JSON.stringify(formData));
       console.log("Form Data:", formData);
       setShowPage(true);
-      // router.push("/challenge-module/add-content");
     }
   };
 
@@ -173,10 +188,23 @@ function Page() {
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        setImageSrc1(reader.result); // Update state with the image source
+        setImageSrc1(reader.result); 
       };
-      reader.readAsDataURL(file); // Read the file as a data URL
+      reader.readAsDataURL(file); 
     }
+  };
+  const tomorrow = dayjs().add(1, "day").format("YYYY-MM-DD");
+
+  const minEndDate = startDate
+    ? dayjs(startDate).add(1, "day").format("YYYY-MM-DD")
+    : tomorrow;
+  const maxEndDate = startDate
+    ? dayjs(startDate).add(15, "day").format("YYYY-MM-DD")
+    : "";
+
+  const handleStartDateChange = (e) => {
+    setStartDate(e.target.value);
+    setEndDate(""); 
   };
 
   return (
@@ -204,7 +232,7 @@ function Page() {
             <p className="text-sm font-sans font-semibold text-userblack">
               Challenge cover
             </p>
-            <div className="border border-[#D3D6EE] bg-[#E5E7F5] rounded-lg p-4 flex justify-center items-center flex-col gap-3 relative ">
+            <div className="border border-[#D3D6EE] bg-[#E5E7F5] rounded-lg p-4 flex justify-center items-center flex-col gap-3 relative  ">
               {imageSrc1 ? (
                 <>
                   {" "}
@@ -239,7 +267,7 @@ function Page() {
                 type="file"
                 accept="image/png, image/jpeg, image/jpg"
                 className="absolute inset-0 opacity-0 cursor-pointer"
-                onChange={handleImageChange1} // Handle file selection
+                onChange={handleImageChange1} 
               />
             </div>
           </div>
@@ -261,11 +289,12 @@ function Page() {
             </p>
             <select
               className="bg-white py-3 px-4 rounded-xl focus:outline-none border border-[#E7E5E4]"
-              // placeholder="Enter category"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
             >
-              <option disabled value="">Select Category</option>
+              <option disabled value="">
+                Select Category
+              </option>
               {dropDownCategory.map((item) => (
                 <option key={item._id} value={item._id}>
                   {item.title}
@@ -279,26 +308,27 @@ function Page() {
             </p>
             <input
               type="date"
-              inputMode="numeric"
-              pattern="[0-9]*"
               className="bg-white py-3 px-4 rounded-xl border border-[#E7E5E4]"
               placeholder="Enter Start date"
               value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
+              onChange={handleStartDateChange}
+              min={tomorrow} // Start date should be tomorrow or later
             />
           </div>
+
           <div className="flex flex-col gap-1">
             <p className="text-sm font-sans font-semibold text-userblack">
               End date
             </p>
             <input
               type="date"
-              inputMode="numeric"
-              pattern="[0-9]*"
               className="bg-white py-3 px-4 rounded-xl border border-[#E7E5E4]"
               placeholder="Enter End date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
+              min={minEndDate} // End date should be at least one day after start date
+              max={maxEndDate} // End date can be up to 15 days from start date
+              disabled={!startDate} // Disable until start date is selected
             />
           </div>
           <div className="flex flex-col gap-1">
@@ -335,13 +365,12 @@ function Page() {
               No. of Days
             </p>
             <input
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
+              
               className="bg-white py-3 px-4 rounded-xl border border-[#E7E5E4]"
               placeholder="Enter No. of Days"
               value={days}
               onChange={(e) => setDays(e.target.value)}
+              disabled 
             />
           </div>
           <div className="flex flex-col gap-1">
@@ -373,7 +402,7 @@ function Page() {
           <p className="text-userblack text-3xl font-semibold font-sans">
             2. Add Content
           </p>
-          {Array.from({ length: 7 }, (_, i) => (
+          {Array.from({ length: days }, (_, i) => (
             <div key={i} className="flex flex-col gap-2">
               <p className="text-sm font-sans font-semibold text-userblack">
                 Day {i + 1}
@@ -420,9 +449,9 @@ function Page() {
           ))}
           <button
             type="submit"
-            className="p-4 w-2/5 mt-5 bg-[#AE445A] text-white rounded-lg font-sans text-base font-black"
+            className="p-4 w-2/5 mt-5 bg-[#AE445A] text-white rounded-lg font-sans text-base font-black flex justify-center items-center"
           >
-            Save & Finish
+            {!loading?"Save & Finish":<LoaderSmall/>}
           </button>
         </form>
       )}

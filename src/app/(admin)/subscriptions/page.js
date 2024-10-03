@@ -11,6 +11,7 @@ import { getSubscriptionData } from "@/Services/Api/Subscriptions/Subs";
 import dayjs from "dayjs";
 import { Switch } from "@mui/material";
 import LoaderLarge from "@/components/LoaderLarge";
+import Image from "next/image";
 
 function Page() {
   const [data, setData] = useState([]);
@@ -163,10 +164,12 @@ function Page() {
                   className=" grid grid-cols-subscriptionTable justify-between border-b border-[#E9E9EC] items-center p-4"
                 >
                   <div className="text-[#252322] font-sans font-semibold text-base flex flex-row items-center gap-4">
-                    <img
-                      src={item.thumbnail?.url || "newImage.png"}
+                    <Image
+                      src={item.thumbnail?.url || "/newImage.png"}
                       alt="thumbnail"
-                      className="w-11 h-11 rounded-md"
+                      width={44} // Adjust these values as needed
+                      height={44}
+                      className="rounded-md"
                     />
                     <p className="capitalize break-all ">{item.displayName}</p>
                   </div>

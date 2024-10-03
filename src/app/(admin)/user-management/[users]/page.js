@@ -18,7 +18,7 @@ function Page({ params }) {
     if (result.status) {
       console.log(result.data);
       setData(result.data);
-      setLoading(false); 
+      setLoading(false);
       // testing
 
       //asdfghjk
@@ -51,9 +51,7 @@ function Page({ params }) {
               Soul module data
             </p>
             <div className="grid  lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 justify-between items-center">
-              <Link
-                href={`/user-management/${data?._id}/participated`}
-              >
+              <Link href={`/user-management/${data?._id}/participated`}>
                 <GuideCards Title="Participated challenges" />
               </Link>
               <Link

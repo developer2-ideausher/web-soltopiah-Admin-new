@@ -1,6 +1,7 @@
 import Cookies from "js-cookie";
 import { getToken } from "../Cookie/userCookie";
 import { toast } from "react-toastify";
+import { apiError } from "@/Utilities/helper";
 
 export const responseValidator = async (response) => {
   if (response.ok) {
@@ -52,7 +53,7 @@ export const LoginApi = async (formdata) => {
   myHeaders.append("Authorization", `Bearer ${Cookies.get("auth")}`);
 
   const requestOptions = {
-    method: "POST",
+    method: "Post",
     headers: myHeaders,
     body: formdata,
     redirect: "follow",
@@ -63,6 +64,7 @@ export const LoginApi = async (formdata) => {
     )
     const response = await fetch(
       process.env.NEXT_PUBLIC_URL + "/auth/admin-secretSignup",
+      // GET /users/me
       requestOptions
     );
     return responseValidator(response);
