@@ -2,8 +2,8 @@
 import BackButton from "@/components/BackButton";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import LiveSessionImage from "../../../../../../public/LiveSessionImage.png";
-import Frame1 from "../../../../../../public/Frame1.png";
+import LiveSessionImage from "../../../../../public/LiveSessionImage.png";
+import Frame1 from "../../../../../public/Frame1.png";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getToken } from "@/Services/Cookie/userCookie";
 import dayjs from "dayjs";
@@ -18,7 +18,7 @@ dayjs.extend(utc);
 function Page({ params }) {
   const [requestData, setRequestData] = useState(null);
   const [modal, setModal] = useState(false);
-  const { view } = params;
+  const { id } = params;
 
   const router = useRouter();
 
@@ -35,7 +35,9 @@ function Page({ params }) {
       redirect: "follow",
     };
 
-    fetch(process.env.NEXT_PUBLIC_URL + "/live-events/" + view, requestOptions)
+    fetch(
+      process.env.NEXT_PUBLIC_URL + "/live-events/" + id, requestOptions
+    )
       .then((response) => response.json())
       .then((result) => {
         console.log(result.data);
@@ -43,77 +45,70 @@ function Page({ params }) {
       })
       .catch((error) => console.error(error));
   };
-  const handleApprove = () => {
-    const raw = { status: "approved" };
-    const myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + token);
-    myHeaders.append("Content-Type", "application/json");
-    const requestOptions = {
-      method: "PATCH",
-      headers: myHeaders,
+//   const handleApprove = () => {
+//     const raw = { status: "approved" };
+//     const myHeaders = new Headers();
+//     myHeaders.append("Authorization", "Bearer " + token);
+//     myHeaders.append("Content-Type", "application/json");
+//     const requestOptions = {
+//       method: "PATCH",
+//       headers: myHeaders,
 
-      body: JSON.stringify(raw),
-      redirect: "follow",
-    };
+//       body: JSON.stringify(raw),
+//       redirect: "follow",
+//     };
 
-    fetch(
-      process.env.NEXT_PUBLIC_URL + `/live-events/${view}/status`,
-      requestOptions
-    )
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result);
-        router.push("/live-manage/live-requests");
-      })
-      .catch((error) => console.error(error));
-  };
-  const handleDecline = (rejectionReason) => {
-    const raw = { status: "declined", rejectionReason };
-    const myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + token);
-    myHeaders.append("Content-Type", "application/json");
+//     fetch(
+//       process.env.NEXT_PUBLIC_URL + `/live-events/${id}/status`,
+//       requestOptions
+//     )
+//       .then((response) => response.json())
+//       .then((result) => {
+//         console.log(result);
+//         router.push("/live-manage/live-requests");
+//       })
+//       .catch((error) => console.error(error));
+//   };
 
-    const requestOptions = {
-      method: "PATCH",
-      headers: myHeaders,
 
-      body: JSON.stringify(raw),
-      redirect: "follow",
-    };
+//   const handleDecline = () => {
+//     const raw = { status: "declined" };
+//     const myHeaders = new Headers();
+//     myHeaders.append("Authorization", "Bearer " + token);
+//     myHeaders.append("Content-Type", "application/json");
 
-    fetch(
-      process.env.NEXT_PUBLIC_URL + `/live-events/${view}/status`,
-      requestOptions
-    )
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result);
+//     const requestOptions = {
+//       method: "PATCH",
+//       headers: myHeaders,
 
-        router.push("/live-manage/live-requests");
-        toast.success("Request Declined");
+//       body: JSON.stringify(raw),
+//       redirect: "follow",
+//     };
 
-      })
-      .catch((error) => console.error(error));
-  };
+//     fetch(
+//       process.env.NEXT_PUBLIC_URL + `/live-events/${id}/status`,
+//       requestOptions
+//     )
+//       .then((response) => response.json())
+//       .then((result) => {
+//         console.log(result);
+//         router.push("/live-manage/live-requests");
+//       })
+//       .catch((error) => console.error(error));
+//   };
   const showModal = () => {
     setModal(!modal);
-  };
-  const handleSubmit = (e) => {
-    e.preventDefault(); 
   };
   return (
     <>
       {modal && (
         <Modal>
-          <DeclineModal
-            onclose={showModal}
-            onSubmitClick={(reason) => handleDecline(reason)}
-          />{" "}
+          <DeclineModal onclose={showModal} onSubmitClick={handleDecline} />
         </Modal>
       )}
       <div className="flex flex-col gap-7">
         <div className="flex flex-row items-center gap-5">
-          <Link href="/live-manage/live-requests">
+          <Link href="/live-manage">
             <BackButton />
           </Link>
           <p className="text-userblack font-semibold text-xl2 font-sans">
@@ -161,7 +156,7 @@ function Page({ params }) {
                   Time
                 </p>
                 <p className="text-xl text-[#414554] font-normal font-sans">
-                  {dayjs(requestData.startDate).utc().format("hh:mm A")}
+                {dayjs(requestData.startDate).utc().format("hh:mm A")}
                 </p>
               </div>
               <div className="flex flex-col gap-1">
@@ -193,7 +188,7 @@ function Page({ params }) {
                   </p>
                 </div>
               </div>
-              <div className="w-3/5 gap-3 flex flex-row justify-between items-center">
+              {/* <div className="w-3/5 gap-3 flex flex-row justify-between items-center">
                 <button
                   onClick={() => showModal()}
                   className="bg-[#EE3E3E] p-3 rounded-md w-full border border-[#EE3E3E] text-base font-sans font-normal text-white"
@@ -206,7 +201,7 @@ function Page({ params }) {
                 >
                   Approve
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
         )}

@@ -52,7 +52,7 @@ export const createSubs = async (
   }
 };
 
-export const patchSwitch = async (isActive,id) => {
+export const patchSwitch = async (id,isActive) => {
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
   myHeaders.append("Authorization", "Bearer " + getToken());
@@ -72,6 +72,48 @@ export const patchSwitch = async (isActive,id) => {
       url + `/subscriptions/${id}/status`,
       requestOptions
     );
+
+    return responseValidator(response);
+  } catch (error) {
+    apiError(error);
+  }
+};
+
+export const getOneSubs = async (id) => {
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", "Bearer " + getToken());
+
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+  try {
+    const response = await fetch(url + `/subscriptions/${id}`, requestOptions);
+    return responseValidator(response);
+  } catch (error) {
+    apiError(error);
+  }
+};
+
+export const updateSubs = async (id, formData) => {
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", "Bearer " + getToken());
+
+  // const formdata = new FormData();
+  // formdata.append("thumbnail", fileInput.files[0], "[PROXY]");
+  // formdata.append("description", "updated desc");
+  // formdata.append("displayName", "free plan");
+  // formdata.append("features", '["feat 1", "feat 2"]');
+
+  const requestOptions = {
+    method: "PATCH",
+    headers: myHeaders, 
+    body: formData,
+    redirect: "follow",
+  };
+  try {
+    const response = await fetch(url + `/subscriptions/${id}`, requestOptions);
 
     return responseValidator(response);
   } catch (error) {

@@ -17,6 +17,7 @@ function Page({ params }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const fetchData = async () => {
+    setLoading(true)
     const result = await userParticipated(users);
     if (result.status) {
       console.log(result.data.results);
@@ -41,7 +42,7 @@ function Page({ params }) {
           <span className="text-[#AE445A]">Participated challenges</span>{" "}
         </p>
       </div>
-      <UserDetailsBox />
+      {/* <UserDetailsBox /> */}
       <div className="flex flex-col">
         <SearchBar />
         <div className="w-full overflow-x-scroll booking-table-wrapper">
@@ -66,7 +67,7 @@ function Page({ params }) {
             </div>
           </div>
           {loading && (
-            <div className="flex justify-center items-center">
+            <div className="flex justify-center items-center bg-white">
               <LoaderLarge />
             </div>
           )}

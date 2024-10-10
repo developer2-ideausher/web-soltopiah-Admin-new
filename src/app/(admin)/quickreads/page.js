@@ -93,15 +93,15 @@ function Page() {
                 <span className="text-[#666576] font-sans font-normal text-sm">
                   Created By
                 </span>
-                <span className="text-[#666576] font-sans font-normal text-sm">
-                  Category
-                </span>
 
                 <span className="text-[#666576] font-sans font-normal text-sm">
                   Date
                 </span>
                 <span className="text-[#666576] font-sans font-normal text-sm">
                   Slides
+                </span>
+                <span className="text-[#666576] font-sans font-normal text-sm text-center">
+                  Status
                 </span>
               </div>
             </div>
@@ -113,42 +113,55 @@ function Page() {
             <div className="flex flex-col bg-white min-w-fit w-full ">
               {quickReadData &&
                 quickReadData.map((item, index) => (
-                  <div
+                  <Link
                     key={item._id || index}
-                    className=" grid grid-cols-quickreadsMainTable justify-between border-b border-[#E9E9EC] items-center p-4"
+                    href={`/quickreads/${item._id}`}
                   >
-                    <span className="text-userblack font-sans font-semibold text-sm">
-                      {item.title}
-                    </span>
-                    <div className="flex flex-row items-center gap-2">
-                      <img
-                        className={`w-8 h-8 object-cover rounded-full`}
-                        src={
-                          item.creatorRole === "Guide"
-                            ? item.creator?.profilePic
-                              ? item.creator.profilePic?.url
-                              : Frame1.src
-                            : LoginImage.src
-                        }
-                        alt=""
-                      />
+                    <div className=" grid grid-cols-quickreadsMainTable justify-between border-b border-[#E9E9EC] items-center p-4">
                       <span className="text-userblack font-sans font-semibold text-sm">
-                        {item.creatorRole == "Guide"
-                          ? item?.creator?.firstName
-                          : "Soltopiah"}
+                        {item.title}
+                      </span>
+                      <div className="flex flex-row items-center gap-2">
+                        <img
+                          className={`w-8 h-8 object-cover rounded-full`}
+                          src={
+                            item.creatorRole === "Guide"
+                              ? item.creator?.profilePic
+                                ? item.creator.profilePic?.url
+                                : Frame1.src
+                              : LoginImage.src
+                          }
+                          alt=""
+                        />
+                        <span className="text-userblack font-sans font-semibold text-sm">
+                          {item.creatorRole == "Guide"
+                            ? item?.creator?.firstName
+                            : "Soltopiah"}
+                        </span>
+                      </div>
+
+                      <span className="text-userblack font-sans font-semibold text-sm">
+                        {dayjs(item.createdAt).format("MMM DD YYYY")}
+                      </span>
+                      <span className="text-userblack font-sans font-semibold text-sm">
+                        {item.pictures?.length}
+                      </span>
+                      <span
+                        className={`${
+                          item.status === "pending" &&
+                          "bg-[#F9882433] border-[#F9882436] text-[#B35605]"
+                        } ${
+                          item.status === "approved" &&
+                          "bg-[#DDFDE8] text-[#08A03C] border-[#A8FBC4]"
+                        } ${
+                          item.status === "declined" &&
+                          "bg-red-100 text-red-500 border-red-500"
+                        }  py-1 px-3 text-center rounded-[78px] border  font-sans font-normal text-base capitalize`}
+                      >
+                        {item.status}
                       </span>
                     </div>
-
-                    <span className="text-userblack font-sans font-semibold text-sm">
-                      Free
-                    </span>
-                    <span className="text-userblack font-sans font-semibold text-sm">
-                      {dayjs(item.createdAt).format("MMM DD YYYY")}
-                    </span>
-                    <span className="text-userblack font-sans font-semibold text-sm">
-                      {item.pictures.length}
-                    </span>
-                  </div>
+                  </Link>
                 ))}
             </div>
           </div>

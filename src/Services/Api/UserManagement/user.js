@@ -17,7 +17,7 @@ export const getAllUsersApi = async () => {
     );
     const result = await responseValidator(response);
     return result;
-  } catch (error) {
+  } catch (error) { 
     return apiError(error);
   }
 };

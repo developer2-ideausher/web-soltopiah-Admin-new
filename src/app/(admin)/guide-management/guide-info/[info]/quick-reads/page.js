@@ -85,6 +85,12 @@ function Page({ params }) {
               <LoaderLarge />
             </div>
           )}
+          {!loading && data.length === 0 && (
+            <div className="text-center bg-white text-lg font-semibold text-gray-600 p-4">
+              No data yet.
+            </div>
+          )}
+
           {data &&
             data.map((item, index) => (
               <div
@@ -93,7 +99,11 @@ function Page({ params }) {
               >
                 <div className=" grid grid-cols-quickreadsTable justify-between border-b border-[#E9E9EC] items-center p-4">
                   <div className="flex flex-row items-center gap-4">
-                    <img src={item.pictures?.[0]?.url ||newImage.src} alt="quickReadsImage" className="w-11 h-11 rounded-md" />
+                    <img
+                      src={item.pictures?.[0]?.url || newImage.src}
+                      alt="quickReadsImage"
+                      className="w-11 h-11 rounded-md"
+                    />
                     <p className="text-sm font-sans font-semibold text-[#252322]">
                       {item.title}
                     </p>

@@ -41,7 +41,7 @@ function Page({ params }) {
           <span className="text-[#AE445A]">Challenges Created</span>{" "}
         </p>
       </div>
-      <UserDetailsBox  />
+      {/* <UserDetailsBox  /> */}
       <div className="flex flex-col">
         <SearchBar />
         <div className="w-full overflow-x-scroll booking-table-wrapper">

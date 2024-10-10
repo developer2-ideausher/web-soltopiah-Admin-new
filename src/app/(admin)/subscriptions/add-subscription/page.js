@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 
 import DownArrow from "../../../../../icons/DownArrow";
 import { useRouter } from "next/navigation";
+import LoaderSmall from "@/components/LoaderSmall";
 
 function Page() {
   const [displayName, setDisplayName] = useState("");
@@ -16,9 +17,11 @@ function Page() {
   const [recurringInterval, setRecurringInterval] = useState("");
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState();
+  const [smallLoading, setSmallLoading] = useState(false);
   const router = useRouter();
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSmallLoading(true)
     const result = await createSubs(
       displayName,
       description,
@@ -35,6 +38,8 @@ function Page() {
     }
     setLoading(false);
   };
+  
+  
 
   const handleChange = (e) => {
     const file = e.target.files[0];
@@ -116,7 +121,6 @@ function Page() {
             value={amount}
             onChange={(e) => {
               const value = e.target.value;
-// only number input allowed
               if (/^\d*$/.test(value)) {
                 setAmount(value);
               }
@@ -130,14 +134,14 @@ function Page() {
           <div className="flex items-center w-full border border-[#E7E5E4] bg-white rounded-xl">
             <select
               required
-              value={recurringInterval} // Bind the value to the state
+              value={recurringInterval} 
               onChange={(e) => setRecurringInterval(e.target.value)}
-              className="bg-white py-3 px-4 rounded-xl  focus:outline-none text-[#9C9896] font-sans font-normal text-sm w-full"
+              className="bg-white py-3 px-4 rounded-xl  focus:outline-none text-black font-sans font-normal text-sm w-full"
             >
               <option disabled value="">
                 Select
               </option>
-              <option value="year">Annual</option>
+              <option  value="year">Annual</option>
               <option value="month">Monthly</option>
             </select>
             <span className=" py-3 px-4  ">
@@ -148,9 +152,9 @@ function Page() {
         <div className="w-1/3">
           <button
             type="submit"
-            className="bg-[#AE445A] p-4 rounded-lg border border-[#B7B7B7] w-full text-base font-sans font-bold text-white"
+            className="bg-[#AE445A] p-4 rounded-lg border border-[#B7B7B7] w-full text-base font-sans font-bold text-white flex items-center justify-center"
           >
-            Save
+           {!smallLoading ? "Save" : <LoaderSmall />}
           </button>
         </div>
       </form>

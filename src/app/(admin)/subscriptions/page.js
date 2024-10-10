@@ -7,11 +7,11 @@ import Filter from "../../../../icons/Filter";
 import SearchIcon from "../../../../icons/SearchIcon";
 import EarningsChart from "@/components/DashBoardNew/EarrningsChart";
 import Link from "next/link";
-import { getSubscriptionData } from "@/Services/Api/Subscriptions/Subs";
+import { getSubscriptionData, patchSwitch } from "@/Services/Api/Subscriptions/Subs";
 import dayjs from "dayjs";
 import { Switch } from "@mui/material";
 import LoaderLarge from "@/components/LoaderLarge";
-import Image from "next/image";
+import { getImageCacheRemover } from "@/Services/Api/Badges/BadgesApi";
 
 function Page() {
   const [data, setData] = useState([]);
@@ -32,10 +32,35 @@ function Page() {
   useEffect(() => {
     fetchData();
   }, []);
-  const handleToggle = (index) => {
-    const updatedData = [...data];
-    updatedData[index].isActive = !updatedData[index].isActive;
-    setData(updatedData);
+  
+  const handleToggle = async (index) => {
+    const user = data[index];
+    const newStatus = !user.isActive;
+    
+
+    setData((prevUsers) => {
+      const updatedUsers = [...prevUsers];
+      updatedUsers[index].isActive = newStatus;
+      return updatedUsers;
+    });
+    const result = await patchSwitch(user._id, newStatus);
+    if (!result.status) {
+      console.error(result.message);
+      setData((prevUsers) => {
+        const revertedUsers = [...prevUsers];
+        revertedUsers[index].isActive = !newStatus;
+        return revertedUsers;
+      });
+    }
+  };
+  
+ 
+
+  const truncateDescription = (desc, maxLength) => {
+    if (desc.length > maxLength) {
+      return desc.substring(0, maxLength) + "...";
+    }
+    return desc;
   };
 
   return (
@@ -159,64 +184,73 @@ function Page() {
           <div className="flex flex-col bg-white min-w-fit w-full ">
             {data &&
               data.map((item, index) => (
-                <div
+                <Link
                   key={item._id || index}
-                  className=" grid grid-cols-subscriptionTable justify-between border-b border-[#E9E9EC] items-center p-4"
+                  href={`/subscriptions/${item._id}`}
                 >
-                  <div className="text-[#252322] font-sans font-semibold text-base flex flex-row items-center gap-4">
-                    <Image
-                      src={item.thumbnail?.url || "/newImage.png"}
-                      alt="thumbnail"
-                      width={44} // Adjust these values as needed
-                      height={44}
-                      className="rounded-md"
-                    />
-                    <p className="capitalize break-all ">{item.displayName}</p>
-                  </div>
-                  <span className="text-userblack font-sans font-semibold text-sm">
-                    {item.description}
-                  </span>
-                  <span className="text-userblack font-sans font-semibold text-sm capitalize">
-                    {item.recurringInterval}
-                  </span>
-                  <span className="text-userblack font-sans font-semibold text-sm">
-                    {dayjs(item.createdAt).format("DD/MM/YYYY")}
-                  </span>
-                  <span className="text-userblack font-sans font-semibold text-sm">
-                    {item.subscribedUsersCount}
-                  </span>
-                  <span className="text-userblack font-sans font-semibold text-sm">
-                    {"$"} {item.totalRevenueGenerated}
-                  </span>
-                  <span
-                    className={`${
-                      item.isActive ? "text-[#2BAB4B]" : "text-[#AB2B2B]"
-                    } font-sans font-semibold text-base flex flex-row items-center gap-2`}
-                  >
-                    <p> {item.isActive ? "Active" : "Inactive"}</p>
-                  </span>
-                  <div>
-                    <Switch
-                      checked={item.isActive}
-                      onChange={() => handleToggle(index)}
-                      sx={{
-                        "& .MuiSwitch-switchBase.Mui-checked": {
-                          color: "#2BAB4B",
-                        },
-                        "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track":
-                          {
-                            backgroundColor: "#2BAB4B",
-                          },
-                        "& .MuiSwitch-switchBase": {
-                          color: "#AB2B2B",
-                        },
-                        "& .MuiSwitch-switchBase + .MuiSwitch-track": {
-                          backgroundColor: "#AB2B2B",
-                        },
+                  <div className=" grid grid-cols-subscriptionTable justify-between border-b border-[#E9E9EC] items-center p-4">
+                    <div className="text-[#252322] font-sans font-semibold text-base flex flex-row items-center gap-4">
+                      <img
+                        src={getImageCacheRemover(
+                          item.thumbnail?.url,
+                          "/newImage.png"
+                        )}
+                        alt="thumbnail"
+                        className="rounded-md w-11 h-11"
+                      />
+                      <p className="capitalize break-all ">
+                        {item.displayName}
+                      </p>
+                    </div>
+                    <span className="text-userblack font-sans font-semibold text-sm w-9/12">
+                      {truncateDescription(item.description, 40)}
+                    </span>
+                    <span className="text-userblack font-sans font-semibold text-sm capitalize">
+                      {item.recurringInterval ==="year" ? "Annual":"Monthly"}
+                    </span>
+                    <span className="text-userblack font-sans font-semibold text-sm">
+                      {dayjs(item.createdAt).format("DD/MM/YYYY")}
+                    </span>
+                    <span className="text-userblack font-sans font-semibold text-sm ml-4">
+                      {item.subscribedUsersCount}
+                    </span>
+                    <span className="text-userblack font-sans font-semibold text-sm">
+                      {"$"} {item.totalRevenueGenerated}
+                    </span>
+                    <span
+                      className={`${
+                        item.isActive ? "text-[#2BAB4B]" : "text-[#AB2B2B]"
+                      } font-sans font-semibold text-base flex flex-row items-center gap-2`}
+                    >
+                      <p> {item.isActive ? "Active" : "Inactive"}</p>
+                    </span>
+                    <div
+                      onClick={(e) => {
+                        e.stopPropagation();
                       }}
-                    />
+                    >
+                      <Switch
+                        checked={item.isActive}
+                        onChange={() => handleToggle(index)}
+                        sx={{
+                          "& .MuiSwitch-switchBase.Mui-checked": {
+                            color: "#2BAB4B",
+                          },
+                          "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track":
+                            {
+                              backgroundColor: "#2BAB4B",
+                            },
+                          "& .MuiSwitch-switchBase": {
+                            color: "#AB2B2B",
+                          },
+                          "& .MuiSwitch-switchBase + .MuiSwitch-track": {
+                            backgroundColor: "#AB2B2B",
+                          },
+                        }}
+                      />
+                    </div>
                   </div>
-                </div>
+                </Link>
               ))}
           </div>
         </div>

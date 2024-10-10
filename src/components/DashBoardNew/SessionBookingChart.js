@@ -40,7 +40,7 @@ export default function SessionBookingChart() {
               }
           },
           legend: {
-            show: false // Hide the legend
+            show: false 
           },
         },
         
