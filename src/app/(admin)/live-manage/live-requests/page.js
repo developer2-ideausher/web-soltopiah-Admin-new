@@ -11,6 +11,7 @@ import LoaderLarge from "@/components/LoaderLarge";
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import { getPendingCount } from "@/Services/Api/LiveManagament/Live";
 
 dayjs.extend(utc);
 
@@ -19,42 +20,22 @@ function Page() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    if (!token) {
-      toast.error("Session expired, login again");
-      router.push("/login");
-    } else {
-      getAllLiveApi();
-    }
-  }, []);
-  const token = getToken();
-  const getAllLiveApi = () => {
-    const myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + token);
-
-    const requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow",
-    };
+ 
+  const fetchPendingCount= async()=>{
     setLoading(true);
-    fetch(
-      process.env.NEXT_PUBLIC_URL + "/live-events?status=pending",
-      requestOptions
-    )
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result.data.results);
-        setLiveData(result.data.results);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        toast.error("Failed to fetch data");
 
-        setLoading(false);
-      });
-  };
+    const result = await getPendingCount();
+    if (result.status) {
+      console.log(result.data);
+      setLiveData(result.data?.results);
+    } else {
+      console.error(result.message);
+    }
+    setLoading(false);
+  }
+  useEffect(()=>{
+    fetchPendingCount()
+  },[])
   return (
     <div className="flex flex-col gap-7">
       <div className="flex flex-row items-center gap-5">
@@ -83,9 +64,7 @@ function Page() {
               <span className="text-[#666576] font-sans font-normal text-sm">
                 Time
               </span>
-              <span className="text-[#666576] font-sans font-normal text-sm">
-                Category
-              </span>
+              
             </div>
           </div>
           {loading && (
@@ -131,9 +110,7 @@ function Page() {
                     <span className="text-userblack font-sans font-semibold text-base">
                       {dayjs(item.startDate).utc().format("hh:mm A")}
                     </span>
-                    <span className="text-userblack font-sans font-semibold text-base">
-                      Meditatation
-                    </span>
+                    
                   </div>
                 </Link>
               ))}

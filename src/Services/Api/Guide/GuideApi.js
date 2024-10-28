@@ -42,7 +42,7 @@ export const getQuickReads = async (id) => {
   }
 };
 
-export const getContent = async (id) => {
+export const getContent = async (id,page) => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + getToken());
 
@@ -53,7 +53,7 @@ export const getContent = async (id) => {
   };
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL + `/guides/${id}/chapters/owned`,
+      process.env.NEXT_PUBLIC_URL + `/guides/${id}/chapters/owned?page=${page}&limit=10`,
       requestOptions
     );
     const result = await responseValidator(response);

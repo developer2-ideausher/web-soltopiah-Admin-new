@@ -14,6 +14,8 @@ import Loader from "@/components/Loader";
 import Frame1 from "../../../../public/Frame1.png";
 import LoaderLarge from "@/components/LoaderLarge";
 import DeleteModal from "@/components/DeleteModal";
+import { truncateName } from "@/Utilities/helper";
+import RobinPagination from "@/components/Pagination";
 
 function Page() {
   const [popupIndex, setPopupIndex] = useState(null);
@@ -23,10 +25,12 @@ function Page() {
   const [guideToDelete, setGuideToDelete] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [refresh, setRefresh] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    getAllGuideApi();
-  }, [refresh]);
+    getAllGuideApi(currentPage);
+  }, [refresh, currentPage]);
   const handleDelete = (id) => {
     const myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer " + token);
@@ -39,7 +43,6 @@ function Page() {
     };
     setDeleteLoading(true);
     fetch(process.env.NEXT_PUBLIC_URL + `/guides/${id}`, requestOptions)
-  
       // .then((response) => {
       //   console.log(response)
       //   response.json()
@@ -47,20 +50,19 @@ function Page() {
 
       .then((result) => {
         console.log(result);
-       
+
         setDeleteLoading(false);
         setShowModal(false);
         setGuideToDelete(null);
         setRefresh((prev) => !prev);
-        
       })
       .catch((error) => {
-        console.error("error while deleting",error);
+        console.error("error while deleting", error);
         setDeleteLoading(false);
       });
   };
   const token = getToken();
-  const getAllGuideApi = () => {
+  const getAllGuideApi = (page) => {
     const myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer " + token);
 
@@ -70,11 +72,16 @@ function Page() {
       redirect: "follow",
     };
     setLoading(true);
-    fetch(process.env.NEXT_PUBLIC_URL + "/guides", requestOptions)
+    fetch(
+      process.env.NEXT_PUBLIC_URL + `/guides?page=${page}&limit=10`,
+      requestOptions
+    )
       .then((response) => response.json())
       .then((result) => {
         console.log(result.data.results);
         setGuideData(result.data.results);
+        setTotalPages(result.data.totalPages);
+
         setLoading(false);
       })
 
@@ -154,7 +161,7 @@ function Page() {
                       className=" grid grid-cols-guideTable border-b border-[#E9E9EC] items-center justify-between p-4 relative"
                     >
                       <span className="text-userblack text-base font-semibold font-sans">
-                        {item._id.slice(-4)}
+                        {item._id}
                       </span>
                       <div className="flex flex-row items-center gap-2">
                         <img
@@ -166,7 +173,7 @@ function Page() {
                         />
                         <div className="flex flex-col">
                           <p className="text-base font-semibold font-sans text-userblack">
-                            {item.firstName + " " + item.lastName}
+                            {truncateName(item.firstName + " " + item.lastName)}
                           </p>
                           <p className="text-base font-sans font-normal text-[#666576]">
                             {item.phone}
@@ -177,20 +184,20 @@ function Page() {
                         {dayjs(item.createdAt).format("MMM DD YYYY")}
                       </span>
                       <span className="text-base font-sans font-semibold text-userblack text-center">
-                        Subscribed
+                        {item.hasPremiumPlan?"Premium" :"Free"}
                       </span>
                       <span className="text-base font-sans font-semibold text-userblack text-center">
-                        $1200
+                        NA
                       </span>
                       <span className="text-base font-sans font-semibold text-userblack text-center">
-                        32
+                        {item.bookingsCount}
                       </span>
                       <button
                         onClick={() =>
                           setPopupIndex(popupIndex === index ? null : index)
                         }
                         className="text-base font-sans font-semibold text-userblack"
-                      > 
+                      >
                         <MenuDots />
                       </button>
                       {popupIndex === index && (
@@ -230,7 +237,11 @@ function Page() {
                 })}
             </div>
           </div>
-          <Pagination />
+          <RobinPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
         </div>
       </div>
     </>

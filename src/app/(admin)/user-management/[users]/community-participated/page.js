@@ -9,27 +9,33 @@ import newImage from "../../../../../../public/newImage.png";
 import { useRouter } from "next/navigation";
 import { getParticipatedCommunities } from "@/Services/Api/UserManagement/user";
 import LoaderLarge from "@/components/LoaderLarge";
+import { truncateDescription, truncateName } from "@/Utilities/helper";
+import dayjs from "dayjs";
+import RobinPagination from "@/components/Pagination";
 
 function Page({ params }) {
   const { users } = params;
   const router = useRouter();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const fetchData = async () => {
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const fetchData = async (page) => {
     setLoading(true);
 
-    const result = await getParticipatedCommunities(users);
+    const result = await getParticipatedCommunities(users, page);
     if (result.status) {
       console.log(result.data.results);
       setData(result.data.results);
+      setTotalPages(result.data.totalPages);
     } else {
       console.error(result.message);
     }
     setLoading(false);
   };
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(currentPage);
+  }, [currentPage]);
 
   return (
     <div className="flex flex-col gap-7">
@@ -55,7 +61,7 @@ function Page({ params }) {
                 Description
               </span>
               <span className="text-[#666576] font-sans font-normal text-sm">
-                Created
+                Created by
               </span>
 
               <span className="text-[#666576] font-sans font-normal text-sm">
@@ -88,30 +94,40 @@ function Page({ params }) {
                   className=" grid grid-cols-userCommunityParticipatedTable justify-between border-b border-[#E9E9EC] items-center p-4"
                 >
                   <div className="text-userblack font-sans flex flex-row items-center gap-3 font-semibold text-base">
-                    <img src={newImage.src} alt="" />
-                    <p>{item.title}</p>
+                    <img
+                      src={item.group?.photo?.url || "/Frame1.png"}
+                      alt=""
+                      className="w-11 h-11 rounded-md"
+                    />
+                    <p className="break-all">
+                      {truncateName(item.group?.name)}
+                    </p>
                   </div>
-                  <span className="text-userblack w-[350px] font-sans font-semibold text-base">
-                    {item.description}
+                  <span className="text-userblack  font-sans font-semibold text-base break-all">
+                    {truncateDescription(item.group?.description)}
                   </span>
                   <span className="text-userblack font-sans font-semibold text-base">
-                    {item.firstName}
+                    {item.groupOwner?.firstName} {item.groupOwner?.lastName}
                   </span>
                   <span className="text-userblack font-sans font-semibold text-base">
-                    {item.createdAt}
+                    {dayjs(item.createdAt).format("DD/MM/YYYY")}
                   </span>
 
                   <div className="font-sans font-normal text-base">
-                    {item.members}
+                    {item.group?.participantsCount}
                   </div>
-                  <div className="font-sans font-normal text-base">
-                    {item.accessibility}
+                  <div className="font-sans font-normal text-base capitalize">
+                    {item.group?.type}
                   </div>
                 </div>
               ))}
           </div>
         </div>
-        <Pagination />
+        <RobinPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />{" "}
       </div>
     </div>
   );

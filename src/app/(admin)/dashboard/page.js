@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { getToken } from "@/Services/Cookie/userCookie";
 import Star from "../../../../icons/Star";
 import {
+  getRevenueChart,
   getStats,
   getTopCategories,
   getTopGuides,
@@ -26,6 +27,7 @@ export default function Page() {
   const [statsData, setStatsData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [userLoading, setUserLoading] = useState(false);
+  const [revenueData,setRevenueData]=useState([])
   const router = useRouter();
 
   const fetchGuideData = async () => {
@@ -65,6 +67,20 @@ export default function Page() {
     }
     setUserLoading(false);
   };
+  const [timeRevenue, setTimeRevenue] = useState("weekly");
+
+  const fetchRevenueData = async (period) => {
+    setUserLoading(true);
+
+    const result = await getRevenueChart(period);
+    if (result.status) {
+      console.log(result.data);
+      setRevenueData(result.data);
+    } else {
+      console.error(result.message);
+    }
+    setUserLoading(false);
+  };
 
   const fetchStatsData = async () => {
     setLoading(true);
@@ -86,7 +102,8 @@ export default function Page() {
   }, []);
   useEffect(() => {
     fetchUserData(timePeriod);
-  }, [timePeriod]);
+    fetchRevenueData(timeRevenue)
+  }, [timePeriod,timeRevenue]);
 
   return (
     <div className=" flex flex-col gap-11 ">
@@ -158,12 +175,20 @@ export default function Page() {
                 Revenue
               </p>
 
-              <select className="focus:outline-none  py-2 px-3 bg-white border border-[#DCDBE1]  rounded-lg text-sm font-sans font-normal text-[#17161D] flex flex-row gap-2">
-                <option value="1">Weekly</option>
+              <select
+                onChange={(e) => setTimeRevenue(e.target.value)}
+                value={timeRevenue} // Bind value to state
+                className="focus:outline-none py-2 px-3 bg-white border border-[#DCDBE1] rounded-lg text-sm font-sans font-normal text-[#17161D]"
+              >
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
               </select>
             </div>
             <div className="w-full h-auto ">
-              <SessionBookingChart />
+              <SessionBookingChart
+              subscriberData={revenueData.SubscriptionRevenue || []}
+              guideData={revenueData.GuideSessionBookingRevenue || []}
+              timePeriod={timeRevenue} />
             </div>
             <div className="flex flex-row justify-center gap-10">
               <div className="gap-2 flex flex-row items-center">
@@ -282,7 +307,7 @@ export default function Page() {
                   className="flex items-center justify-between"
                 >
                   <div className="flex items-center justify-center gap-2">
-                    <img src="dash.png" alt="" />
+                    <img src={item.category?.image?.url || "dash.png"} alt="image" className="w-11 h-11 rounded-full object-cover" />
                     <p className="text-[#414554] text-sm font-normal font-sans">
                       {item.category?.title}
                     </p>

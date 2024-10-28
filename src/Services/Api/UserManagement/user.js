@@ -1,7 +1,7 @@
 import { getToken } from "@/Services/Cookie/userCookie";
-import { apiError, responseValidator } from "@/Utilities/helper";
+import { apiError, responseValidator, url } from "@/Utilities/helper";
 
-export const getAllUsersApi = async () => {
+export const getAllUsersApi = async (page) => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + getToken());
 
@@ -12,12 +12,12 @@ export const getAllUsersApi = async () => {
   };
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL + "/users",
+      process.env.NEXT_PUBLIC_URL + `/users?page=${page}&limit=10`,
       requestOptions
     );
     const result = await responseValidator(response);
     return result;
-  } catch (error) { 
+  } catch (error) {
     return apiError(error);
   }
 };
@@ -43,7 +43,7 @@ export const getUserInfo = async (id) => {
   }
 };
 
-export const getFriends = async (id) => {
+export const getFriends = async (id, page) => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + getToken());
 
@@ -54,7 +54,8 @@ export const getFriends = async (id) => {
   };
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL + `/users/${id}/friendships`,
+      process.env.NEXT_PUBLIC_URL +
+        `/users/${id}/friendships?page=${page}&limit=10`,
       requestOptions
     );
     const result = await responseValidator(response);
@@ -63,7 +64,7 @@ export const getFriends = async (id) => {
     apiError(error);
   }
 };
-export const userParticipated = async (id) => {
+export const userParticipated = async (id, page) => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + getToken());
 
@@ -75,7 +76,8 @@ export const userParticipated = async (id) => {
 
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL + `/users/${id}/challenges/participated`,
+      process.env.NEXT_PUBLIC_URL +
+        `/users/${id}/challenges/participated?page=${page}&limit=10`,
       requestOptions
     );
     const result = await responseValidator(response);
@@ -84,7 +86,7 @@ export const userParticipated = async (id) => {
     apiError(error);
   }
 };
-export const getParticipatedCommunities = async (id) => {
+export const getParticipatedCommunities = async (id, page) => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + getToken());
 
@@ -96,7 +98,8 @@ export const getParticipatedCommunities = async (id) => {
 
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL + `/users/${id}/groups/participated`,
+      process.env.NEXT_PUBLIC_URL +
+        `/users/${id}/groups/participated?page=${page}&limit=10`,
       requestOptions
     );
     const result = responseValidator(response);
@@ -106,7 +109,7 @@ export const getParticipatedCommunities = async (id) => {
   }
 };
 
-export const getCommunitiesCreated = async (id) => {
+export const getCommunitiesCreated = async (id, page) => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + getToken());
 
@@ -117,7 +120,8 @@ export const getCommunitiesCreated = async (id) => {
   };
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL + `/users/${id}/groups/owned`,
+      process.env.NEXT_PUBLIC_URL +
+        `/users/${id}/groups/owned?page=${page}&limit=10`,
       requestOptions
     );
 
@@ -128,7 +132,7 @@ export const getCommunitiesCreated = async (id) => {
   }
 };
 
-export const getCreatedChallenges = async (id) => {
+export const getCreatedChallenges = async (id, page) => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + getToken());
 
@@ -139,7 +143,8 @@ export const getCreatedChallenges = async (id) => {
   };
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL + `/users/${id}/challenges/replicated`,
+      process.env.NEXT_PUBLIC_URL +
+        `/users/${id}/challenges/replicated?page=${page}&limit=10`,
       requestOptions
     );
     const result = await responseValidator(response);
@@ -149,7 +154,7 @@ export const getCreatedChallenges = async (id) => {
   }
 };
 
-export const getGuideBookings = async (id) => {
+export const getGuideBookings = async (id, page) => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + getToken());
 
@@ -158,9 +163,13 @@ export const getGuideBookings = async (id) => {
     headers: myHeaders,
     redirect: "follow",
   };
+  ``;
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL + `/guide-session-bookings/users/${id}`,
+      process.env.NEXT_PUBLIC_URL +
+        `/users/${id}/guide-session-bookings?page=${page}&limit=10`,
+
+      // `/guide-session-bookings/users/${id}?page=${page}&limit=10`,
       requestOptions
     );
     const result = await responseValidator(response);
@@ -190,6 +199,95 @@ export const switchUser = async (id, isBlocked) => {
       process.env.NEXT_PUBLIC_URL + `/users/${id}/status`,
       requestOptions
     );
+    const result = await responseValidator(response);
+    return result;
+  } catch (error) {
+    apiError(error);
+  }
+};
+export const getSubsData = async (id) => {
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", "Bearer " + getToken());
+
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+
+  try {
+    const response = await fetch(
+      url + `/users/${id}/subscriptions/current-subscription`,
+      requestOptions
+    );
+
+    const result = await responseValidator(response);
+    return result;
+  } catch (error) {
+    apiError(error);
+  }
+};
+
+export const userCourses = async (id, page) => {
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", "Bearer " + getToken());
+
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+
+  try {
+    const response = await fetch(
+      url + `/users/${id}/courses/standard/completed?page=${page}&limit=10`,
+      requestOptions
+    );
+
+    const result = await responseValidator(response);
+    return result;
+  } catch (error) {
+    apiError(error);
+  }
+};
+export const getWatchedVideo = async (id, page) => {
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", "Bearer " + getToken());
+
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+  try {
+    const response = await fetch(
+      url +
+        `/users/${id}/chapters/watched?chapterType=video&page=${page}&limit=10`,
+      requestOptions
+    );
+
+    const result = await responseValidator(response);
+    return result;
+  } catch (error) {
+    apiError(error);
+  }
+};
+export const getListenedAudio = async (id, page) => {
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", "Bearer " + getToken());
+
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+  try {
+    const response = await fetch(
+      url +
+        `/users/${id}/chapters/watched?chapterType=audio&page=${page}&limit=10`,
+      requestOptions
+    );
+
     const result = await responseValidator(response);
     return result;
   } catch (error) {

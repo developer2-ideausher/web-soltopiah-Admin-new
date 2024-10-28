@@ -46,7 +46,7 @@ function Page() {
       redirect: "follow",
     };
 
-    fetch(process.env.NEXT_PUBLIC_URL + "/course-categories", requestOptions)
+    fetch(process.env.NEXT_PUBLIC_URL + "/categories", requestOptions)
       .then((response) => response.json())
       .then((result) => {
         console.log(result);

@@ -1,5 +1,5 @@
 import { getToken } from "@/Services/Cookie/userCookie";
-import { apiError, responseValidator } from "@/Utilities/helper";
+import { apiError, responseValidator, url } from "@/Utilities/helper";
 
 export const getTopGuides = async () => {
   const myHeaders = new Headers();
@@ -32,7 +32,7 @@ export const getTopCategories = async () => {
   };
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL + "/course-categories/most-watched",
+      process.env.NEXT_PUBLIC_URL + "/categories/most-watched",
       requestOptions
     );
     const result = await responseValidator(response);
@@ -75,6 +75,27 @@ export const getStats = async () => {
   try {
     const response = await fetch(
       process.env.NEXT_PUBLIC_URL + "/admin/dashboard/stats",
+      requestOptions
+    );
+    return responseValidator(response);
+  } catch (error) {
+    apiError(error);
+  }
+};
+
+export const getRevenueChart = async (type = "monthly") => {
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", "Bearer " + getToken());
+
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+
+  try {
+    const response = await fetch(
+      url + `/revenues/bookings-vs-subscriptions-revenue-growth?type=${type}`,
       requestOptions
     );
     return responseValidator(response);

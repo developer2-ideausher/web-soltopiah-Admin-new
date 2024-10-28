@@ -14,27 +14,30 @@ import LoaderLarge from "@/components/LoaderLarge";
 import dayjs from "dayjs";
 import { toast } from "react-toastify";
 import { getImageCacheRemover } from "@/Services/Api/Badges/BadgesApi";
+import { truncateDescription, truncateName } from "@/Utilities/helper";
+import RobinPagination from "@/components/Pagination";
 
 function Page() {
   const [showModal, setShowModal] = useState(false);
   const [categoryData, setCategoryData] = useState([]);
   const [refresh, setRefresh] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const [loading, setLoading] = useState(false);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const token = getToken();
 
   useEffect(() => {
-    if(!token){
-      toast.error("Session expired, login again")
-      router.push("/login")
-    }else{
-      getCategoryData();
-
+    if (!token) {
+      toast.error("Session expired, login again");
+      router.push("/login");
+    } else {
+      getCategoryData(currentPage);
     }
-  }, [token,refresh]);
+  }, [token, refresh,currentPage]);
   const router = useRouter();
-  const getCategoryData = () => {
+  const getCategoryData = (page) => {
     setLoading(true);
     const myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer " + token);
@@ -45,17 +48,19 @@ function Page() {
       redirect: "follow",
     };
 
-    fetch(process.env.NEXT_PUBLIC_URL + "/course-categories", requestOptions)
+    fetch(process.env.NEXT_PUBLIC_URL + `/categories?page=${page}&limit=10`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         if (result.message === "Failed to authenticate") {
           // toast.error(result.message, { toastId: "1wmdewilmh" });
           router.push("/login");
-        } else{
+        } else {
           console.log(result.data.results);
           setCategoryData(result.data.results);
+          setTotalPages(result.data.totalPages);
+
         }
-       
+
         setLoading(false);
       })
       .catch((error) => {
@@ -78,7 +83,7 @@ function Page() {
     };
 
     fetch(
-      process.env.NEXT_PUBLIC_URL + `/course-categories/${categoryId}`,
+      process.env.NEXT_PUBLIC_URL + `/categories/${categoryId}`,
       requestOptions
     )
       .then((response) => response.text())
@@ -90,7 +95,7 @@ function Page() {
       })
       .catch((error) => {
         console.error(error);
-        toast.error("Error Occured")
+        toast.error("Error Occured");
         setLoading(false);
       });
   };
@@ -102,7 +107,7 @@ function Page() {
   const handleConfirmDelete = () => {
     setLoading(true);
     deleteCategoryApi(selectedCategoryId);
-    toast.success("Category Deleted")
+    toast.success("Category Deleted");
 
     setLoading(false);
     setShowModal(false);
@@ -129,8 +134,8 @@ function Page() {
           <AddSearchBar route="/category-management/addnew" />
           <div className="w-full overflow-x-scroll booking-table-wrapper">
             <div className="bg-[#F0F2F5] min-w-fit w-full">
-              <div className="items-center grid grid-cols-5 justify-between p-4">
-                <span className="text-[#666576]  font-sans font-normal text-sm">
+              <div className="items-center grid grid-cols-categoryMainTable  justify-between p-4">
+                <span className="text-[#666576] mr-10  font-sans font-normal text-sm">
                   Category
                 </span>
 
@@ -151,48 +156,53 @@ function Page() {
               <div className="flex justify-center bg-white items-center p-10 w-full ">
                 <LoaderLarge />
               </div>
-            ):( <div className="flex flex-col bg-white min-w-fit w-full ">
-              {categoryData &&
-                categoryData.map((item, index) => (
-                  <div
-                    key={item._id || index}
-                    onClick={() =>
-                      router.push(
-                        `/category-management/${item._id}`
-                      )
-                    }
-                    className=" grid grid-cols-5 justify-between border-b border-[#E9E9EC] items-center p-4 cursor-pointer"
-                  >
-                    <div className="flex flex-row items-center gap-4">
-                      <img
-                        className="h-8 w-8 object-cover rounded-full"
-                        src={getImageCacheRemover(item.image?.url, "image1.png")}
-                        alt=""
-                      />
-                      <p className="text-sm font-sans font-semibold text-[#252322]">
-                        {item.title}
+            ) : (
+              <div className="flex flex-col bg-white min-w-fit w-full ">
+                {categoryData &&
+                  categoryData.map((item, index) => (
+                    <div
+                      key={item._id || index}
+                      onClick={() =>
+                        router.push(`/category-management/${item._id}`)
+                      }
+                      className=" grid grid-cols-categoryMainTable justify-between border-b border-[#E9E9EC] items-center p-4 cursor-pointer"
+                    >
+                      <div className="flex flex-row items-center gap-4">
+                        <img
+                          className="h-8 w-8 object-cover rounded-full"
+                          src={getImageCacheRemover(
+                            item.image?.url,
+                            "image1.png"
+                          )}
+                          alt=""
+                        />
+                        <p className="text-sm font-sans font-semibold text-[#252322] break-all mr-10 ">
+                          {truncateName(item.title)}
+                        </p>
+                      </div>
+                      <p className="text-sm font-sans font-semibold capitalize text-[#252322]">
+                        {item.pageType}
                       </p>
+
+                      <span className="text-userblack font-sans font-semibold text-sm">
+                        {dayjs(item.createdAt).format("MMM DD YYYY")}
+                      </span>
+                      <span className="text-userblack font-sans font-semibold text-sm">
+                        {dayjs(item.updatedAt).format("MMM DD YYYY")}
+                      </span>
+                      <button onClick={(e) => handleDelete(item._id, e)}>
+                        <MaroonDustbin />
+                      </button>
                     </div>
-                    <p className="text-sm font-sans font-semibold text-[#252322]">
-                      {item.pageType}
-                    </p>
-
-                    <span className="text-userblack font-sans font-semibold text-sm">
-                      {dayjs(item.createdAt).format("MMM DD YYYY")}
-                    </span>
-                    <span className="text-userblack font-sans font-semibold text-sm">
-                      {dayjs(item.updatedAt).format("MMM DD YYYY")}
-                    </span>
-                    <button onClick={(e) => handleDelete(item._id, e)}>
-                      <MaroonDustbin />
-                    </button>
-                  </div>
-                ))}
-            </div>)}
-
-           
+                  ))}
+              </div>
+            )}
           </div>
-          <Pagination />
+          <RobinPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />{" "}
         </div>
       </div>
     </>

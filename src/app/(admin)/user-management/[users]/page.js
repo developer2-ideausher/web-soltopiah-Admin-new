@@ -5,11 +5,12 @@ import React, { useEffect, useState } from "react";
 import Profile2 from "../../../../../public/Profile2.png";
 import UserDetailsBox from "@/components/UserManagement/UserDetailsBox";
 import GuideCards from "@/components/GuideCards";
-import { getUserInfo } from "@/Services/Api/UserManagement/user";
+import { getSubsData, getUserInfo } from "@/Services/Api/UserManagement/user";
 import LoaderLarge from "@/components/LoaderLarge";
 
 function Page({ params }) {
   const [data, setData] = useState(null);
+  const [subsdata, setSubsData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { users } = params;
   const fetchData = async () => {
@@ -27,8 +28,24 @@ function Page({ params }) {
     }
     setLoading(false);
   };
+  const fetchSubsData = async () => {
+    setLoading(true);
+    const result = await getSubsData(users);
+    if (result.status) {
+      console.log(result.data);
+      setSubsData(result.data);
+      setLoading(false);
+      // testing
+
+      //asdfghjk
+    } else {
+      console.error(result.message);
+    }
+    setLoading(false);
+  };
   useEffect(() => {
     fetchData();
+    fetchSubsData()
   }, []);
   return (
     <div className="flex flex-col gap-7">
@@ -44,7 +61,7 @@ function Page({ params }) {
         </div>
       )}
       <div className="flex flex-col gap-5">
-        {data && <UserDetailsBox user={data} />}
+        {data && <UserDetailsBox user={data} sData={subsdata} />}
         <div className="bg-white  p-5 rounded-xl border flex flex-col gap-10 border-[#E9E9EC]">
           <div className="flex flex-col gap-2">
             <p className="text-xl font-sans font-semibold text-userblack">
@@ -75,13 +92,13 @@ function Page({ params }) {
               Mindful hub data
             </p>
             <div className="grid lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 justify-between items-center">
-              <Link href="/user-management/videos-watched">
-                <GuideCards Title="15 Video Watched" />
+              <Link href={`/user-management/${data?._id}/videos-watched`}>
+                <GuideCards Title="Video Watched" />
               </Link>
-              <Link href="/user-management/audio-listened">
-                <GuideCards Title="12 Audio Listened" />
+              <Link href={`/user-management/${data?._id}/audio-listened`}>
+                <GuideCards Title="Audio Listened" />
               </Link>
-              <GuideCards Title="Course" />
+              <Link href={`/user-management/${data?._id}/courses`}><GuideCards Title="Course" /></Link>
               <Link href={`/user-management/${data?._id}/user-guide-bookings`}>
                 <GuideCards Title="Guide bookings" />
               </Link>

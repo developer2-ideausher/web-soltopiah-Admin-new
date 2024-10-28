@@ -12,100 +12,36 @@ import utc from "dayjs/plugin/utc";
 import Modal from "@/components/Modal";
 import Declaration from "postcss/lib/declaration";
 import DeclineModal from "@/components/DeclineModal";
+import { getOnelive } from "@/Services/Api/LiveManagament/Live";
 
 dayjs.extend(utc);
 
 function Page({ params }) {
   const [requestData, setRequestData] = useState(null);
-  const [modal, setModal] = useState(false);
   const { id } = params;
 
   const router = useRouter();
 
+  
+
+  const fetchData = async () => {
+    // setLoading(true);
+
+    const result = await getOnelive(id);
+    if (result.status) {
+      console.log(result.data);
+      setRequestData(result.data);
+    } else {
+      console.error(result.message);
+    }
+    // setLoading(false);
+  };
   useEffect(() => {
-    getAllReqApi();
+    fetchData();
   }, []);
-  const token = getToken();
-  const getAllReqApi = () => {
-    const myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + token);
-    const requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow",
-    };
-
-    fetch(
-      process.env.NEXT_PUBLIC_URL + "/live-events/" + id, requestOptions
-    )
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result.data);
-        setRequestData(result.data);
-      })
-      .catch((error) => console.error(error));
-  };
-//   const handleApprove = () => {
-//     const raw = { status: "approved" };
-//     const myHeaders = new Headers();
-//     myHeaders.append("Authorization", "Bearer " + token);
-//     myHeaders.append("Content-Type", "application/json");
-//     const requestOptions = {
-//       method: "PATCH",
-//       headers: myHeaders,
-
-//       body: JSON.stringify(raw),
-//       redirect: "follow",
-//     };
-
-//     fetch(
-//       process.env.NEXT_PUBLIC_URL + `/live-events/${id}/status`,
-//       requestOptions
-//     )
-//       .then((response) => response.json())
-//       .then((result) => {
-//         console.log(result);
-//         router.push("/live-manage/live-requests");
-//       })
-//       .catch((error) => console.error(error));
-//   };
-
-
-//   const handleDecline = () => {
-//     const raw = { status: "declined" };
-//     const myHeaders = new Headers();
-//     myHeaders.append("Authorization", "Bearer " + token);
-//     myHeaders.append("Content-Type", "application/json");
-
-//     const requestOptions = {
-//       method: "PATCH",
-//       headers: myHeaders,
-
-//       body: JSON.stringify(raw),
-//       redirect: "follow",
-//     };
-
-//     fetch(
-//       process.env.NEXT_PUBLIC_URL + `/live-events/${id}/status`,
-//       requestOptions
-//     )
-//       .then((response) => response.json())
-//       .then((result) => {
-//         console.log(result);
-//         router.push("/live-manage/live-requests");
-//       })
-//       .catch((error) => console.error(error));
-//   };
-  const showModal = () => {
-    setModal(!modal);
-  };
   return (
     <>
-      {modal && (
-        <Modal>
-          <DeclineModal onclose={showModal} onSubmitClick={handleDecline} />
-        </Modal>
-      )}
+      
       <div className="flex flex-col gap-7">
         <div className="flex flex-row items-center gap-5">
           <Link href="/live-manage">
@@ -156,7 +92,7 @@ function Page({ params }) {
                   Time
                 </p>
                 <p className="text-xl text-[#414554] font-normal font-sans">
-                {dayjs(requestData.startDate).utc().format("hh:mm A")}
+                  {dayjs(requestData.startDate).utc().format("hh:mm A")}
                 </p>
               </div>
               <div className="flex flex-col gap-1">
@@ -188,20 +124,7 @@ function Page({ params }) {
                   </p>
                 </div>
               </div>
-              {/* <div className="w-3/5 gap-3 flex flex-row justify-between items-center">
-                <button
-                  onClick={() => showModal()}
-                  className="bg-[#EE3E3E] p-3 rounded-md w-full border border-[#EE3E3E] text-base font-sans font-normal text-white"
-                >
-                  Decline
-                </button>
-                <button
-                  onClick={() => handleApprove()}
-                  className="bg-[#08A03C] p-3 rounded-md w-full border border-[#08A03C] text-base font-sans font-normal text-white"
-                >
-                  Approve
-                </button>
-              </div> */}
+             
             </div>
           </div>
         )}

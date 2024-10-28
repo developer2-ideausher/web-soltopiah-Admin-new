@@ -7,7 +7,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import newImage from "../../../../../../public/newImage.png";
 import { useRouter } from "next/navigation";
-import { getCreatedChallenges } from "@/Services/Api/UserManagement/user";
+import { getCreatedChallenges, userCourses } from "@/Services/Api/UserManagement/user";
 import LoaderLarge from "@/components/LoaderLarge";
 import { truncateDescription, truncateName } from "@/Utilities/helper";
 import RobinPagination from "@/components/Pagination";
@@ -21,11 +21,12 @@ function Page({ params }) {
   const [currentPage, setCurrentPage] = useState(1);
   const fetchData = async (page) => {
     setLoading(true);
-    const result = await getCreatedChallenges(users, page);
+    const result = await userCourses(users,page);
     if (result.status) {
       console.log(result.data.results);
       setData(result.data.results);
       setTotalPages(result.data.totalPages);
+
     } else {
       console.error(result.message);
     }
@@ -43,7 +44,7 @@ function Page({ params }) {
         </div>
         <p className="text-userblack font-semibold text-xl2 font-sans">
           Users management -{" "}
-          <span className="text-[#AE445A]">Challenges Created</span>{" "}
+          <span className="text-[#AE445A]">Courses</span>{" "}
         </p>
       </div>
       {/* <UserDetailsBox  /> */}
@@ -51,22 +52,19 @@ function Page({ params }) {
         <SearchBar />
         <div className="w-full overflow-x-scroll booking-table-wrapper">
           <div className="bg-[#F0F2F5] min-w-fit w-full">
-            <div className="items-center grid grid-cols-userChallengeCreatedTable justify-between p-4">
+            <div className="items-center grid grid-cols-userCourses justify-between p-4">
               <span className="text-[#666576] font-sans font-normal text-sm">
                 Name
               </span>
               <span className="text-[#666576] font-sans font-normal text-sm">
-                Description
+                Progress
               </span>
-              <span className="text-[#666576] font-sans font-normal text-sm">
-                Duration (in days)
-              </span>
+              
 
+              
+             
               <span className="text-[#666576] font-sans font-normal text-sm">
-                Categories
-              </span>
-              <span className="text-[#666576] font-sans font-normal text-sm">
-                Participants
+                Access
               </span>
               <span className="text-[#666576] font-sans font-normal text-sm">
                 Type
@@ -74,46 +72,39 @@ function Page({ params }) {
             </div>
           </div>
           {loading && (
-            <div className="flex justify-center items-center bg-white">
-              <LoaderLarge />
-            </div>
-          )}
+              <div className="flex justify-center items-center bg-white">
+                <LoaderLarge />
+              </div>
+            )}
 
-          {!loading && data.length === 0 && (
-            <div className="text-center bg-white text-lg font-semibold text-gray-600 p-4">
-              No data yet.
-            </div>
-          )}
+            {!loading && data.length === 0 && (
+              <div className="text-center bg-white text-lg font-semibold text-gray-600 p-4">
+                No data  yet.
+              </div>
+            )}
           <div className="flex flex-col bg-white min-w-fit w-full">
             {data &&
               data.map((item, index) => (
                 <div
                   key={item._id || index}
-                  className=" grid grid-cols-userChallengeCreatedTable justify-between border-b border-[#E9E9EC] items-center p-4"
+                  className=" grid grid-cols-userCourses justify-between border-b border-[#E9E9EC] items-center p-4"
                 >
                   <div className="text-userblack font-sans flex flex-row items-center gap-3 font-semibold text-base ">
-                    <img
-                      src={"/Frame1.png"}
-                      alt="image"
-                      className="w-11 h-11 rounded-md"
-                    />
-                    <p>{truncateName(item.title)}</p>
+                    <img src={item.course?.thumbnail.url||"/Frame1.png"} alt="image" className="w-11 h-11 rounded-md" />
+                    <p>{truncateName(item.course?.title)}</p>
                   </div>
                   <span className="text-userblack w-[350px] font-sans font-semibold text-base">
-                    {truncateDescription(item.description)}
+                    {item.progressPercentage+ "%"}
                   </span>
-                  <span className="text-userblack font-sans font-semibold text-base">
-                    {item.durationInDays}
-                  </span>
-                  <span className="text-userblack font-sans font-semibold text-base">
-                    {item.category?.title}
+                 
+                  
+                  <span className="text-userblack font-sans font-semibold text-base capitalize">
+                    {item.course?.accessibility}
                   </span>
 
-                  <div className="font-sans font-normal text-base">
-                    {item.participantsCount}
-                  </div>
+                  
                   <div className="font-sans font-normal text-base capitalize">
-                    {item.accessibility}
+                    {item.course?.courseContentType}
                   </div>
                 </div>
               ))}
@@ -123,8 +114,7 @@ function Page({ params }) {
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={setCurrentPage}
-        />{" "}
-      </div>
+        />      </div>
     </div>
   );
 }

@@ -11,6 +11,7 @@ import BackButton from "@/components/BackButton";
 import { useSearchParams } from "next/navigation";
 import { getToken } from "@/Services/Cookie/userCookie";
 import LoaderLarge from "@/components/LoaderLarge";
+import { truncateName } from "@/Utilities/helper";
 
 function Page({ params }) {
   const { info } = params;
@@ -114,7 +115,8 @@ function Page({ params }) {
                   </div>
                 </div>
                 <div className="flex flex-row gap-5 border border-[#CE8F9C] rounded-md p-3 w-4/12">
-                  <div className="text-base font-sans font-normal text-[#71737F]">
+                
+                  <div className="text-base font-sans w-full font-normal text-[#71737F]">
                     <p>Total Services</p>
                     <p>Service Category</p>
                     <p>Focus Area</p>
@@ -125,11 +127,11 @@ function Page({ params }) {
                     <p>:</p>
                   </div>
                   <div className="text-base font-sans font-semibold text-userblack">
-                    <p>12</p>
-                    <p>12</p>
+                    <p>{IdData.services?.length}</p>
+                    <p>NAN</p>
                     <p>
                       {IdData.specialization
-                        ? IdData.specialization
+                        ? truncateName(IdData.specialization)
                         : "No Services Added"}
                     </p>
                   </div>

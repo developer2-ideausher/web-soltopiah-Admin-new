@@ -66,7 +66,7 @@ function Page({ params }) {
     };
 
     fetch(
-      process.env.NEXT_PUBLIC_URL + "/course-categories/" + edit,
+      process.env.NEXT_PUBLIC_URL + "/categories/" + edit,
       requestOptions
     )
       .then((response) => response.json())
@@ -92,7 +92,7 @@ function Page({ params }) {
     };
 
     fetch(
-      process.env.NEXT_PUBLIC_URL + "/course-categories/" + edit,
+      process.env.NEXT_PUBLIC_URL + "/categories/" + edit,
       requestOptions
     )
       .then((response) => response.json())

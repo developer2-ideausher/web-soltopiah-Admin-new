@@ -6,22 +6,28 @@ import UserDetailsBox from "@/components/UserManagement/UserDetailsBox";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import Profile2 from "../../../../../../public/Profile2.png";
-import newImage from "../../../../../../public/newImage.png";
+import Frame1 from "../../../../../../public/Frame1.png";
 import { useRouter } from "next/navigation";
 import { userParticipated } from "@/Services/Api/UserManagement/user";
 import LoaderLarge from "@/components/LoaderLarge";
+import { truncateDescription, truncateName } from "@/Utilities/helper";
+import RobinPagination from "@/components/Pagination";
 
 function Page({ params }) {
   const router = useRouter();
   const { users } = params;
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const fetchData = async () => {
-    setLoading(true)
-    const result = await userParticipated(users);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const fetchData = async (page) => {
+    setLoading(true);
+    const result = await userParticipated(users, page);
     if (result.status) {
       console.log(result.data.results);
       setData(result.data.results);
+      setTotalPages(result.data.totalPages);
       setLoading(false);
     } else {
       console.error(result.message);
@@ -29,8 +35,8 @@ function Page({ params }) {
     setLoading(false);
   };
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(currentPage);
+  }, [currentPage]);
   return (
     <div className="flex flex-col gap-7">
       <div className="flex flex-row gap-5 items-center">
@@ -55,7 +61,7 @@ function Page({ params }) {
                 Description
               </span>
               <span className="text-[#666576] font-sans font-normal text-sm">
-                Duration
+                Duration (in days)
               </span>
 
               <span className="text-[#666576] font-sans font-normal text-sm">
@@ -80,29 +86,45 @@ function Page({ params }) {
           <div className="flex flex-col bg-white min-w-fit w-full">
             {data &&
               data.map((item, index) => (
-                <div key={item._id || index} className=" grid grid-cols-userParticipatedTable justify-between border-b border-[#E9E9EC] items-center p-4">
+                <div
+                  key={item._id || index}
+                  className=" grid grid-cols-userParticipatedTable justify-between border-b border-[#E9E9EC] items-center p-4"
+                >
                   <div className="text-userblack font-sans flex flex-row items-center gap-3 font-semibold text-base">
-                    <img src={newImage.src} alt="" />
-                    <p>{item.firstName}</p>
+                    <img
+                      src={item.challenge?.thumbnail?.url || Frame1.src}
+                      alt="thumbnail"
+                      className="w-11 h-11 rounded-md"
+                    />
+                    <p>{truncateName(item.challenge?.title)}</p>
                   </div>
-                  <span className="text-userblack w-[350px] font-sans font-semibold text-base">
-                    {item.description}
+                  <span className="text-userblack  font-sans font-semibold text-base">
+                    {truncateDescription(item.challenge?.description)}
                   </span>
                   <span className="text-userblack font-sans font-semibold text-base">
-                    {item.duration}
+                    {item.challenge?.durationInDays}
                   </span>
                   <span className="text-userblack font-sans font-semibold text-base">
-                    {item.categroy}
+                    {truncateName(item.challengeCategory?.title)}
                   </span>
 
                   <div className="font-sans font-normal text-base">
-                    {item.firstName}
+                    {item.challengeCreator?.firstName ||
+                    item.challengeCreator?.lastName
+                      ? `${item.challengeCreator?.firstName || ""} ${
+                          item.challengeCreator?.lastName || ""
+                        }`.trim()
+                      : "Admin"}
                   </div>
                 </div>
               ))}
           </div>
         </div>
-        <Pagination />
+        <RobinPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       </div>
     </div>
   );

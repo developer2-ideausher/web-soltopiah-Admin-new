@@ -9,26 +9,32 @@ import newImage from "../../../../../../public/newImage.png";
 import { useRouter } from "next/navigation";
 import { getCommunitiesCreated } from "@/Services/Api/UserManagement/user";
 import LoaderLarge from "@/components/LoaderLarge";
+import { truncateDescription, truncateName } from "@/Utilities/helper";
+import RobinPagination from "@/components/Pagination";
 
 function Page({ params }) {
   const router = useRouter();
   const { users } = params;
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const fetchData = async () => {
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const fetchData = async (page) => {
     setLoading(true);
-    const result = await getCommunitiesCreated(users);
+    const result = await getCommunitiesCreated(users,page);
     if (result.status) {
       console.log(result.data.results);
       setData(result.data.results);
+      setTotalPages(result.data.totalPages);
+
     } else {
       console.error(result.message);
     }
     setLoading(false);
   };
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(currentPage);
+  }, [currentPage]);
   return (
     <div className="flex flex-col gap-7">
       <div className="flex flex-row gap-5 items-center">
@@ -76,22 +82,25 @@ function Page({ params }) {
                   className=" grid grid-cols-userCommunityCreatedTable justify-between border-b border-[#E9E9EC] items-center p-4"
                 >
                   <div className="text-userblack font-sans flex flex-row items-center gap-3 font-semibold text-base">
-                    <img src={newImage.src} alt="" />
-                    <p>{item.title}</p>
+                    <img src={item.photo?.url||"/Frame1.png"} alt="thumbnail" className="w-11 h-11 rounded-md" />
+                    <p>{truncateName(item.name)}</p>
                   </div>
                   <span className="text-userblack font-sans font-semibold text-base">
-                    {item.description}
+                    {truncateDescription(item.description)}
                   </span>
 
-                  <div className="font-sans font-normal text-base">
-                    {item.accessibility}
+                  <div className="font-sans font-normal text-base capitalize">
+                    {item.type}
                   </div>
                 </div>
               ))}
           </div>
         </div>
-        <Pagination />
-      </div>
+        <RobinPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />{" "}       </div>
     </div>
   );
 }

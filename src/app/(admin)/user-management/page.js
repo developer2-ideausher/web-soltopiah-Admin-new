@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import SearchBar from "@/components/SearchBar";
 import GreenDot from "../../../../icons/GreenDot";
-import MenuDots from "../../../../icons/MenuDots";
 import Link from "next/link";
 import RedDot from "../../../../icons/RedDot";
 import BlueDot from "../../../../icons/BlueDot";
@@ -11,10 +10,13 @@ import { getAllUsersApi, switchUser } from "@/Services/Api/UserManagement/user";
 import LoaderLarge from "@/components/LoaderLarge";
 import dayjs from "dayjs";
 import { Switch } from "@mui/material";
+import RobinPagination from "@/components/Pagination";
 
 function Page() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const theme = createTheme({
     palette: {
       customRed: {
@@ -22,20 +24,21 @@ function Page() {
       },
     },
   });
-  const fetchData = async () => {
+  const fetchData = async (page) => {
     setLoading(true);
-    const result = await getAllUsersApi();
+    const result = await getAllUsersApi(page);
     if (result.status) {
       console.log(result.data.results);
       setData(result.data.results);
+      setTotalPages(result.data.totalPages);
     } else {
       console.log(result.message);
     }
     setLoading(false);
   };
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(currentPage);
+  }, [currentPage]);
   const handleToggle = async (index) => {
     const user = data[index];
     const newStatus = !user.isBlocked;
@@ -83,8 +86,8 @@ function Page() {
                   <span className="text-[#666576] font-sans font-normal text-sm">
                     User Type
                   </span>
-                  <span className="text-[#666576] font-sans font-normal text-sm">
-                    status
+                  <span className="text-[#666576] font-sans font-normal ml-5 text-sm">
+                    Status
                   </span>
                   <span className="text-[#666576] font-sans font-normal text-sm">
                     Action
@@ -106,8 +109,8 @@ function Page() {
                       <div className=" grid grid-cols-userTable justify-between border-b border-[#E9E9EC] items-center p-4">
                         <div className="flex flex-row items-center gap-2">
                           <img
-                            src={item.profilePic?.url || "Profile.png"}
-                            alt=""
+                            src={item.profilePic?.url || "Frame1.png"}
+                            alt="Icon"
                             className="w-11 h-11 rounded-full"
                           />
                           <div className="flex flex-col ">
@@ -170,6 +173,11 @@ function Page() {
                   ))}
               </div>
             </div>
+            <RobinPagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
           </div>
         </div>
       </ThemeProvider>

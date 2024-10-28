@@ -11,6 +11,8 @@ import { getGuideBookings } from "@/Services/Api/UserManagement/user";
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import LoaderLarge from "@/components/LoaderLarge";
+import RobinPagination from "@/components/Pagination";
+import { truncateName } from "@/Utilities/helper";
 
 dayjs.extend(isBetween);
 
@@ -19,12 +21,15 @@ function Page({ params }) {
   const { users } = params;
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const fetchData = async () => {
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const fetchData = async (page) => {
     setLoading(true);
-    const result = await getGuideBookings(users);
+    const result = await getGuideBookings(users, page);
     if (result.status) {
       console.log(result.data.results);
       setData(result.data.results);
+      setTotalPages(result.data.totalPages);
 
       setLoading(false);
     } else {
@@ -33,8 +38,8 @@ function Page({ params }) {
     setLoading(false);
   };
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(currentPage);
+  }, [currentPage]);
   const getSessionStatus = (bookingDate, startTime, endTime) => {
     const sessionStart = dayjs(`${bookingDate} ${startTime}`);
     const sessionEnd = dayjs(`${bookingDate} ${endTime}`);
@@ -64,7 +69,7 @@ function Page({ params }) {
         <SearchBar />
         <div className="w-full overflow-x-scroll booking-table-wrapper">
           <div className="bg-[#F0F2F5] min-w-fit w-full">
-            <div className="items-center grid grid-cols-LiveMainTable justify-between p-4">
+            <div className="items-center grid grid-cols-userGuideTable justify-between p-4">
               <span className="text-[#666576] font-sans font-normal text-sm">
                 Guide name
               </span>
@@ -76,7 +81,7 @@ function Page({ params }) {
               </span>
 
               <span className="text-[#666576] font-sans font-normal text-sm">
-                Session type
+                Session Name
               </span>
               <span className="text-[#666576] font-sans font-normal text-sm">
                 Session cost
@@ -103,7 +108,7 @@ function Page({ params }) {
               data.map((item, index) => (
                 <div
                   key={item._id || index}
-                  className=" grid grid-cols-LiveMainTable justify-between border-b border-[#E9E9EC] items-center p-4"
+                  className=" grid grid-cols-userGuideTable justify-between border-b border-[#E9E9EC] items-center p-4"
                 >
                   <span className="text-userblack font-sans font-semibold text-base">
                     {item.guide?.firstName + " " + item.guide?.lastName}
@@ -115,7 +120,7 @@ function Page({ params }) {
                     {item.startTime}
                   </span>
                   <span className="text-userblack font-sans font-normal  text-base">
-                    {item.guideSession?.name}
+                    {truncateName(item.guideSession?.name)}
                   </span>
                   <span className="text-userblack font-sans font-normal  text-base">
                     {"$"} {item.cost == 0 ? "Free" : item.cost}
@@ -132,7 +137,11 @@ function Page({ params }) {
               ))}
           </div>
         </div>
-        <Pagination />
+        <RobinPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />{" "}
       </div>
     </div>
   );

@@ -4,13 +4,12 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import LiveSessionImage from "../../../../../../public/LiveSessionImage.png";
 import Frame1 from "../../../../../../public/Frame1.png";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { getToken } from "@/Services/Cookie/userCookie";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 
 import Modal from "@/components/Modal";
-import Declaration from "postcss/lib/declaration";
 import DeclineModal from "@/components/DeclineModal";
 
 dayjs.extend(utc);
@@ -91,7 +90,6 @@ function Page({ params }) {
 
         router.push("/live-manage/live-requests");
         toast.success("Request Declined");
-
       })
       .catch((error) => console.error(error));
   };
@@ -99,7 +97,7 @@ function Page({ params }) {
     setModal(!modal);
   };
   const handleSubmit = (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
   };
   return (
     <>

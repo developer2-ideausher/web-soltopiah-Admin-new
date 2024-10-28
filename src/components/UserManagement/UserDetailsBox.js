@@ -1,14 +1,14 @@
 import React from 'react'
-import Profile2 from '../../../public/Profile2.png'
+import Frame1 from '../../../public/Frame1.png'
 import dayjs from 'dayjs'
 
-function UserDetailsBox({user}) {
+function UserDetailsBox({user,sData}) {
   
   return (
     <div className="flex flex-row gap-3 justify-between rounded-xl p-4 bg-white">
           <div className="flex flex-col p-4 w-full gap-4 rounded-md border border-[#CE8F9C]">
             <div className="flex flex-row gap-3">
-              <img src={user?.profilePic?.url|| Profile2.src} alt="" className='w-11 h-11 rounded-md'/>
+              <img src={user?.profilePic?.url|| "/Frame1.png"} alt="" className='w-11 h-11 rounded-md'/>
               <div className="flex flex-col">
                 <p className="text-base font-sans font-semibold text-userblack">
                   {user?.firstName} {user?.lastName}
@@ -47,8 +47,8 @@ function UserDetailsBox({user}) {
               </div>
               <div className="flex flex-col gap-4 text-base font-sans font-semibold text-userblack">
                 <p>Monthly</p>
-                <p>{user?.isBlocked ? 'Blocked' : 'Active'}</p>
-                <p>04-06-2024</p>
+                <p className='capitalize'>{sData?.stripe?.status || "NA"}</p>
+                <p>{dayjs(sData?.stripe?.subscriptionCurrentPeriodStartDate).format("DD/MM/YYYY")|| "Na"}</p>
               </div>
             </div>
           </div>

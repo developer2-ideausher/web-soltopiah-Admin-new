@@ -10,6 +10,7 @@ import { getFriends } from "@/Services/Api/UserManagement/user";
 import LoaderLarge from "@/components/LoaderLarge";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
+import RobinPagination from "@/components/Pagination";
 
 function Page({ params }) {
   const router = useRouter();
@@ -18,9 +19,11 @@ function Page({ params }) {
 
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const fetchData = async () => {
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const fetchData = async (page) => {
     setLoading(true);
-    const result = await getFriends(users);
+    const result = await getFriends(users,page);
     if (result.status) {
       console.log(result.data.results);
       setData(result.data.results);
@@ -30,8 +33,8 @@ function Page({ params }) {
     setLoading(false)
   };
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(currentPage);
+  }, [currentPage]);
   return (
     <div className="flex flex-col gap-7">
       <div className="flex flex-row gap-5 items-center">
@@ -105,8 +108,11 @@ function Page({ params }) {
           </div>
         
 
-        <Pagination />
-      </div>
+          <RobinPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />      </div>
     </div>
   );
 }

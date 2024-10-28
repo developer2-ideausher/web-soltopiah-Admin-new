@@ -10,32 +10,38 @@ import MenuDots from "../../../../../../../icons/MenuDots";
 import { useRouter } from "next/navigation";
 import { getContent } from "@/Services/Api/Guide/GuideApi";
 import LoaderLarge from "@/components/LoaderLarge";
+import { truncateDescription, truncateName } from "@/Utilities/helper";
+import RobinPagination from "@/components/Pagination";
 
 function Page({ params }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const { info } = params;
-  const fetchData = async () => {
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const fetchData = async (page) => {
     setLoading(true);
-    const result = await getContent(info);
+    const result = await getContent(info,page);
     if (result.status) {
       console.log(result.data.results);
       setData(result.data.results);
+      setTotalPages(result.data.totalPages);
+
       setLoading(false);
     } else {
       console.error(result.message);
     }
   };
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(currentPage);
+  }, [currentPage]);
 
   return (
     <div className="flex flex-col gap-7">
       <div className="flex flex-row justify-between items-center">
         <div className="flex flex-row items-center gap-5">
-          <div onClick={() => router.back()}>
+          <div className="cursor-pointer" onClick={() => router.back()}>
             <BackButton />
           </div>
           <p className="text-xl2 font-semibold text-userblack font-sans">
@@ -76,7 +82,7 @@ function Page({ params }) {
               <span className="text-[#666576] font-sans font-normal text-sm">
                 Access
               </span>
-              <span className="text-[#666576] font-sans font-normal text-sm"></span>
+              {/* <span className="text-[#666576] font-sans font-normal text-sm"></span> */}
             </div>
           </div>
           {loading && (
@@ -102,14 +108,14 @@ function Page({ params }) {
                     <img
                       src={item.thumbnail?.url || newImage.src}
                       alt="thumbnail"
-                      className="w-11 h-11 rounded-md"
+                      className="w-11 h-11 rounded-md "
                     />
                     <p className="text-sm font-sans font-semibold text-[#252322]">
-                      {item.title}
+                      {truncateName(item.title)}
                     </p>
                   </div>
                   <span className="text-userblack w-[300px] font-sans font-semibold text-sm">
-                    {item.description}
+                    {truncateDescription(item.description) || "NA"}
                   </span>
                   <span className="text-userblack font-sans font-semibold text-sm capitalize">
                     {item.category?.title}
@@ -120,14 +126,18 @@ function Page({ params }) {
                   <span className="text-userblack font-sans  font-semibold text-sm capitalize">
                     {item.accessibility}
                   </span>
-                  <span className="text-userblack font-sans  font-semibold text-sm">
+                  {/* <span className="text-userblack font-sans  font-semibold text-sm">
                     <MenuDots />
-                  </span>
+                  </span> */}
                 </div>
               </div>
             ))}
         </div>
-        <Pagination />
+        <RobinPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />{" "}
       </div>
     </div>
   );

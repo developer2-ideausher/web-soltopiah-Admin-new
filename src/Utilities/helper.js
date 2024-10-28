@@ -85,3 +85,17 @@ export const apiError = (e) => {
 }
 
 export const url = process.env.NEXT_PUBLIC_URL
+
+export const truncateDescription = (description) => {
+    if (description && description.length > 80) {
+      return description.substring(0, 80) + "...";
+    }
+    return description;
+  };
+  export const truncateName = (Name) => {
+    if (Name && Name.length > 40) {
+      return Name.substring(0, 40) + "...";
+    }
+    return Name || ''; // Return empty string if Name is undefined or null
+  };
+  
