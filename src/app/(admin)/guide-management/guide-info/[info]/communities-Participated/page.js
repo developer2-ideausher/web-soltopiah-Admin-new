@@ -5,18 +5,15 @@ import SearchBar from "@/components/SearchBar";
 import UserDetailsBox from "@/components/UserManagement/UserDetailsBox";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import newImage from "../../../../../../public/newImage.png";
 import { useRouter } from "next/navigation";
-import {
-  getCreatedChallenges,
-  userCourses,
-} from "@/Services/Api/UserManagement/user";
+import { getParticipatedCommunities } from "@/Services/Api/UserManagement/user";
 import LoaderLarge from "@/components/LoaderLarge";
 import { truncateDescription, truncateName } from "@/Utilities/helper";
+import dayjs from "dayjs";
 import RobinPagination from "@/components/Pagination";
 
 function Page({ params }) {
-  const { users } = params;
+  const { info } = params;
   const router = useRouter();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -24,7 +21,8 @@ function Page({ params }) {
   const [currentPage, setCurrentPage] = useState(1);
   const fetchData = async (page) => {
     setLoading(true);
-    const result = await userCourses(users, page);
+
+    const result = await getParticipatedCommunities(info, page);
     if (result.status) {
       console.log(result.data.results);
       setData(result.data.results);
@@ -45,24 +43,31 @@ function Page({ params }) {
           <BackButton />
         </div>
         <p className="text-userblack font-semibold text-xl2 font-sans">
-          Users management - <span className="text-[#AE445A]">Courses</span>{" "}
+          Guide management -
+          <span className="text-[#AE445A]"> Community participated</span>
         </p>
       </div>
-      {/* <UserDetailsBox  /> */}
+      {/* <UserDetailsBox /> */}
       <div className="flex flex-col">
         <SearchBar />
         <div className="w-full overflow-x-scroll booking-table-wrapper">
           <div className="bg-[#F0F2F5] min-w-fit w-full">
-            <div className="items-center grid grid-cols-userCourses justify-between p-4">
+            <div className="items-center grid grid-cols-userCommunityParticipatedTable justify-between p-4">
               <span className="text-[#666576] font-sans font-normal text-sm">
                 Name
               </span>
               <span className="text-[#666576] font-sans font-normal text-sm">
-                Progress
+                Description
+              </span>
+              <span className="text-[#666576] font-sans font-normal text-sm">
+                Created by
               </span>
 
               <span className="text-[#666576] font-sans font-normal text-sm">
-                Access
+                Date
+              </span>
+              <span className="text-[#666576] font-sans font-normal text-sm">
+                Members
               </span>
               <span className="text-[#666576] font-sans font-normal text-sm">
                 Type
@@ -76,7 +81,7 @@ function Page({ params }) {
           )}
 
           {!loading && data.length === 0 && (
-            <div className="text-center bg-white text-lg font-semibold text-gray-600 p-4">
+            <div className="text-center text-md font-semibold text-gray-600 bg-white p-4">
               No data yet.
             </div>
           )}
@@ -85,26 +90,33 @@ function Page({ params }) {
               data.map((item, index) => (
                 <div
                   key={item._id || index}
-                  className=" grid grid-cols-userCourses justify-between border-b border-[#E9E9EC] items-center p-4"
+                  className=" grid grid-cols-userCommunityParticipatedTable justify-between border-b border-[#E9E9EC] items-center p-4"
                 >
-                  <div className="text-userblack font-sans flex flex-row items-center gap-3 font-semibold text-base ">
+                  <div className="text-userblack font-sans flex flex-row items-center gap-3 font-semibold text-base">
                     <img
-                      src={item.course?.thumbnail.url || "/Frame1.png"}
-                      alt="image"
+                      src={item.group?.photo?.url || "/Frame1.png"}
+                      alt=""
                       className="w-11 h-11 rounded-md"
                     />
-                    <p>{truncateName(item.course?.title)}</p>
+                    <p className="break-all">
+                      {truncateName(item.group?.name)}
+                    </p>
                   </div>
-                  <span className="text-userblack w-[350px] font-sans font-semibold text-base">
-                    {item.progressPercentage + "%"}
+                  <span className="text-userblack  font-sans font-semibold text-base break-all">
+                    {truncateDescription(item.group?.description)}
+                  </span>
+                  <span className="text-userblack font-sans font-semibold text-base">
+                    {item.groupOwner?.firstName} {item.groupOwner?.lastName}
+                  </span>
+                  <span className="text-userblack font-sans font-semibold text-base">
+                    {dayjs(item.createdAt).format("DD/MM/YYYY")}
                   </span>
 
-                  <span className="text-userblack font-sans font-semibold text-base capitalize">
-                    {item.course?.accessibility}
-                  </span>
-
+                  <div className="font-sans font-normal text-base">
+                    {item.group?.participantsCount}
+                  </div>
                   <div className="font-sans font-normal text-base capitalize">
-                    {item.course?.courseContentType}
+                    {item.group?.type}
                   </div>
                 </div>
               ))}

@@ -194,6 +194,12 @@ export default function Add() {
       toast.info("Select Accessibility", {
         toastId: "dkjhf",
       });
+    } else if (courseType.trim().length < 1) {
+      // Add validation for Type field
+      res = false;
+      toast.info("Add type (e.g. Blog)", {
+        toastId: "typeValidation",
+      });
     } else if (description.trim().length < 1) {
       res = false;
       toast.info("Add description", {
@@ -240,7 +246,7 @@ export default function Add() {
   const audioHandler = (val, duration, type) => {
     setFile(val);
     setDuration(duration);
-    setCourseContentType(type)
+    setCourseContentType(type);
   };
   const submitHanlder = async (e) => {
     e.preventDefault();

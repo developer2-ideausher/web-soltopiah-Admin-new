@@ -40,7 +40,7 @@ export default function Page() {
   return (
     <div className="w-full flex flex-col">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl2 font-semibold text-[#17161D]">
+        <h2 className="text-xl2 font-sans font-semibold text-[#17161D]">
           Content Management
         </h2>
         <Link

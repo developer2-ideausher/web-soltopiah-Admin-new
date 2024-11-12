@@ -1,7 +1,7 @@
 import { getToken } from "@/Services/Cookie/userCookie";
 import { apiError, responseValidator } from "@/Utilities/helper";
 
-export const getChapters = async () => {
+export const getChapters = async (page) => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + getToken());
 
@@ -12,7 +12,7 @@ export const getChapters = async () => {
   };
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL + "/chapters",
+      process.env.NEXT_PUBLIC_URL + `/chapters?page=${page}&limit=10`,
       requestOptions
     );
 

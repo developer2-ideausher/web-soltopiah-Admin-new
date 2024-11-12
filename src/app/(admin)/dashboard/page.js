@@ -169,7 +169,7 @@ export default function Page() {
           />
         </div>
         <div className="flex lg:flex-col xl:flex-row 2xl:flex-row items-center gap-4">
-          <div className="lg:w-full xl:w-1/2 2xl:w-1/2 bg-white rounded-xl p-5 flex flex-col gap-4">
+          {/* <div className="lg:w-full xl:w-1/2 2xl:w-1/2 bg-white rounded-xl p-5 flex flex-col gap-4">
             <div className="flex flex-row justify-between items-center ">
               <p className="text-base font-sans font-bold text-[#2A2D3E]">
                 Revenue
@@ -204,7 +204,7 @@ export default function Page() {
                 </p>
               </div>
             </div>
-          </div>
+          </div> */}
           <div className="lg:w-full xl:w-1/2 2xl:w-1/2 bg-white rounded-xl p-5 flex flex-col gap-4">
             <div className="flex flex-row justify-between items-center ">
               <p className="text-base font-sans font-bold text-[#2A2D3E]">

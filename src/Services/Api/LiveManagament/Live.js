@@ -18,7 +18,7 @@ export const getlive = async (page) => {
     apiError(error);
   }
 };
-export const getPendingCount = async () => {
+export const getPendingCount = async (page) => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + getToken());
 
@@ -29,7 +29,7 @@ export const getPendingCount = async () => {
   };
   try {
     const response = await fetch(
-      url + "/live-events?status=pending",
+      url + `/live-events?status=pending&page=${page}&limit=10`,
       requestOptions
     );
 

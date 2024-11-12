@@ -26,6 +26,7 @@ import PlusBlue from "../../../../../../icons/PlusBlue";
 import BluePlus from "../../../../../../icons/BluePlus";
 
 export default function Add() {
+
   const queryRef = useRef(false);
   const params = useParams();
   const router = useRouter();
@@ -415,10 +416,10 @@ export default function Add() {
   return (
     <div className="w-full">
       <div className="w-full flex items-center gap-3">
-        <Link href="/content-management" className="btn-back">
+        <div onClick={()=>router.back()} className="btn-back">
           <BlackBAckArrow/>
           <h6 className="text-[#252322] font-semibold text-sm">Back</h6>
-        </Link>
+        </div>
         <h2 className="text-xl2 font-semibold text-[#17161D]">
           Edit Course Content
         </h2>

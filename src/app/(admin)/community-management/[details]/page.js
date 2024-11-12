@@ -10,36 +10,41 @@ import {
 } from "@/Services/Api/CommunityManagement/GetOneGroup";
 import dayjs from "dayjs";
 import LoaderLarge from "@/components/LoaderLarge";
+import RobinPagination from "@/components/Pagination";
 
 function Page({ params }) {
   const { details } = params;
   const [data, setData] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+
   const fetchData = async (details) => {
     setLoading(true);
     const result = await getOnegroupApi(details);
     if (result.status) {
-      console.log(result.data);
       setData(result.data);
     } else {
       console.error(result.message);
     }
     setLoading(false);
   };
-  const fetchTableData = async (details) => {
-    const result = await getGroupMembersApi(details);
+
+  const fetchTableData = async (details, page) => {
+    const result = await getGroupMembersApi(page, details);
     if (result.status) {
-      console.log(result.data.results);
       setTableData(result.data.results);
+      setTotalPages(result.data.totalPages); // Set total pages based on members API response
     } else {
       console.error(result.message);
     }
   };
+
   useEffect(() => {
     fetchData(details);
-    fetchTableData(details);
-  }, []);
+    fetchTableData(details, currentPage);
+  }, [currentPage, details]); // Include `details` in dependencies to handle prop changes
 
   return (
     <div className="flex flex-col gap-7">
@@ -52,7 +57,7 @@ function Page({ params }) {
         </p>
       </div>
       {loading ? (
-        <div className="flex justify-center  items-center p-10 w-full">
+        <div className="flex justify-center items-center p-10 w-full">
           <LoaderLarge />
         </div>
       ) : (
@@ -71,7 +76,7 @@ function Page({ params }) {
                   Community Detail
                 </p>
                 <p className="bg-[#FCF1F3] border border-[#B6576B] py-2 px-6 rounded-md text-base font-sans font-semibold text-[#595C69]">
-                  {data.type == "public"
+                  {data.type === "public"
                     ? "Public Community"
                     : "Private Community"}
                 </p>
@@ -81,9 +86,9 @@ function Page({ params }) {
                   {data.name}
                 </h2>
                 <p className="text-sm font-sans font-semibold text-[#414554]">
-                  {dayjs(data.createdAt).format("MM/DD/YYYY")}
-                  <span className="font-normal"> ( Mental Health )</span>{" "}
-                  {data.participantsCount}
+                  {dayjs(data.createdAt).format("DD/MM/YYYY")}
+{" "}
+                  {"[ Members:" +data.participantsCount +" "+ "]"}
                 </p>
                 <p className="text-[#4F546B] text-sm font-sans font-normal">
                   {data.description}
@@ -115,12 +120,12 @@ function Page({ params }) {
                   </span>
                 </div>
               </div>
-              <div className="flex flex-col bg-white min-w-fit w-full ">
+              <div className="flex flex-col bg-white min-w-fit w-full">
                 {tableData &&
                   tableData.map((item, index) => (
                     <div
                       key={item._id || index}
-                      className=" grid grid-cols-communityDetailsTable border-b justify-between border-[#E9E9EC] items-center p-4"
+                      className="grid grid-cols-communityDetailsTable border-b justify-between border-[#E9E9EC] items-center p-4"
                     >
                       <div className="flex flex-row items-center gap-4">
                         <img
@@ -137,7 +142,7 @@ function Page({ params }) {
                           </p>
                         </div>
                       </div>
-                      <span className="text-userblack  font-sans font-semibold text-sm">
+                      <span className="text-userblack font-sans font-semibold text-sm">
                         {dayjs(item.createdAt).format("DD/MM/YYYY")}
                       </span>
                       <span className="text-userblack font-sans font-semibold text-sm">
@@ -146,7 +151,7 @@ function Page({ params }) {
                       <span className="text-userblack font-sans font-semibold text-sm">
                         Free
                       </span>
-                      {item.role == "member" ? (
+                      {item.role === "member" ? (
                         <span className="font-sans font-semibold text-sm border border-[#3090E980] py-1 px-2 rounded-md w-[100px] text-center text-[#3090E9]">
                           Member
                         </span>
@@ -160,6 +165,11 @@ function Page({ params }) {
               </div>
             </div>
           </div>
+          <RobinPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
         </div>
       )}
     </div>

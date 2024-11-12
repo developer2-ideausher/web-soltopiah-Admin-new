@@ -12,17 +12,22 @@ import dayjs from "dayjs";
 import { Switch } from "@mui/material";
 import LoaderLarge from "@/components/LoaderLarge";
 import { getImageCacheRemover } from "@/Services/Api/Badges/BadgesApi";
+import RobinPagination from "@/components/Pagination";
 
 function Page() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const fetchData = async () => {
+  // const [totalPages, setTotalPages] = useState(1);
+  // const [currentPage, setCurrentPage] = useState(1);
+  const fetchData = async (page) => {
     setLoading(true);
 
-    const result = await getSubscriptionData();
+    const result = await getSubscriptionData(page);
     if (result.status) {
       console.log(result.data);
       setData(result.data);
+      // setTotalPages(result.data.totalPages);
+
     } else {
       console.error(result.message);
     }
@@ -254,6 +259,11 @@ function Page() {
               ))}
           </div>
         </div>
+        {/* <RobinPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          /> */}
       </div>
     </div>
   );

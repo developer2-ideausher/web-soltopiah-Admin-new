@@ -23,8 +23,8 @@ function Page() {
   const [liveManagementData, setLiveManagementData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
-  const [totalPages,setTotalPages] =useState(1)
-  const [currentPage,setCurrentPage] =useState(1)
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const router = useRouter();
 
@@ -82,20 +82,19 @@ function Page() {
     const result = await getlive(page);
     if (result.status) {
       console.log(result.data.results);
-      console.log('Total pages:', result.data.totalPages);
+      console.log("Total pages:", result.data.totalPages);
 
       setLiveManagementData(result.data.results);
-      setTotalPages(result.data.totalPages)
-
+      setTotalPages(result.data.totalPages);
     } else {
       console.error(result.message);
     }
     setLoading(false);
   };
-  const fetchPendingCount = async () => {
+  const fetchPendingCount = async (page) => {
     setLoading(true);
 
-    const result = await getPendingCount();
+    const result = await getPendingCount(page);
     if (result.status) {
       console.log(result.data);
       setPendingCount(result.data?.totalResults);
@@ -106,10 +105,9 @@ function Page() {
   };
   useEffect(() => {
     fetchData(currentPage);
-    fetchPendingCount();
+    fetchPendingCount(currentPage);
   }, [currentPage]);
- 
-  
+
   return (
     <>
       <div className="flex flex-col gap-7">
@@ -215,15 +213,12 @@ function Page() {
             </div>
           </div>
           <RobinPagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
           />
         </div>
-      
       </div>
-     
     </>
   );
 }

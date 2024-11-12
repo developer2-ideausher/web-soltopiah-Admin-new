@@ -14,6 +14,7 @@ import { getToken } from "@/Services/Cookie/userCookie";
 import dayjs from "dayjs";
 import { toast } from "react-toastify";
 import LoaderSmall from "@/components/LoaderSmall";
+import { truncateName } from "@/Utilities/helper";
 
 function Page() {
   const router = useRouter();
@@ -117,7 +118,7 @@ function Page() {
       redirect: "follow",
     };
 
-    fetch(process.env.NEXT_PUBLIC_URL + "/course-categories", requestOptions)
+    fetch(process.env.NEXT_PUBLIC_URL + "/categories", requestOptions)
       .then((response) => response.json())
       .then((result) => {
         console.log(result.data.results);
@@ -297,7 +298,7 @@ function Page() {
               </option>
               {dropDownCategory.map((item) => (
                 <option key={item._id} value={item._id}>
-                  {item.title}
+                  {truncateName(item.title)}
                 </option>
               ))}
             </select>

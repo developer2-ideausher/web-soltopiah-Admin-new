@@ -110,7 +110,7 @@ function Page({ params }) {
                   <span className="text-userblack text-base font-semibold font-sans">
                     32861
                   </span>
-                  <span className="text-userblack text-base font-semibold font-sans">
+                  <span title={item._id} className="text-userblack text-base font-semibold font-sans">
                     {item._id.slice(-8)}
                   </span>
 

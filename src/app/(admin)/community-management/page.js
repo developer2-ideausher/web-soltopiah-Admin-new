@@ -14,27 +14,30 @@ import { getToken } from "@/Services/Cookie/userCookie";
 import { getAllCommunitiesApi } from "@/Services/Api/CommunityManagement/GetAllCommunities";
 import dayjs from "dayjs";
 import LoaderLarge from "@/components/LoaderLarge";
+import RobinPagination from "@/components/Pagination";
 
 function Page() {
   const [communities, setCommunities] = useState([]);
   const [loading, setLoading] = useState(false);
-  const fetchData = async () => {
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const fetchData = async (page) => {
     setLoading(true);
-    const result = await getAllCommunitiesApi();
+    const result = await getAllCommunitiesApi(page);
 
     if (result.status) {
       console.log(result.data.results);
       setCommunities(result.data.results);
-    } 
-    else {
+      setTotalPages(result.data.totalPages);
+    } else {
       console.error(result.message);
     }
 
     setLoading(false);
   };
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(currentPage);
+  }, [currentPage]);
 
   return (
     <div className="flex flex-col gap-7 ">
@@ -73,7 +76,7 @@ function Page() {
             <div className="flex justify-center bg-white items-center p-10 w-full ">
               <LoaderLarge />
             </div>
-            )}
+          )}
           <div className="flex flex-col bg-white min-w-fit w-full ">
             {communities &&
               communities.map((item, index) => (
@@ -100,7 +103,7 @@ function Page() {
                       {item.groupOwner?.firstName} {item.groupOwner?.lastName}
                     </span>
                     <span className="text-userblack font-sans font-semibold text-sm">
-                      {item.participantsCount ||0}
+                      {item.participantsCount || 0}
                     </span>
                     <div className="w-[150px] ">
                       {item.type == "public" ? (
@@ -160,7 +163,11 @@ function Page() {
               ))}
           </div>
         </div>
-        <Pagination />
+        <RobinPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       </div>
     </div>
   );

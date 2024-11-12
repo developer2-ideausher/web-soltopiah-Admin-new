@@ -3,7 +3,7 @@ import LoaderSmall from './LoaderSmall';
 
 export default function DeleteModal({ loading, onDelete, onClose }) {
   return (
-    <div className='modal-container'>
+    <div className='modal-container font-sans'>
       <div className='w-96 bg-white p-5 rounded-xl'>
         <h3 className='font-bold text-[#232946] text-[22px] text-center mt-3'>DELETE</h3>
         <h5 className='font-semibold text-[#232946] text-center mt-3'>Do you really want to delete the content?</h5>

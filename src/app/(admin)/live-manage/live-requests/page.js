@@ -12,30 +12,33 @@ import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { getPendingCount } from "@/Services/Api/LiveManagament/Live";
+import RobinPagination from "@/components/Pagination";
 
 dayjs.extend(utc);
 
 function Page() {
   const [liveData, setLiveData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
 
- 
-  const fetchPendingCount= async()=>{
+  const fetchPendingCount = async (page) => {
     setLoading(true);
 
-    const result = await getPendingCount();
+    const result = await getPendingCount(page);
     if (result.status) {
       console.log(result.data);
       setLiveData(result.data?.results);
+      setTotalPages(result.data.totalPages);
     } else {
       console.error(result.message);
     }
     setLoading(false);
-  }
-  useEffect(()=>{
-    fetchPendingCount()
-  },[])
+  };
+  useEffect(() => {
+    fetchPendingCount(currentPage);
+  }, [currentPage]);
   return (
     <div className="flex flex-col gap-7">
       <div className="flex flex-row items-center gap-5">
@@ -64,7 +67,6 @@ function Page() {
               <span className="text-[#666576] font-sans font-normal text-sm">
                 Time
               </span>
-              
             </div>
           </div>
           {loading && (
@@ -105,18 +107,21 @@ function Page() {
                       </p>
                     </div>
                     <span className="text-userblack font-sans font-semibold text-base">
-                      {dayjs(item.startDate).format("DD / MM / YY")}
+                      {dayjs(item.startDate).format("ddd MMM DD,YY")}
                     </span>
                     <span className="text-userblack font-sans font-semibold text-base">
                       {dayjs(item.startDate).utc().format("hh:mm A")}
                     </span>
-                    
                   </div>
                 </Link>
               ))}
           </div>
         </div>
-        <Pagination />
+        <RobinPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />{" "}
       </div>
     </div>
   );

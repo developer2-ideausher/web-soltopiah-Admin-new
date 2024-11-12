@@ -66,7 +66,7 @@ function Page() {
           <BackButton />
         </Link>
         <p className="text-xl2 font-sans font-semibold text-userblack">
-          Category management
+          Create Category 
         </p>
       </div>
 

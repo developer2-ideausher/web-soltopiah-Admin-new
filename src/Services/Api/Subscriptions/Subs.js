@@ -11,7 +11,7 @@ export const getSubscriptionData = async () => {
     redirect: "follow",
   };
   try {
-    const response = await fetch(url + "/subscriptions", requestOptions);
+    const response = await fetch(url + `/subscriptions`, requestOptions);
     return responseValidator(response);
   } catch (error) {
     apiError(error);

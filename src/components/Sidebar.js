@@ -146,7 +146,7 @@ export default function Sidebar() {
               Community Management
             </h6>
           </Link>
-          <Link
+          {/* <Link
             href="/platform-earnings"
             className={`flex items-center gap-2 lg:p-2 xl:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
               pathName == "/platform-earnings" && "bg-pink on"
@@ -155,6 +155,17 @@ export default function Sidebar() {
             <PlatformEarnings />
             <h6 className=" lg:text-xs xl:text-sm 2xl:text-base text-white font-normal font-sans group-hover:text-primary whitespace-nowrap">
               Platform Earnings
+            </h6>
+          </Link> */}
+          <Link
+            href="/earning-management"
+            className={`flex items-center gap-2 lg:p-2 xl:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
+              pathName.startsWith("/earning-management") && "bg-pink on"
+            }`}
+          >
+            <NotificationManagement />
+            <h6 className="lg:text-xs xl:text-sm 2xl:text-base text-white font-normal whitespace-nowrap group-hover:text-primary">
+              Earning Management
             </h6>
           </Link>
           <Link

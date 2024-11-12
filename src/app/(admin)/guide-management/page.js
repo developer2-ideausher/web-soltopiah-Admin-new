@@ -226,7 +226,7 @@ function Page() {
                             className="flex flex-row items-center gap-3"
                           >
                             <Backspace />
-                            <p className="text-sm font-sans font-normal text-[#EE3E3E]">
+                            <p className="text-sm font-sans font-normal text-[#EE3E3E] cursor-pointer">
                               Remove
                             </p>
                           </div>
@@ -236,12 +236,13 @@ function Page() {
                   );
                 })}
             </div>
-          </div>
-          <RobinPagination
+            <RobinPagination
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={setCurrentPage}
           />
+          </div>
+          
         </div>
       </div>
     </>

@@ -23,7 +23,7 @@ function Page({ params }) {
   }, []);
   const token = getToken();
   const getIdDataApi = () => {
-    setLoading(true)
+    setLoading(true);
 
     const myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer " + token);
@@ -39,12 +39,11 @@ function Page({ params }) {
       .then((result) => {
         console.log(result.data);
         setIdData(result.data);
-        setLoading(false)
-
+        setLoading(false);
       })
-      .catch((error) => {console.error(error)
-        setLoading(false)
-
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
       });
   };
   return (
@@ -114,19 +113,18 @@ function Page({ params }) {
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-row gap-5 border border-[#CE8F9C] rounded-md p-3 w-4/12">
-                
+                <div className="flex flex-row gap-2 justify-between  border border-[#CE8F9C] rounded-md p-3 w-4/12">
                   <div className="text-base font-sans w-full font-normal text-[#71737F]">
                     <p>Total Services</p>
                     <p>Service Category</p>
                     <p>Focus Area</p>
                   </div>
-                  <div>
+                  <div className="w-full flex flex-col  items-center">
                     <p>:</p>
                     <p>:</p>
                     <p>:</p>
                   </div>
-                  <div className="text-base font-sans font-semibold text-userblack">
+                  <div className="text-base font-sans font-semibold w-full text-userblack">
                     <p>{IdData.services?.length}</p>
                     <p>NAN</p>
                     <p>
@@ -136,7 +134,7 @@ function Page({ params }) {
                     </p>
                   </div>
                 </div>
-                <div className="flex flex-row gap-5 border border-[#CE8F9C] rounded-md p-3 w-3/12">
+                <div className="flex flex-col gap-2 border border-[#CE8F9C] rounded-md p-3 w-3/12">
                   <div className="flex flex-row  gap-5">
                     <p className="text-base font-sans font-normal text-[#71737F]">
                       Total Revenue{" "}
@@ -144,7 +142,27 @@ function Page({ params }) {
                     <p>:</p>
                     <p className="text-userblack font-sans font-semibold text-base">
                       {" "}
-                      $33200 monthly
+                      $33200
+                    </p>
+                  </div>
+                  <div className="flex flex-row  gap-5">
+                    <p className="text-base font-sans font-normal text-[#71737F]">
+                      Audio Revenue{" "}
+                    </p>
+                    <p>:</p>
+                    <p className="text-userblack font-sans font-semibold text-base">
+                      {" "}
+                      {"$ " + IdData.totalAudioRevenue}
+                    </p>
+                  </div>
+                  <div className="flex flex-row  gap-5">
+                    <p className="text-base font-sans font-normal text-[#71737F]">
+                      Video Revenue{" "}
+                    </p>
+                    <p>:</p>
+                    <p className="text-userblack font-sans font-semibold text-base">
+                      {" "}
+                      {"$ " + IdData.totalVideoRevenue}
                     </p>
                   </div>
                 </div>
@@ -155,11 +173,16 @@ function Page({ params }) {
                     Soul module data
                   </p>
                   <div className="grid  lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 justify-between items-center">
-                    <GuideCards Title="Participated challenges" />
-                    <GuideCards Title="Community participation" />
-                    <GuideCards Title="Communities created" />
-                    <GuideCards Title="Challenges created" />
-                    <GuideCards Title="Friends" />
+                    <Link href={`/guide-management/guide-info/${info}/participated-Challenges/`}><GuideCards Title="Participated challenges" /></Link>
+                    <Link href={`/guide-management/guide-info/${info}/communities-Participated/`}><GuideCards Title="Community participation" /></Link>
+                    <Link href={`/guide-management/guide-info/${info}/communities-Created/`}><GuideCards Title="Communities created" /></Link>
+                    <Link href={`/guide-management/guide-info/${info}/challenges-Created/`}
+                    ><GuideCards Title="Challenges created" /></Link>
+                    <Link
+                      href={`/guide-management/guide-info/${info}/guide-Friends/`}
+                    >
+                      <GuideCards Title="Friends" />
+                    </Link>
                   </div>
                 </div>
                 <div className="flex flex-col gap-2 mb-20">
@@ -167,20 +190,44 @@ function Page({ params }) {
                     Mindful hub data
                   </p>
                   <div className="grid lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 justify-between items-center">
-                    <GuideCards Title="15 Video Watched" />
-                    <GuideCards Title="12 Audio Listened" />
-                    <GuideCards Title="Course" />
-                    <GuideCards Title="Guide bookings" />
-                    <Link href={`/guide-management/guide-info/${info}/live-created/`}>
+                    <Link
+                      href={`/guide-management/guide-info/${info}/video-Watched/`}
+                    >
+                      <GuideCards Title=" Video Watched" />
+                    </Link>
+                    <Link
+                      href={`/guide-management/guide-info/${info}/audio-Listened/`}
+                    >
+                      <GuideCards Title=" Audio Listened" />
+                    </Link>
+                    <Link
+                      href={`/guide-management/guide-info/${info}/guide-courses/`}
+                    >
+                      <GuideCards Title="Course" />
+                    </Link>
+                    <Link
+                      href={`/guide-management/guide-info/${info}/guide-bookings/`}
+                    >
+                      <GuideCards Title="Guide bookings" />
+                    </Link>
+                    <Link
+                      href={`/guide-management/guide-info/${info}/live-created/`}
+                    >
                       <GuideCards Title="Live created" />
                     </Link>
-                    <Link href={`/guide-management/guide-info/${info}/quick-reads`}>
+                    <Link
+                      href={`/guide-management/guide-info/${info}/quick-reads`}
+                    >
                       <GuideCards Title="Quick reads" />
                     </Link>
-                    <Link href={`/guide-management/guide-info/${info}/session-booked`}>
+                    <Link
+                      href={`/guide-management/guide-info/${info}/session-booked`}
+                    >
                       <GuideCards Title="Session Booked" />
                     </Link>
-                    <Link href={`/guide-management/guide-info/${info}/content-uploaded`}>
+                    <Link
+                      href={`/guide-management/guide-info/${info}/content-uploaded`}
+                    >
                       <GuideCards Title="Content uploaded" />
                     </Link>
                   </div>

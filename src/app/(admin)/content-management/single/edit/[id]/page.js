@@ -205,7 +205,7 @@ export default function Add() {
   return (
     <div className="w-full">
       <div className="w-full flex items-center gap-3">
-        <Link href="/content-management" className="btn-back">
+        <div onClick={()=>router.back()} className="btn-back">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"
@@ -219,7 +219,7 @@ export default function Add() {
             />
           </svg>
           <h6 className="text-[#252322] font-semibold text-sm">Back</h6>
-        </Link>
+        </div>
         <h2 className="text-xl2 font-semibold text-[#17161D]">
           Edit Single Content
         </h2>

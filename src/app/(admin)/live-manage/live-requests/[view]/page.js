@@ -151,7 +151,7 @@ function Page({ params }) {
                   Date
                 </p>
                 <p className="text-xl text-[#414554] font-normal font-sans">
-                  {dayjs(requestData.startDate).format("MMM DD YYYY")}
+                  {dayjs(requestData.startDate).format("ddd MMM DD,YY")}
                 </p>
               </div>
               <div className="flex flex-col gap-1">

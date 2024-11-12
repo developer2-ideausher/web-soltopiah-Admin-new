@@ -5,7 +5,6 @@ import SearchBar from "@/components/SearchBar";
 import UserDetailsBox from "@/components/UserManagement/UserDetailsBox";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import newImage from "../../../../../../public/newImage.png";
 import { useRouter } from "next/navigation";
 import {
   getCreatedChallenges,
@@ -16,7 +15,7 @@ import { truncateDescription, truncateName } from "@/Utilities/helper";
 import RobinPagination from "@/components/Pagination";
 
 function Page({ params }) {
-  const { users } = params;
+  const { info } = params;
   const router = useRouter();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -24,7 +23,7 @@ function Page({ params }) {
   const [currentPage, setCurrentPage] = useState(1);
   const fetchData = async (page) => {
     setLoading(true);
-    const result = await userCourses(users, page);
+    const result = await userCourses(info, page);
     if (result.status) {
       console.log(result.data.results);
       setData(result.data.results);
@@ -45,7 +44,7 @@ function Page({ params }) {
           <BackButton />
         </div>
         <p className="text-userblack font-semibold text-xl2 font-sans">
-          Users management - <span className="text-[#AE445A]">Courses</span>{" "}
+          Guide management - <span className="text-[#AE445A]">Courses</span>{" "}
         </p>
       </div>
       {/* <UserDetailsBox  /> */}

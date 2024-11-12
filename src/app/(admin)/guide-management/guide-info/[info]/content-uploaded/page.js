@@ -110,15 +110,15 @@ function Page({ params }) {
                       alt="thumbnail"
                       className="w-11 h-11 rounded-md "
                     />
-                    <p className="text-sm font-sans font-semibold text-[#252322]">
+                    <p title={item.title} className="text-sm font-sans font-semibold text-[#252322]">
                       {truncateName(item.title)}
                     </p>
                   </div>
-                  <span className="text-userblack w-[300px] font-sans font-semibold text-sm">
+                  <span title={item.description} className="text-userblack w-[300px] font-sans font-semibold text-sm">
                     {truncateDescription(item.description) || "NA"}
                   </span>
                   <span className="text-userblack font-sans font-semibold text-sm capitalize">
-                    {item.category?.title}
+                    {item.category?.title || "Na"}
                   </span>
                   <span className="text-userblack font-sans  font-semibold text-sm capitalize">
                     {item.type}

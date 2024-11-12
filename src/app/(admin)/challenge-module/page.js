@@ -13,6 +13,8 @@ import LoaderLarge from "@/components/LoaderLarge";
 import Image from "next/image";
 import DeleteModal from "@/components/DeleteModal";
 import { toast } from "react-toastify";
+import { truncateName } from "@/Utilities/helper";
+import RobinPagination from "@/components/Pagination";
 
 function Page() {
   const [challengeData, setChallengeData] = useState([]);
@@ -21,12 +23,14 @@ function Page() {
 
   const [loading, setLoading] = useState(false);
   const [refresh, setRefresh] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
   useEffect(() => {
-    getAllChallengeApi();
-  }, [refresh]);
+    getAllChallengeApi(currentPage);
+  }, [currentPage,refresh]);
   const token = getToken();
-  const getAllChallengeApi = () => {
+  const getAllChallengeApi = (page) => {
     setLoading(true);
     const myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer " + token);
@@ -36,7 +40,7 @@ function Page() {
       redirect: "follow",
     };
 
-    fetch(process.env.NEXT_PUBLIC_URL + "/challenges", requestOptions)
+    fetch(process.env.NEXT_PUBLIC_URL + `/challenges?page=${page}&limit=10`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         console.log(result.data.results);
@@ -180,13 +184,19 @@ function Page() {
                         src={item.thumbnail ? item.thumbnail.url : "image1.png"}
                         alt=""
                       />
-                      <p className="text-sm font-sans font-semibold text-[#252322]">
-                        {item.title}
+                      <p
+                        title={item.title}
+                        className="text-sm font-sans font-semibold text-[#252322] break-all"
+                      >
+                        {truncateName(item.title)}
                       </p>
                     </div>
-                    <span className="text-userblack w-[350px] font-sans font-semibold text-sm">
+                    <p
+                      title={item.description}
+                      className="text-userblack w-[350px] font-sans font-semibold text-sm break-all"
+                    >
                       {truncateDescription(item.description)}
-                    </span>
+                    </p>
                     <span className="text-userblack font-sans font-semibold text-sm">
                       {item.durationInDays + " " + "days"}
                     </span>
@@ -214,7 +224,11 @@ function Page() {
                 ))}
             </div>
           </div>
-          <Pagination />
+          <RobinPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />{" "}
         </div>
       </div>
     </>

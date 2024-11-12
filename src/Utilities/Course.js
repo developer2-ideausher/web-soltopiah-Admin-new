@@ -196,7 +196,7 @@ export async function getAllCategories() {
   };
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL + "/course-categories",
+      process.env.NEXT_PUBLIC_URL + "/categories",
       requestOptions
     );
     return responseValidator(response);

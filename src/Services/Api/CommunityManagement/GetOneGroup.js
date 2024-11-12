@@ -23,7 +23,7 @@ export const getOnegroupApi = async (details) => {
   }
 };
 
-export const getGroupMembersApi = async (details) => {
+export const getGroupMembersApi = async (page,details) => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + getToken());
 
@@ -34,7 +34,7 @@ export const getGroupMembersApi = async (details) => {
   };
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL + `/groups/${details}/members`,
+      process.env.NEXT_PUBLIC_URL + `/groups/${details}/members?page=${page}&limit=10`,
       requestOptions
     );
     const result = await responseValidator(response);

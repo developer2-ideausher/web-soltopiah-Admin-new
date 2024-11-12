@@ -11,17 +11,20 @@ import Frame1 from "../../../../../public/Frame1.png";
 import LoginImage from "../../../../../public/LoginImage.png";
 import { toast } from "react-toastify";
 import LoaderLarge from "@/components/LoaderLarge";
+import RobinPagination from "@/components/Pagination";
 
 
 function Page() {
   const [QuickRequestsData, setQuickRequestsData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   useEffect(() => {
-    getAllQuickRequestApi();
-  }, []);
+    getAllQuickRequestApi(currentPage);
+  }, [currentPage]);
   const token = getToken();
 
-  const getAllQuickRequestApi = () => {
+  const getAllQuickRequestApi = (page) => {
     const myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer " + token);
     const requestOptions = {
@@ -33,13 +36,15 @@ function Page() {
     setLoading(true);
 
     fetch(
-      process.env.NEXT_PUBLIC_URL + "/quick-reads?status=pending",
+      process.env.NEXT_PUBLIC_URL + `/quick-reads?status=pending&page=${page}&limit=10`,
       requestOptions
     )
       .then((response) => response.json())
       .then((result) => {
         console.log(result.data.results);
         setQuickRequestsData(result.data.results);
+        setTotalPages(result.data.totalPages);
+
         setLoading(false);
       })
       .catch((error) => {console.error(error)
@@ -74,9 +79,7 @@ function Page() {
                   Date
                 </span>
 
-                <span className="text-[#666576] font-sans font-normal text-sm">
-                  Category
-                </span>
+                
                 <span className="text-[#666576] font-sans font-normal text-sm">
                   Time
                 </span>
@@ -123,9 +126,7 @@ function Page() {
                       <span className="text-userblack font-sans font-semibold text-base">
                         {dayjs(item.updatedAt).format("MMM DD,YYYY")}
                       </span>
-                      <span className="text-userblack font-sans font-semibold text-base">
-                        Mental Health
-                      </span>
+                     
 
                       <div className="text-userblack  font-sans font-semibold text-base">
                         {dayjs(item.updatedAt).format("h:mm a")}
@@ -138,8 +139,11 @@ function Page() {
                 ))}
             </div>
           </div>
-          <Pagination />
-        </div>
+          <RobinPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />        </div>
       </div>
     </>
   );

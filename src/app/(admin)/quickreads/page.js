@@ -14,22 +14,25 @@ import LoginImage from "../../../../public/LoginImage.png";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import LoaderLarge from "@/components/LoaderLarge";
+import RobinPagination from "@/components/Pagination";
 
 function Page() {
   const [quickReadData, setQuickReadData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
   useEffect(() => {
     if (!token) {
       toast.error("Session expired, login again");
       router.push("/login");
     } else {
-      getAllQuickreadsDataApi();
+      getAllQuickreadsDataApi(currentPage);
     }
-  }, []);
+  }, [currentPage]);
   const token = getToken();
-  const getAllQuickreadsDataApi = () => {
+  const getAllQuickreadsDataApi = (page) => {
     const myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer " + token);
 
@@ -39,7 +42,7 @@ function Page() {
       redirect: "follow",
     };
     setLoading(true);
-    fetch(process.env.NEXT_PUBLIC_URL + "/quick-reads", requestOptions)
+    fetch(process.env.NEXT_PUBLIC_URL + `/quick-reads?page=${page}&limit=10`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         console.log(result.data.results);
@@ -48,6 +51,8 @@ function Page() {
           router.push("/login");
         } else {
           setQuickReadData(result.data.results);
+          setTotalPages(result.data.totalPages);
+
           const quickReads = result.data.results;
           const pendingQuickReads = quickReads.filter(
             (item) => item.status === "pending"
@@ -165,8 +170,11 @@ function Page() {
                 ))}
             </div>
           </div>
-          <Pagination />
-        </div>
+          <RobinPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />        </div>
       </div>
     </>
   );
