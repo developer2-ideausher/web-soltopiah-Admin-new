@@ -187,7 +187,7 @@ function Page() {
                         {/* <p>{item.guide?._id.slice(-4)??"Removed Guide"}</p> */}
                       </div>
                       <span className="text-userblack font-sans font-semibold text-base">
-                        {dayjs(item.startDate).format("ddd MMM DD,YY")}
+                        {dayjs(item.startDate).format("DD/MM/YYYY")}
                       </span>
                       <span className="text-userblack font-sans font-semibold text-base">
                         {dayjs(item.startDate).utc().format("hh:mm A")}

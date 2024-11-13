@@ -3,11 +3,11 @@ import BackButton from "@/components/BackButton";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import communityImage from "../../../../../public/communityImage.png";
-import Profile from "../../../../../public/Profile.png";
 import {
   getGroupMembersApi,
   getOnegroupApi,
 } from "@/Services/Api/CommunityManagement/GetOneGroup";
+import Frame1 from "../../../../../public/Frame1.png"
 import dayjs from "dayjs";
 import LoaderLarge from "@/components/LoaderLarge";
 import RobinPagination from "@/components/Pagination";
@@ -72,7 +72,7 @@ function Page({ params }) {
             </div>
             <div className="flex flex-col gap-5 w-full">
               <div className="flex flex-row items-center justify-between">
-                <p className="text-[#71737F] font-sans font-normal text-sm">
+                <p className="text-white font-sans font-normal text-sm ">
                   Community Detail
                 </p>
                 <p className="bg-[#FCF1F3] border border-[#B6576B] py-2 px-6 rounded-md text-base font-sans font-semibold text-[#595C69]">
@@ -129,7 +129,7 @@ function Page({ params }) {
                     >
                       <div className="flex flex-row items-center gap-4">
                         <img
-                          src={item.user?.profilePic?.url || Profile.src}
+                          src={item.user.photo?.url || Frame1.src}
                           className="w-11 h-11 rounded-full"
                           alt="profilePic"
                         />
@@ -137,7 +137,7 @@ function Page({ params }) {
                           <p className="text-base font-sans font-semibold text-[#252322]">
                             {item.user?.firstName} {item.user?.lastName}
                           </p>
-                          <p className="text-[#666576] text-base font-sans font-normal">
+                          <p className="text-[#56556b] text-base font-sans font-normal">
                             {item.user?.email}
                           </p>
                         </div>
@@ -146,7 +146,7 @@ function Page({ params }) {
                         {dayjs(item.createdAt).format("DD/MM/YYYY")}
                       </span>
                       <span className="text-userblack font-sans font-semibold text-sm">
-                        {item.user?.__t}
+                        {item.user?.__t==="Guide"?"Guide":"Normal User"}
                       </span>
                       <span className="text-userblack font-sans font-semibold text-sm">
                         Free

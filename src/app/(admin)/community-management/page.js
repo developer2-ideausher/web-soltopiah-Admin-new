@@ -97,7 +97,7 @@ function Page() {
                       {item.description}
                     </span>
                     <span className="text-userblack font-sans font-semibold text-sm">
-                      {dayjs(item.createdAt).format("MMM/DD/YYYY")}
+                      {dayjs(item.createdAt).format("DD/MM/YYYY")}
                     </span>
                     <span className="text-userblack font-sans font-semibold text-sm">
                       {item.groupOwner?.firstName} {item.groupOwner?.lastName}

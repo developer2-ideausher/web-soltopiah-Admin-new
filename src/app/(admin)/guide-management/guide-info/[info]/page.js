@@ -142,7 +142,7 @@ function Page({ params }) {
                     <p>:</p>
                     <p className="text-userblack font-sans font-semibold text-base">
                       {" "}
-                      $33200
+                      {"$ "+IdData.totalMoneyWithdrawn}
                     </p>
                   </div>
                   <div className="flex flex-row  gap-5">
