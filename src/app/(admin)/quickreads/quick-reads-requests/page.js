@@ -34,6 +34,7 @@ function Page() {
       redirect: "follow",
     };
     setLoading(true);
+    setQuickRequestsData([])
 
     fetch(
       process.env.NEXT_PUBLIC_URL + `/quick-reads?status=pending&page=${page}&limit=10`,

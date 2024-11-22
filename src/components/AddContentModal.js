@@ -3,46 +3,67 @@ import BlackCross from "../../icons/BlackCross";
 import Search from "../../icons/Search";
 import ModalImage from "../../public/ModalImage.png";
 import { getToken } from "@/Services/Cookie/userCookie";
+import RobinPagination from "./Pagination";
+import { getAddContentChapters } from "@/Services/Api/Challenge/challenge";
 
 function AddContentModal({ onclose, onSave }) {
   const [content, setContent] = useState([]);
-  
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const token = getToken();
 
+  // useEffect(() => {
+  //   const myHeaders = new Headers();
+  //   myHeaders.append("Authorization", "Bearer " + token);
+  //   const requestOptions = {
+  //     method: "GET",
+  //     headers: myHeaders,
+  //     redirect: "follow",
+  //   };
+
+  //   fetch(process.env.NEXT_PUBLIC_URL + `/chapters?page=${page}&limit=10`, requestOptions)
+  //     .then((response) => {
+  //       if (!response.ok) {
+  //         throw new Error("Network response was not ok");
+  //       }
+  //       return response.json();
+  //     })
+  //     .then((result) => {
+  //       setContent(result.data.results);
+  //       setTotalPages(result.data.totalPages);
+
+  //       console.log(result.data.results);
+  //       setLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       setError(error);
+  //       setLoading(false);
+  //     });
+  // }, [currentPage]);
+  const fetchData = async (page) => {
+    setLoading(true);
+    const result = await getAddContentChapters(page);
+
+    if (result.status) {
+      console.log(result.data.results);
+      setContent(result.data.results);
+      setTotalPages(result.data.totalPages);
+    } else {
+      console.error(result.message);
+    }
+
+    setLoading(false);
+  };
   useEffect(() => {
-    const myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + token);
-    const requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow",
-    };
-
-    fetch(process.env.NEXT_PUBLIC_URL + "/chapters", requestOptions)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((result) => {
-        setContent(result.data.results);
-        console.log(result.data.results);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setError(error);
-        setLoading(false);
-      });
-  }, []);
-
+    fetchData(currentPage);
+  }, [currentPage]);
   const handleFileClick = (file) => {
     setSelectedFile(file); // Set the selected file
   };
-
+ 
   const handleSave = () => {
     if (selectedFile) {
       onSave(selectedFile);
@@ -79,8 +100,10 @@ function AddContentModal({ onclose, onSave }) {
           content.map((item) => (
             <div
               key={item._id}
-              className={`flex flex-row gap-2 items-start  ${
-                selectedFile === item ? "border-green-500 border-2 rounded-lg" : ""
+              className={`flex flex-row gap-2 items-start p-2 cursor-pointer  ${
+                selectedFile === item
+                  ? "border-green-500 border-2 rounded-lg"
+                  : ""
               }`}
               onClick={() => handleFileClick(item)}
             >
@@ -89,7 +112,7 @@ function AddContentModal({ onclose, onSave }) {
                 src={item.thumbnail.url}
                 alt="content"
               />
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2 ">
                 <p className="text-xs font-sans font-normal text-[#3090E9]">
                   {item.type}
                 </p>
@@ -104,6 +127,11 @@ function AddContentModal({ onclose, onSave }) {
           ))
         )}
       </div>
+      <RobinPagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
       <div className="flex flex-row justify-between items-center gap-3">
         <button
           onClick={onclose}

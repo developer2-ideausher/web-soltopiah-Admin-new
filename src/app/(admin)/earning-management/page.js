@@ -169,7 +169,7 @@ export default function Page() {
             </div>
           </div>
         </div>
-        <div className="lg:w-full xl:w-1/2 2xl:w-1/2 bg-white p-5   rounded-xl flex flex-col gap-6">
+        <div className="lg:w-full xl:w-1/2 2xl:w-1/2 bg-white p-5 rounded-xl flex flex-col gap-6">
           <p className="text-deepBlue  text-base font-sans font-bold">
             Top 5 Guides
           </p>
@@ -208,7 +208,7 @@ export default function Page() {
             ))}
         </div>
       </div>
-      <div className="flex items-center mt-12">
+      <div className="flex items-center mt-12 border-b border-[#DDDDDD]">
         <button
           onClick={() => setTable("a")}
           className={`py-2 px-6 ${

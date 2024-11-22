@@ -7,8 +7,8 @@ export default function AudioVideoUploader(props) {
     const [url,setUrl] = useState(props.fileAdded);
     const fileRef = useRef(null);
     const [loading,setLoading] = useState(false)
-    const [type,setType] = useState(props.type)
-    const [acceptType,setAcceptType] = useState(props.contentType)
+    const [type,setType] = useState('')
+    const [acceptType,setAcceptType] = useState('')
     const coverHandler = (e) => {
         if(e.target.files[0]){
             if(!e.target.files[0].type.includes("video") && !e.target.files[0].type.includes("audio")){
@@ -78,7 +78,12 @@ export default function AudioVideoUploader(props) {
             uploadHandler();
         }
     },[file])
-
+    useEffect(()=>{
+        if(props.type){
+            setType(props.type)
+        }
+        setAcceptType(props.contentType)
+    },[props.type,props.contentType])
     return (
         <div className={`${isUploaded && 'bg-white p-2 rounded-xl'}`}>
             {!isUploaded && <div className='flex items-center cursor-pointer relative group justify-center w-full h-44 rounded-lg bg-[#fff] border border-dashed border-[#D3D6EE]' style={backImage}>
@@ -106,7 +111,7 @@ export default function AudioVideoUploader(props) {
                     multiple={false}
                     onChange={coverHandler}
                     className={`absolute w-full h-full top-0 left-0 opacity-0 cursor-pointer`} 
-                    accept="audio/*,video/*"
+                    accept={type == '' ? "audio/*,video/*" : type == 'audio' ? 'audio/*' : 'video/*' }
                 />
             </div>}
             {isUploaded && type == 'video' && <video id="video" width="100%" className='rounded-xl' controls height="200">

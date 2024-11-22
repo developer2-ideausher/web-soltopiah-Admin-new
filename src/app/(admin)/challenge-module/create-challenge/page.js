@@ -200,7 +200,7 @@ function Page() {
     ? dayjs(startDate).add(1, "day").format("YYYY-MM-DD")
     : tomorrow;
   const maxEndDate = startDate
-    ? dayjs(startDate).add(15, "day").format("YYYY-MM-DD")
+    ? dayjs(startDate).add(10, "day").format("YYYY-MM-DD")
     : "";
 
   const handleStartDateChange = (e) => {
@@ -328,7 +328,7 @@ function Page() {
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
               min={minEndDate} // End date should be at least one day after start date
-              max={maxEndDate} // End date can be up to 15 days from start date
+              max={maxEndDate} // End date can be up to 10 days from start date
               disabled={!startDate} // Disable until start date is selected
             />
           </div>

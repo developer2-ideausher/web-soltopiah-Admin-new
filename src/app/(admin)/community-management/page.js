@@ -23,6 +23,7 @@ function Page() {
   const [currentPage, setCurrentPage] = useState(1);
   const fetchData = async (page) => {
     setLoading(true);
+    setCommunities([])
     const result = await getAllCommunitiesApi(page);
 
     if (result.status) {
@@ -121,43 +122,7 @@ function Page() {
                       )}
                     </div>
 
-                    {/* <button onClick={handleClick} className="text-[#08A03C] font-sans font-semibold text-sm">
-             <MenuDots />
-           </button>
-           {showPopUp && (
-             <div className="bg-[#FDF8F9] border-[#D7A1AC] border p-3 rounded-xl shadow-lg w-[166px]  absolute right-12 top-8 flex flex-col gap-3">
-               <div className="flex flex-row items-center justify-between">
-                 <p className="text-sm font-sans font-normal text-userblack">
-                   Action
-                 </p>
-                 <button onClick={handleClick}>
-                   <GreyCross />
-                 </button>
-               </div>
-               <Link href={'/community-management/community-details'}>
-                 <div className="flex flex-row items-center gap-3">
-                   <TopRightArrow />
-                   <p className="text-sm font-sans font-normal text-[#753B5B]">
-                     Open full view
-                   </p>
-                 </div>
-               </Link>
-               <Link href='/community-management/community-details'><div className="flex flex-row items-center gap-3">
-                   <PushNotif />
-                   <p className="text-sm font-sans font-normal text-[#753B5B]">
-                   Push notification
-                   </p>
-                 </div></Link>
-               
-
-               <div className="flex flex-row items-center gap-3">
-                 <Block />
-                 <p className="text-sm font-sans font-normal text-[#EE3E3E]">
-                 Block member
-                 </p>
-               </div>
-             </div>
-           )} */}
+                  
                   </div>
                 </Link>
               ))}

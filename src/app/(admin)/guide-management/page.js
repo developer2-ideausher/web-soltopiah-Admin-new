@@ -72,6 +72,7 @@ function Page() {
       redirect: "follow",
     };
     setLoading(true);
+    setGuideData([])
     fetch(
       process.env.NEXT_PUBLIC_URL + `/guides?page=${page}&limit=10`,
       requestOptions

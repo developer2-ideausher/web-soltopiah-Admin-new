@@ -48,9 +48,9 @@ export const responseValidator = async (response) => {
   }
 };
 
-export const LoginApi = async (formdata) => {
+export const LoginApi = async (formdata,token) => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", `Bearer ${Cookies.get("auth")}`);
+  myHeaders.append("Authorization", `Bearer ${token}`);
 
   const requestOptions = {
     method: "GET",

@@ -7,78 +7,81 @@ import Girl from "../../../../../public/Girl.png";
 import RedEdit from "../../../../../icons/RedEdit";
 import RedRecycle from "../../../../../icons/RedRecycle";
 import RedDown from "../../../../../icons/RedDown";
-import GreenThumbsUp from "../../../../../icons/GreenThumbsUp";
+import GreenThumbsUp from "../../../../../icons/GreenThumbsUp"; 
 import { getToken } from "@/Services/Cookie/userCookie";
-import { useSearchParams } from "next/navigation";
 import dayjs from "dayjs";
+import RightBlackArrow from "../../../../../icons/RightBlackArrow";
+import { getChallengeForumPosts } from "@/Services/Api/Challenge/challenge";
+import { useRouter } from "next/navigation";
 
 function Page({ params }) {
   const [challengeData, setChallengeData] = useState(null);
-  const [postData, setPostData] = useState([]);
-  const [postContent, setPostContent] = useState("");
+  // const [postData, setPostData] = useState([]);
+  // const [postContent, setPostContent] = useState("");
   // const searchParams = useSearchParams();
-  const [repliesVisibility, setRepliesVisibility] = useState({});
+  // const [repliesVisibility, setRepliesVisibility] = useState({});
   // const reqId = searchParams.get("requestID");
   const [setVideos, setShowVideos] = useState(false);
   const handleClick = () => {
     setShowVideos(!setVideos);
   };
+  const router = useRouter();
   const { chdetails } = params;
   const token = getToken();
 
-  const createChallengePost = (content) => {
-    const myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + token);
-    const formdata = new FormData();
-    formdata.append("content", content);
-    // formdata.append("media", fileInput.files[0], "[PROXY]");
+  // const createChallengePost = (content) => {
+  //   const myHeaders = new Headers();
+  //   myHeaders.append("Authorization", "Bearer " + token);
+  //   const formdata = new FormData();
+  //   formdata.append("content", content);
+  //   // formdata.append("media", fileInput.files[0], "[PROXY]");
 
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
+  //   const requestOptions = {
+  //     method: "POST",
+  //     headers: myHeaders,
 
-      body: formdata,
-      redirect: "follow",
-    };
+  //     body: formdata,
+  //     redirect: "follow",
+  //   };
 
-    fetch(
-      process.env.NEXT_PUBLIC_URL + "/challenges/" + chdetails + "/posts",
-      requestOptions
-    )
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result);
-        getChallengesPost(); 
-        setPostContent("");
-      })
-      .catch((error) => console.error(error));
-  };
-  const getChallengesPost = () => {
-    const myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + token);
-    const requestOptions = {
-      method: "GET",
-      headers: myHeaders,
+  //   fetch(
+  //     process.env.NEXT_PUBLIC_URL + "/challenges/" + chdetails + "/posts",
+  //     requestOptions
+  //   )
+  //     .then((response) => response.json())
+  //     .then((result) => {
+  //       console.log(result);
+  //       getChallengesPost();
+  //       setPostContent("");
+  //     })
+  //     .catch((error) => console.error(error));
+  // };
+  // const getChallengesPost = () => {
+  //   const myHeaders = new Headers();
+  //   myHeaders.append("Authorization", "Bearer " + token);
+  //   const requestOptions = {
+  //     method: "GET",
+  //     headers: myHeaders,
 
-      redirect: "follow",
-    };
+  //     redirect: "follow",
+  //   };
 
-    fetch(
-      process.env.NEXT_PUBLIC_URL + "/challenges/" + chdetails + "/posts",
-      requestOptions
-    )
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result.data.results);
-        // console.log("data after sorting")
-        const sorted = result.data.results.sort((a, b) =>
-          a.createdAt.localeCompare(b.createdAt)
-        );
-        // console.log(sorted)
-        setPostData(sorted);
-      })
-      .catch((error) => console.error(error));
-  };
+  //   fetch(
+  //     process.env.NEXT_PUBLIC_URL + "/challenges/" + chdetails + "/posts",
+  //     requestOptions
+  //   )
+  //     .then((response) => response.json())
+  //     .then((result) => {
+  //       console.log(result.data.results);
+  //       // console.log("data after sorting")
+  //       const sorted = result.data.results.sort((a, b) =>
+  //         a.createdAt.localeCompare(b.createdAt)
+  //       );
+  //       // console.log(sorted)
+  //       setPostData(sorted);
+  //     })
+  //     .catch((error) => console.error(error));
+  // };
 
   const getOnceChallengeApi = () => {
     const myHeaders = new Headers();
@@ -103,29 +106,29 @@ function Page({ params }) {
   };
   useEffect(() => {
     getOnceChallengeApi();
-    getChallengesPost();
+    // getChallengesPost();
   }, []);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    createChallengePost(postContent);
-  };
-  const getCurrentDayThread = () => {
-    return postData.length + 1;
-  };
-  const toggleRepliesVisibility = (postId) => {
-    setRepliesVisibility((prevState) => ({
-      ...prevState,
-      [postId]: !prevState[postId],
-    }));
-  };
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   createChallengePost(postContent);
+  // };
+  // const getCurrentDayThread = () => {
+  //   return postData.length + 1;
+  // };
+  // const toggleRepliesVisibility = (postId) => {
+  //   setRepliesVisibility((prevState) => ({
+  //     ...prevState,
+  //     [postId]: !prevState[postId],
+  //   }));
+  // };
 
   return (
     <div className="flex flex-col gap-7">
       <div className="flex flex-row gap-5 items-center">
-        <Link href="/challenge-module">
+        <div onClick={() => router.back()}>
           <BackButton />
-        </Link>
+        </div>
         <p className="text-xl2 font-sans font-semibold text-userblack">
           Challenge Details page
         </p>
@@ -224,7 +227,7 @@ function Page({ params }) {
                 ))}
               </div>
             )}
-            {setVideos && (
+            {/* {setVideos && (
               <div className="flex flex-col gap-3">
                 <form onSubmit={handleSubmit} className="flex flex-col gap-2">
                   <p className="text-sm font-sans font-semibold text-[#71737F]">
@@ -351,6 +354,35 @@ function Page({ params }) {
                       </div>
                     </>
                   ))}
+              </div>
+            )} */}
+            {setVideos && (
+              <div className="flex flex-col gap-3">
+                {Array.from(
+                  { length: challengeData?.durationInDays },
+                  (_, index) => (
+                    <Link
+                      key={index}
+                      href={{
+                        pathname: `/challenge-module/${chdetails}/forum`,
+                        query: { day: index + 1 },
+                      }}
+                      className="flex justify-between items-center border border-[#D7A1AC] py-2 px-4 bg-[#FDF8F9] rounded-lg"
+                    >
+                      <div>
+                        <p className="font-sans font-semibold text-xs text-[#AE445A]">
+                          Day {index + 1}
+                        </p>
+                        <p className="text-[#3090E9] font-sans font-medium text-xs mt-3">
+                          {dayjs(challengeData?.startDate)
+                            .add(index, "day")
+                            .format("DD/MM/YYYY")}
+                        </p>
+                      </div>
+                      <RightBlackArrow />
+                    </Link>
+                  )
+                )}
               </div>
             )}
           </div>

@@ -127,7 +127,7 @@ function Page({ params }) {
                   : LiveSessionImage.src
               }
               alt=""
-              className="w-[690px] h-[400px] rounded-md "
+              className="w-[400px] h-[400px] rounded-md object-cover "
             />
             <div className="flex flex-col gap-5 w-4/5">
               <div className="flex flex-col gap-1">

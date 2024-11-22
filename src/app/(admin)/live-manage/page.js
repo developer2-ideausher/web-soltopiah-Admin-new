@@ -78,6 +78,7 @@ function Page() {
 
   const fetchData = async (page) => {
     setLoading(true);
+    setLiveManagementData([])
 
     const result = await getlive(page);
     if (result.status) {

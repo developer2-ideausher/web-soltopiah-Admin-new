@@ -8,9 +8,12 @@ export const responseValidator = async (
 ) => {
   if (response.ok) {
     if (response?.status == 204) {
-      toast.success(!message || message.length == 0 ? res.message : message, {
-        toastId: "API-error-session-expired",
-      });
+      toast.success(
+        !message || message.length == 0 ? response.message : message,
+        {
+          toastId: "API-error-session-expired",
+        }
+      );
       return { status: true, code: 204 };
     } else {
       const res = await response.json();
@@ -101,12 +104,18 @@ export const apiError = (e) => {
 export const url = process.env.NEXT_PUBLIC_URL;
 
 export const truncateDescription = (description) => {
+  if (typeof description !== "string") {
+    return "NA"; // Fallback if description is not a string
+  }
   if (description && description.length > 80) {
     return description.substring(0, 80) + "...";
   }
   return description;
 };
 export const truncateName = (Name) => {
+  if (typeof Name !== "string") {
+    return "NA"; // Fallback if description is not a string
+  }
   if (Name && Name.length > 40) {
     return Name.substring(0, 40) + "...";
   }

@@ -10,9 +10,7 @@ export const getToken = () => {
 };
 
 export const setToken = (user) => {
-  cookies.set("auth", user, {
-    expires: 1 / 24,
-  });
+  cookies.set("auth", user);
 };
 
 export const removeToken = () => cookies.remove("auth");

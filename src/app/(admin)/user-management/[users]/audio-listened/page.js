@@ -86,22 +86,22 @@ function Page({ params }) {
               data.map((item, index) => (
                 <div key={item._id || index} className=" grid grid-cols-userAudioTable justify-between border-b border-[#E9E9EC] items-center p-4">
                   <span className="text-userblack font-sans font-semibold text-base">
-                   {truncateName(item.chapter?.title)}
+                   {truncateName(item?.chapter?.title) || "Na"}
                   </span>
                   <div className="text-userblack font-sans  gap-2 font-normal text-base">
                     <p>
-                    {truncateDescription(item.chapter?.description) || "NA"}
+                    {truncateDescription(item?.chapter?.description) || "NA"}
 
                     </p>
                   </div>
                   <span className="text-userblack font-sans font-normal  text-base">
-                    {item.chapterCategory || "NA"}
+                    {item?.chapterCategory.title || "NA"}
                   </span>
                   <span className="text-userblack font-sans font-normal  text-base">
-                    {dayjs(item.createdAt).format("DD/MM/YYYY")}
+                    {dayjs(item?.createdAt).format("DD/MM/YYYY") || "NA"}
                   </span>
                   <span className="text-userblack font-sans font-normal capitalize text-base">
-                    {item.chapter?.accessibility}
+                    {item?.chapter?.accessibility || "NA"}
                   </span>
                 </div>
               ))}

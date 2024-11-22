@@ -26,6 +26,7 @@ function Page() {
   });
   const fetchData = async (page) => {
     setLoading(true);
+    setData([])
     const result = await getAllUsersApi(page);
     if (result.status) {
       console.log(result.data.results);

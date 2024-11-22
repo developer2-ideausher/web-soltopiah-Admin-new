@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import BackButton from "@/components/BackButton";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -8,11 +8,13 @@ import AddContentModal from "@/components/AddContentModal";
 import { useRouter } from "next/navigation";
 
 import RedRecycle from "../../../../../icons/RedRecycle";
+import RobinPagination from "@/components/Pagination";
 
 function Page() {
   const [showModal, setShowModal] = useState(false);
   const [selectedContent, setSelectedContent] = useState(Array(7).fill(null));
   const [currentDay, setCurrentDay] = useState(null);
+
   const router = useRouter();
 
   const handleModal = (day) => {
@@ -24,6 +26,7 @@ function Page() {
     const updatedContent = [...selectedContent];
     updatedContent[currentDay - 1] = content;
     setSelectedContent(updatedContent);
+
     setShowModal(false);
   };
 
@@ -42,7 +45,10 @@ function Page() {
     <div>
       {showModal && (
         <Modal>
-          <AddContentModal onclose={() => setShowModal(false)} onSave={handleSaveContent} />
+          <AddContentModal
+            onclose={() => setShowModal(false)}
+            onSave={handleSaveContent}
+          />
         </Modal>
       )}
 
@@ -64,12 +70,9 @@ function Page() {
               <p className="text-sm font-sans font-semibold text-userblack">
                 Day {i + 1}
               </p>
-              <div
-                className="bg-white p-4 rounded-xl flex flex-col justify-center items-center gap-5 relative"
-              >
+              <div className="bg-white p-4 rounded-xl flex flex-col justify-center items-center gap-5 relative">
                 {selectedContent[i] ? (
                   <>
-                  
                     <img
                       src={selectedContent[i].thumbnail.url}
                       alt="selected content"
@@ -107,6 +110,7 @@ function Page() {
               </div>
             </div>
           ))}
+
           <button
             type="submit"
             className="p-4 w-2/5 mt-5 bg-[#AE445A] text-white rounded-lg font-sans text-base font-black"

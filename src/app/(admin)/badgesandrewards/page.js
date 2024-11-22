@@ -118,7 +118,7 @@ function Page() {
                     <span className="text-userblack font-sans font-semibold text-sm capitalize">
                       {item.description}
                     </span>
-                    <div>
+                    <div className="flex items-center gap-4">
                       <Switch
                         checked={item.isEnabled}
                         onChange={() => handleToggle(index)}

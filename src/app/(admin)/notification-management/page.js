@@ -66,6 +66,7 @@ function Page() {
 
   const fetchData = async (page) => {
     setLoading(true);
+    setNotificationData([])
     const result = await getAllNotificationApi(page);
 
     if (result.status) {
@@ -114,6 +115,7 @@ function Page() {
   };
   const handleConfirmDelete = () => {
     setLoading(true);
+    setNotificationData([])
     deleteNotificationApi(selectedId);
     setShowModal(false);
   };

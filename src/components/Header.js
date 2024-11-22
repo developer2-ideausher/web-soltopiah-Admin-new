@@ -6,7 +6,7 @@ import ProfileIcon from "../../icons/ProfileIcon";
 import Notification from "../../icons/Notification";
 import Logout from "../../icons/Logout";
 import { removeToken } from "@/Services/Cookie/userCookie";
-import { signOut } from "firebase/auth";
+
 import useFirebaseAuth from "@/Services/Firebase/useFirebaseAuth";
 import { useRouter } from "next/navigation";
 
@@ -17,34 +17,35 @@ function Header() {
     if (!showDropDown) {
       setTimeout(() => {
         setShowDropDown(false);
-      }, 5000);}
+      }, 5000);
+    }
   };
-  const router=useRouter()
-  const {signOut}= useFirebaseAuth()
-  const handleLogOut=()=>{
+  const router = useRouter();
+  const { logOut } = useFirebaseAuth();
+  const handleLogOut = async () => {
     removeToken();
-    signOut()
-    .then(result =>{
-      router.push("/login")
-    })
-    .catch((error)=>console.log("error while logout"+error))
-  }
+    const res = await logOut()
+      if(res.status){
+        router.push("/login")
+      }
+      
+  };
   return (
     <div className="w-ful bg-[#D4D8F0] p-6 flex justify-end gap-6 ">
       <div className="flex items-center">
-        <Bellicon/>
+        <Bellicon />
       </div>
       <button onClick={handleClick} className="flex items-center gap-2">
         <div className="size-8 rounded-full	bg-[#AE445A] flex items-center justify-center text-white text-sm font-black ">
           A
         </div>
         <h5 className="text-[#393E59] font-semibold text-sm">Rahul Admin</h5>
-      </button> 
+      </button>
       {showDropDown && (
         <div className="absolute top-16 p-3 bg-white rounded-lg w-[176px] shadow-lg flex flex-col gap-6">
           <div className="flex flex-row gap-2">
             <div className="bg-[#AE445A] p-3 rounded-full flex items-center">
-              <ProfileIcon/>
+              <ProfileIcon />
             </div>
             <div className="flex flex-col gap-1">
               <p className="text-sm font-semibold font-sans text-deepBlue">
@@ -62,13 +63,15 @@ function Header() {
               Notification setting
             </p>
           </div>
-         
-            <div onClick={handleLogOut} className="flex flex-row gap-3 items-center cursor-pointer">
-              <Logout />
 
-              <p className="font-sans font-normal text-black text-sm">Logout</p>
-            </div>
-          
+          <div
+            onClick={handleLogOut}
+            className="flex flex-row gap-3 items-center cursor-pointer"
+          >
+            <Logout />
+
+            <p className="font-sans font-normal text-black text-sm">Logout</p>
+          </div>
         </div>
       )}
     </div>

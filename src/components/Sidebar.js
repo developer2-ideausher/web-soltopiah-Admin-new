@@ -20,8 +20,10 @@ export default function Sidebar() {
   const pathName = usePathname();
   return (
     <div className="flex flex-col lg:p-3 xl:p-2 2xl:p-2 bg-primary justify-between h-screen ">
-      <div className="flex flex-col p-3 justify-center h-full w-full gap-1">
-        <Image src="/logo.svg" width="200" height="100" />
+      <div className="flex flex-col p-3 justify-center h-full w-full gap-1 ">
+        <div className="flex justify-center" >
+        <Image src="/logo.svg" layout="responsive" width="300" height="200" alt="Logo" />
+        </div>
 
         <div className="flex  flex-col gap-1  overflow-y-scroll sidebar-wrapper">
           <Link

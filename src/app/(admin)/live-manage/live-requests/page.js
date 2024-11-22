@@ -25,6 +25,7 @@ function Page() {
 
   const fetchPendingCount = async (page) => {
     setLoading(true);
+    setLiveData([])
 
     const result = await getPendingCount(page);
     if (result.status) {

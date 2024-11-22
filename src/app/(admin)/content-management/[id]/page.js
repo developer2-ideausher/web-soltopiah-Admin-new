@@ -45,7 +45,7 @@ export default function ViewPage() {
   return (
     <div className='w-full'>
         {deleteModal && <DeleteModal loading={loading} onClose={deleteModalHandler} onDelete={deleteHandler} />}
-        <div className='w-full flex items-center justify-between pb-5 border-b border-solid border-[#CDCDCD]'>
+        <div className='w-full flex flex-wrap items-center justify-between pb-5 border-b border-solid border-[#CDCDCD]'>
           <div className=' flex items-center gap-3'>
             <Link href="/content-management" className='btn-back'>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -55,14 +55,14 @@ export default function ViewPage() {
             </Link>
             <h2 className='text-xl2 font-semibold text-[#17161D]'>View Content</h2>
           </div>
-          <div className=' flex items-center gap-3'>
+          <div className=' flex items-center gap-3 xs:mt-5'>
             <Link href={`/content-management/edit/${data?._id}`} className='rounded-full bg-[#3090E9] text-base font-normal text-white px-4 py-1'>Edit Content</Link>
             <button onClick={deleteModalHandler} className='rounded-full bg-[#ff0000] text-base font-normal text-white px-4 py-1'>Delete</button>
           </div>
         </div>
         {data && <div className='w-full'>
           <h6 className='text-sm font-semibold text-[#121616] mt-5 mb-1'>Cover Image</h6>
-          <img src={data?.thumbnail?.url ? data?.thumbnail.url : "/cm.svg"} className='w-2/12 rounded-xl' />
+          <img src={data?.thumbnail?.url ? data?.thumbnail.url : "/cm.svg"} className='w-2/12 rounded-xl xs:w-full' />
 
           <h6 className='text-sm font-semibold text-[#121616] mt-5'>Title</h6>
           <h5 className='text-[#414554] font-normal text-lg'>{data.title}</h5>
@@ -70,11 +70,11 @@ export default function ViewPage() {
           <h6 className='text-sm font-semibold text-[#121616] mt-5'>Description</h6>
           <h5 className='text-[#414554] font-normal text-lg'>{data?.description}</h5>
 
-          {/* <h6 className='text-sm font-semibold text-[#121616] mt-5'>Type</h6>
-          <h5 className='text-[#414554] font-normal text-lg'>Course</h5> */}
+          <h6 className='text-sm font-semibold text-[#121616] mt-5'>Type</h6>
+          <h5 className='text-[#414554] font-normal text-lg'>{data?.courseType}</h5>
 
           <h6 className='text-sm font-semibold text-[#121616] mt-5'>Category</h6>
-          <h5 className='text-[#414554] font-normal text-lg'>{data?.category?.title}</h5>
+          <h5 className='text-[#414554] font-normal text-lg'>{data?.category.title}</h5>
 
           <h6 className='text-sm font-semibold text-[#121616] mt-5'>Content Added</h6>
           {data?.chapters?.map((item,index)=><div key={index} className='flex flex-wrap w-full mt-1 gap-5 items-center'>

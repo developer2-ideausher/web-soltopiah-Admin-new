@@ -28,6 +28,7 @@ function Page() {
 
   const fetchData = async (page) => {
     setLoading(true);
+    setData([])
     const result = await getChapters(page);
     if (result.status) {
       console.log(result.data.results);
@@ -144,7 +145,7 @@ function Page() {
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={setCurrentPage}
-        />{" "}
+        />
       </div>
     </div>
   );

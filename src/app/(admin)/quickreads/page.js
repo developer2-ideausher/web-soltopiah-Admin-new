@@ -42,6 +42,7 @@ function Page() {
       redirect: "follow",
     };
     setLoading(true);
+    setQuickReadData([])
     fetch(process.env.NEXT_PUBLIC_URL + `/quick-reads?page=${page}&limit=10`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
@@ -50,6 +51,7 @@ function Page() {
           toast.error(result.message, { toastId: "1wmdewimmmmm" });
           router.push("/login");
         } else {
+          
           setQuickReadData(result.data.results);
           setTotalPages(result.data.totalPages);
 
