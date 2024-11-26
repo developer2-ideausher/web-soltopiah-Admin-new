@@ -1,5 +1,43 @@
+import { getToken, setToken } from "@/Services/Cookie/userCookie";
+import { getAuth } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+
+export async function tokenValidator() {
+  const token = getToken()
+  if (!token) {
+    return null;
+  }
+
+  function parseJwt(token) {
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace("-", "+").replace("_", "/");
+    return JSON.parse(window.atob(base64));
+  }
+
+  const user = parseJwt(token);
+  if (user.exp * 1000 < Date.now()) {
+    return new Promise((resolve, reject) => {
+      const auth = getAuth();
+      auth.onAuthStateChanged(async function (currentUser) {
+        if (currentUser) {
+          try {
+            let newToken = await auth.currentUser.getIdToken(true);
+            setToken(newToken);
+            resolve(newToken);
+          } catch (err) {
+            console.log(err);
+            reject(err);
+          }
+        } else {
+          resolve(null);
+        }
+      });
+    });
+  } else {
+    return token;
+  }
+}
 
 export const responseValidator = async (
   response,

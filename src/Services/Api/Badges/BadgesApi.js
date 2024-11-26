@@ -1,10 +1,10 @@
 import { getToken } from "@/Services/Cookie/userCookie";
-import { apiError, responseValidator } from "@/Utilities/helper";
+import { apiError, responseValidator, tokenValidator } from "@/Utilities/helper";
 
 export const getAllBadgesApi = async () => {
   const myHeaders = new Headers();
   myHeaders.append("Cache-Control", "no-cache");
-  myHeaders.append("Authorization", "Bearer " + getToken());
+  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
 
   const requestOptions = {
     method: "GET",
@@ -26,7 +26,7 @@ export const getAllBadgesApi = async () => {
 export const switchBadgeApi = async (id, isEnabled) => {
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
-  myHeaders.append("Authorization", "Bearer " + getToken());
+  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
 
   const raw = JSON.stringify({
     isEnabled: isEnabled,
@@ -52,7 +52,7 @@ export const switchBadgeApi = async (id, isEnabled) => {
 
 export const patchApi = async (badgeId, file, description) => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + getToken());
+  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
 
   const formdata = new FormData();
   if (file) {
@@ -83,7 +83,7 @@ export const getOneBadgeApi = async (badgeId) => {
   const myHeaders = new Headers();
   myHeaders.append("Cache-Control", "no-cache");
 
-  myHeaders.append("Authorization", "Bearer " + getToken());
+  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
 
   const requestOptions = {
     method: "GET",

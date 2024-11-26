@@ -155,3 +155,53 @@ export const postReply = async (id, content) => {
     return apiError(error);
   }
 };
+
+export const commentPost = async (id, content) => {
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Authorization", "Bearer " + getToken());
+
+  const raw = JSON.stringify({
+    content: content,
+  });
+
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow",
+  };
+  try {
+    const response = await fetch(url + `/posts/${id}/comments`, requestOptions);
+
+    const result = await responseValidator(response);
+    return result;
+  } catch (error) {
+    return apiError(error);
+  }
+};
+
+export const deleteComment = async (id) => {
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Authorization", "Bearer " + getToken());
+
+  const raw = JSON.stringify({
+    content: "I have now edited this comment",
+  });
+
+  const requestOptions = {
+    method: "DELETE",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow",
+  };
+  try {
+    const response = await fetch(url + `/comments/${id}`, requestOptions);
+
+    const result = await responseValidator(response);
+    return result;
+  } catch (error) {
+    return apiError(error);
+  }
+};

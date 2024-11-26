@@ -10,15 +10,20 @@ import RedDustbin from "../../../../../../icons/RedDustbin";
 import MaroonDustbin from "../../../../../../icons/MaroonDustbin";
 import {
   commentApi,
+  commentPost,
   createPost,
+  deleteComment,
   deleteForumPost,
+  deleteReply,
   getChallengeForumPosts,
   getReplies,
+  postReply,
 } from "@/Services/Api/Challenge/challenge";
 import dayjs from "dayjs";
 import LoaderSmall from "@/components/LoaderSmall";
 import { toast } from "react-toastify";
 import LoaderLarge from "@/components/LoaderLarge";
+import { truncateDescription } from "@/Utilities/helper";
 
 function Page({ params }) {
   const router = useRouter();
@@ -27,11 +32,17 @@ function Page({ params }) {
   const [comments, setComments] = useState([]);
   const [commentsId, setCommentsId] = useState("");
   const [repliesId, setRepliesId] = useState("");
+  const [repliesContent, setRepliesContent] = useState("");
   const [showSection, setShowSection] = useState(false);
   const [showReply, setShowReply] = useState(false);
+  const [postComment, setPostComment] = useState([]);
   const [postContent, setPostContent] = useState("");
   const [loading, setLoading] = useState(false);
+  const [commentLoading, setCommentLoading] = useState(null);
+  const [smallReplyLoading, SetSmallReplyLoading] = useState(false);
+  const [smallCommentLoading, setSmallCommentLoading] = useState(false);
   const [smallLoading, setSmallLoading] = useState(false);
+  const [repliesLoading, setRepliesLoading] = useState(false);
   const searchParams = useSearchParams();
   const { chdetails } = params;
   const day = searchParams.get("day");
@@ -51,9 +62,10 @@ function Page({ params }) {
     setLoading(false);
   };
 
-  const fetchReplyData = async (chdetailsId) => {
-    setLoading(true);
-    const result = await getReplies(chdetailsId);
+  const fetchReplyData = async (id) => {
+    setRepliesLoading(true);
+    setReplies([]);
+    const result = await getReplies(id);
 
     if (result.status) {
       console.log(result.data.results);
@@ -62,10 +74,10 @@ function Page({ params }) {
       console.error(result.message);
     }
 
-    setLoading(false);
+    setRepliesLoading(false);
   };
   const fetchCommentData = async (chdetailsId) => {
-    // setLoading(true);
+    setCommentLoading(chdetailsId);
     const result = await commentApi(chdetailsId);
 
     if (result.status) {
@@ -75,11 +87,38 @@ function Page({ params }) {
       console.error(result.message);
     }
 
-    setLoading(false);
+    setCommentLoading(null);
+  };
+  const handleCommentReply = async (id) => {
+    SetSmallReplyLoading(true);
+    const result = await postReply(id, repliesContent);
+    if (result.status) {
+      toast.success("Replied successfully");
+      setRepliesContent("");
+      fetchReplyData(id);
+    } else {
+      console.error(result.message);
+    }
+
+    SetSmallReplyLoading(false);
+  };
+  const handleCommentPost = async (id) => {
+    setSmallCommentLoading(true);
+    const result = await commentPost(id, postComment);
+    if (result.status) {
+      toast.success("Comment created successfully");
+      setPostComment("");
+      fetchCommentData(id);
+    } else {
+      console.error(result.message);
+    }
+
+    setSmallCommentLoading(false);
   };
 
   const handleCreatePost = async (chdetails, numberDay) => {
     setSmallLoading(true);
+    setPosts([]);
     const result = await createPost(chdetails, numberDay, postContent);
     if (result.status) {
       fetchData(chdetails, day);
@@ -93,7 +132,9 @@ function Page({ params }) {
   };
   const handleDeleteForumPost = async (postId) => {
     toast.error("Deleting");
+
     setLoading(true);
+
     const result = await deleteForumPost(postId);
 
     if (result.status) {
@@ -102,6 +143,7 @@ function Page({ params }) {
     } else {
       console.error(result.message);
     }
+    setLoading(false);
 
     // catch (error) {
     //   console.error("Error deleting post:", error);
@@ -109,6 +151,23 @@ function Page({ params }) {
     // } finally {
     //   setLoading(false);
     // }
+  };
+  const handleDeleteComment = async (id) => {
+    toast.error("Deleting");
+
+    // setLoading(true);
+
+    const result = await deleteComment(id);
+
+    if (result.status) {
+      setComments((prevPosts) =>
+        prevPosts.filter((comment) => comment._id !== id)
+      );
+      toast.success("Comment deleted successfully");
+    } else {
+      console.error(result.message);
+    }
+    // setLoading(false);
   };
 
   useEffect(() => {
@@ -118,7 +177,7 @@ function Page({ params }) {
   return (
     <div className="flex flex-col gap-7">
       <div className="flex flex-row gap-5 items-center">
-        <div onClick={() => router.back()}>
+        <div className="cursor-pointer" onClick={() => router.back()}>
           <BackButton />
         </div>
         <p className="text-xl2 font-sans font-semibold text-userblack">
@@ -146,10 +205,10 @@ function Page({ params }) {
         </button>
       </form>
       {loading && (
-              <div className="flex justify-center  items-center p-10 w-full ">
-                <LoaderLarge />
-              </div>
-            )}
+        <div className="flex justify-center  items-center p-10 w-full ">
+          <LoaderLarge />
+        </div>
+      )}
       {posts &&
         posts.map((item, index) => (
           <div
@@ -176,18 +235,27 @@ function Page({ params }) {
               {item.content}
             </p>
             <div className="flex flex-row items-center gap-3">
-              <p className="text-[#3090E9] text-sm font-sans font-semibold uppercase">
-                Comment
-              </p>
               <button
                 onClick={() => {
-                  if(showSection===item._id){
-                    setShowSection("")
-                  }
-                  else{
-                    setShowSection(item._id)
+                  if (showSection === item._id) {
+                    setShowSection("");
+                  } else {
+                    setShowSection(item._id);
                     fetchCommentData(item._id);
+                  }
+                }}
+                className="text-[#3090E9] text-sm font-sans font-semibold uppercase"
+              >
+                Comment
+              </button>
 
+              <button
+                onClick={() => {
+                  if (showSection === item._id) {
+                    setShowSection("");
+                  } else {
+                    setShowSection(item._id);
+                    fetchCommentData(item._id);
                   }
                 }}
                 className="flex flex-row items-center gap-1"
@@ -205,55 +273,132 @@ function Page({ params }) {
                 <GreenThumbsUp />
               </div>
             </div>
-           
-            {(item._id===showSection) && (
+            {item._id === showSection && (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault(); // Prevent default form submission
+                  handleCommentPost(item._id); // Call the API with the specific comment ID
+                }}
+                className="flex items-center justify-center gap-10 mb-5"
+              >
+                <textarea
+                  value={postComment} // Bind the state to this textarea
+                  onChange={(e) => setPostComment(e.target.value)} // Update state on input
+                  required
+                  placeholder="Enter your comment!"
+                  className="border font-sans text-sm font-medium shadow-md border-[#E7E5E4] py-3 px-4 rounded-xl w-full flex justify-start"
+                ></textarea>
+                <button
+                  type="submit"
+                  className="py-4 px-8 bg-[#AE445A] font-sans border-[#B7B7B7] rounded-lg  text-white font-bold text-base flex justify-center items-center"
+                >
+                  {smallCommentLoading ? <LoaderSmall /> : "Save"}
+                </button>
+              </form>
+            )}
+            {/* Loader for specific post */}
+            {item._id === commentLoading && (
+              <div className="flex justify-center items-center p-10 w-full">
+                <LoaderLarge />
+              </div>
+            )}
+            {item._id === showSection && (
               <div className="flex flex-col border-t ml-20 mt-4">
                 {comments.length > 0 ? (
                   comments.map((item) => (
-                    <div key={item._id} className="flex flex-col gap-3">
+                    <div key={item._id} className="flex flex-col gap-3 mb-4">
                       <div className="flex items-center justify-between">
                         <div className="flex items-end gap-3">
                           <p className="text-2xl font-sans font-semibold text-[#414554]">
-                            {item.author.firstName} {item.author.lastName}
+                            {item.author?.__t === "Admin"
+                              ? "Soltopiah"
+                              : item.author?.firstName +
+                                  " " +
+                                  item.author?.lastName || "--"}
                           </p>
                           <p className="text-[#888A94] font-sans font-xs font-semibold">
                             {dayjs(item.createdAt).format("DD/MM/YYYY, HH:mm")}
                           </p>
                         </div>
-                        <MaroonDustbin />
+
+                        <button onClick={() => handleDeleteComment(item._id)}>
+                          <MaroonDustbin />{" "}
+                        </button>
                       </div>
                       <p className="text-base font-semibold text-[#414554] font-sans">
                         {item.content}
                       </p>
                       <button
                         onClick={() => {
-                          if(commentsId){
-                            setCommentsId("")
-                          }
-                          else{
-                            setCommentsId(item._id)
+                          if (commentsId) {
+                            setCommentsId("");
+                          } else {
+                            setCommentsId(item._id);
+                            console.log(item._id);
+                            fetchReplyData(item._id);
                           }
                         }}
                         className="flex justify-start text-[#3090E9] font-sans font-semibold text-base"
                       >
-                        Reply 
+                        {item.repliesCount} Replies
                       </button>
                       {commentsId === item._id && (
                         <>
-                        <div className="flex items-center gap-3">
-                          <p className="ml-8 font-sans font-semibold text-userblack text-base ">Soltopiah Replied :</p>
-                          <p className=" font-sans font-semibold text-userblack text-base ">Amamzing! Looking forward to it</p>
-                          <p className="font-sans font-semibold text-gray-500 text-xs ">. 1 min ago</p>
-                        </div>
-                        <div className="flex items-center justify-center gap-10 mb-5">
-                          <textarea
-                            placeholder="Enter your reply!"
-                            className="border font-sans text-sm font-medium shadow-md border-[#E7E5E4] py-3 px-4 rounded-xl w-4/5 flex justify-start"
-                          ></textarea>
-                          <button className="py-4 px-8 bg-[#AE445A] font-sans border-[#B7B7B7] rounded-lg  text-white font-bold text-base ">
-                            Save
-                          </button>
-                        </div>
+                          <form
+                            onSubmit={(e) => {
+                              e.preventDefault(); // Prevent default form submission
+                              handleCommentReply(commentsId); // Call the API with the specific comment ID
+                            }}
+                            className="flex items-center justify-center gap-10 mb-5"
+                          >
+                            <textarea
+                              value={repliesContent}
+                              onChange={(e) =>
+                                setRepliesContent(e.target.value)
+                              }
+                              required
+                              placeholder="Enter your reply!"
+                              className="border font-sans text-sm font-medium shadow-md border-[#E7E5E4] py-3 px-4 rounded-xl w-4/5 flex justify-start"
+                            ></textarea>
+                            <button
+                              type="submit"
+                              className="py-4 px-8 bg-[#AE445A] font-sans border-[#B7B7B7] rounded-lg  text-white font-bold text-base flex justify-center items-center"
+                            >
+                              {smallReplyLoading ? <LoaderSmall /> : "Save"}
+                            </button>
+                          </form>
+                          {repliesLoading && (
+                            <div className="flex justify-center  items-center p-10 w-full ">
+                              <LoaderLarge />
+                            </div>
+                          )}
+                          {replies &&
+                            replies.map((item, index) => (
+                              <div
+                                key={item._id || index}
+                                className="flex  gap-3"
+                              >
+                                <p className="ml-8 font-sans font-semibold text-userblack text-base ">
+                                  {item.author?.__t === "Admin"
+                                    ? "Soltopiah"
+                                    : item.author?.firstName || "--"}{" "}
+                                  Replied :
+                                </p>
+                                <div className="flex items-center gap-4">
+                                  <p
+                                    title={item.content}
+                                    className=" font-sans font-normal text-userblack text-base break-all"
+                                  >
+                                    {truncateDescription(item.content)}
+                                  </p>
+                                  <p className="font-sans font-semibold text-gray-500 text-xs ">
+                                    {dayjs(item.createdAt).format(
+                                      "DD/MM/YYYY , HH:mm"
+                                    )}
+                                  </p>
+                                </div>
+                              </div>
+                            ))}
                         </>
                       )}
                     </div>

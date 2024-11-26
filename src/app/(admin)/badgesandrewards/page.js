@@ -12,6 +12,7 @@ import {
 import LoaderLarge from "@/components/LoaderLarge";
 import Link from "next/link";
 import { Switch } from "@mui/material";
+import { truncateDescription, truncateName } from "@/Utilities/helper";
 
 function Page() {
   const [badges, setBadges] = useState([]);
@@ -110,13 +111,13 @@ function Page() {
                         alt="badge"
                         className="w-11 h-11 rounded-full"
                       />
-                      <p className="text-userblack font-sans font-semibold text-sm capitalize">
-                        {item.name}
+                      <p title={item.name} className="text-userblack font-sans font-semibold text-sm capitalize">
+                        {truncateName(item.name)}
                       </p>
                     </div>
 
-                    <span className="text-userblack font-sans font-semibold text-sm capitalize">
-                      {item.description}
+                    <span title={item.description} className="text-userblack font-sans font-semibold text-sm capitalize">
+                      {truncateDescription(item.description)}
                     </span>
                     <div className="flex items-center gap-4">
                       <Switch

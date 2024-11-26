@@ -126,7 +126,7 @@ function Page({ params }) {
   return (
     <div className="flex flex-col gap-7">
       <div className="flex flex-row gap-5 items-center">
-        <div onClick={() => router.back()}>
+        <div className="cursor-pointer" onClick={() => router.back()}>
           <BackButton />
         </div>
         <p className="text-xl2 font-sans font-semibold text-userblack">
