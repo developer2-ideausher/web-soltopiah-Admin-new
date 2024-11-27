@@ -3,7 +3,6 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import BackButton from "@/components/BackButton";
 import Pagination from "@/components/Pagination";
-import SearchBar from "@/components/SearchBar";
 import { getToken } from "@/Services/Cookie/userCookie";
 import dayjs from "dayjs";
 import Loader from "@/components/Loader";
@@ -12,6 +11,7 @@ import LoginImage from "../../../../../public/LoginImage.png";
 import { toast } from "react-toastify";
 import LoaderLarge from "@/components/LoaderLarge";
 import RobinPagination from "@/components/Pagination";
+import SearchBar from "@/components/AddSearchBar";
 
 
 function Page() {
@@ -62,11 +62,11 @@ function Page() {
             <BackButton />
           </Link>
           <p className="text-userblack font-semibold text-xl2 font-sans">
-            Quick reads
+            Quick reads Requests
           </p>
         </div>
         <div className="flex flex-col">
-          <SearchBar />
+          <SearchBar showAddButton={false} />
           <div className="w-full overflow-x-scroll booking-table-wrapper">
             <div className="bg-[#F0F2F5] min-w-fit w-full">
               <div className="items-center grid grid-cols-quickReadsRequestTable justify-between p-4">

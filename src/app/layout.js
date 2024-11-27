@@ -24,7 +24,7 @@ export default function RootLayout({ children }) {
       <head>
         <link rel="icon"  type="image/x-icon" href="/favicon.ico" /> 
       </head>
-      <body>{children}
+      <body className='max-w-[2200px] mx-auto'>{children}
       <ToastContainer/>
       </body>
     </html>

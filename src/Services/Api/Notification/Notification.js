@@ -1,9 +1,9 @@
 import { getToken } from "@/Services/Cookie/userCookie";
-import { apiError, responseValidator, url } from "@/Utilities/helper";
+import { apiError, responseValidator, tokenValidator, url } from "@/Utilities/helper";
 
 export const getAllNotificationApi = async (page) => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + getToken());
+  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
 
   const requestOptions = {
     method: "GET",

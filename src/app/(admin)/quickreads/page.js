@@ -90,7 +90,7 @@ function Page() {
           </Link>
         </div>
         <div className="flex flex-col">
-          <AddSearchBar title="Add new" route="/quickreads/add-new-quickread" />
+          <AddSearchBar  title="Add new" route="/quickreads/add-new-quickread" />
           <div className="w-full overflow-x-scroll booking-table-wrapper">
             <div className="bg-[#F0F2F5] min-w-fit w-full">
               <div className="items-center grid grid-cols-quickreadsMainTable justify-between p-4">

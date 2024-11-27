@@ -87,7 +87,7 @@ export default function ViewPage() {
           {data?.chapter.type == 'audio' && file != '' && <audio id="audio" className='w-2/5 xs:w-full' controls>
             <source src={file}  />
           </audio>}
-          {data?.chapter.type == 'video' && file != '' && <video id="video" width="40%" className='rounded-xl xs:w-full' controls height="200">
+          {data?.chapter?.type == 'video' && file != '' && <video id="video" width="40%" className='rounded-xl xs:w-full w-[600px] h-[400px] ' controls height="200">
             <source src={file}  />
           </video>}
         </div>}

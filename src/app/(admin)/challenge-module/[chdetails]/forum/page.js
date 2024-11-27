@@ -17,6 +17,7 @@ import {
   deleteReply,
   getChallengeForumPosts,
   getReplies,
+  patchForumPost,
   postReply,
 } from "@/Services/Api/Challenge/challenge";
 import dayjs from "dayjs";
@@ -34,6 +35,7 @@ function Page({ params }) {
   const [repliesId, setRepliesId] = useState("");
   const [repliesContent, setRepliesContent] = useState("");
   const [showSection, setShowSection] = useState(false);
+  const [showEditSection, setShowEditSection] = useState(null);
   const [showReply, setShowReply] = useState(false);
   const [postComment, setPostComment] = useState([]);
   const [postContent, setPostContent] = useState("");
@@ -96,6 +98,7 @@ function Page({ params }) {
       toast.success("Replied successfully");
       setRepliesContent("");
       fetchReplyData(id);
+      fetchCommentData(showSection);
     } else {
       console.error(result.message);
     }
@@ -108,7 +111,7 @@ function Page({ params }) {
     if (result.status) {
       toast.success("Comment created successfully");
       setPostComment("");
-      fetchCommentData(id);
+      fetchData(chdetails, day);
     } else {
       console.error(result.message);
     }
@@ -130,6 +133,26 @@ function Page({ params }) {
 
     setSmallLoading(false);
   };
+  // const handleEditPost = async (postId, updatedContent) => {
+  //   setSmallLoading(true);
+  //   try {
+  //     const data = { content: updatedContent }; // Pass the updated content
+  //     const result = await patchForumPost(postId, data);
+
+  //     // Update the UI with the edited post
+  //     setPosts((prevPosts) =>
+  //       prevPosts.map((post) =>
+  //         post._id === postId ? { ...post, content: result.content } : post
+  //       )
+  //     );
+  //     toast.success("Post updated successfully");
+  //     setShowEditSection(false); // Close the edit section
+  //   } catch (error) {
+  //     toast.error("Error updating post");
+  //   } finally {
+  //     setSmallLoading(false); // Hide the loader
+  //   }
+  // };
   const handleDeleteForumPost = async (postId) => {
     toast.error("Deleting");
 
@@ -222,7 +245,19 @@ function Page({ params }) {
                 </p>
               </div>
               <div className="flex flex-row items-center gap-3">
-                <RedEdit />
+                <button
+                  className="cursor-pointer"
+                  onClick={() => {
+                    if (showEditSection === item._id) {
+                      setShowEditSection("");
+                    } else {
+                      setShowEditSection(item._id);
+                    }
+                  }}
+                >
+                  <RedEdit />
+                </button>
+
                 <button
                   className="cursor-pointer"
                   onClick={() => handleDeleteForumPost(item._id)}
@@ -231,9 +266,45 @@ function Page({ params }) {
                 </button>
               </div>
             </div>
-            <p className="text-base font-sans font-semibold text-userblack w-[94%]">
-              {item.content}
-            </p>
+            {/* {showEditSection !== item._id && (
+              
+            )} */}
+            {showEditSection === item._id ? (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleEditPost(item._id, item.content);
+                }}
+                className="flex gap-10"
+              >
+                <input
+                  value={item.content}
+                  // onChange={(e) =>
+                  //   setPosts((prevPosts) =>
+                  //     prevPosts.map((post) =>
+                  //       post._id === item._id
+                  //         ? { ...post, content: e.target.value }
+                  //         : post
+                  //     )
+                  //   )
+                  // }
+                  className="border font-sans text-sm font-medium shadow-md border-[#E7E5E4] py-3 px-4 rounded-xl w-full flex justify-start"
+                  placeholder="Edit Post"
+                />
+                <button
+                  type="submit"
+                  disabled
+                  className="py-4 px-8 bg-[#AE445A] font-sans border-[#B7B7B7] rounded-lg  text-white font-bold text-base flex justify-center items-center"
+                >
+                  {smallCommentLoading ? <LoaderSmall /> : "Save"}
+                </button>
+              </form>
+            ) : (
+              <p className="text-base font-sans font-semibold text-userblack w-[94%]">
+                {item.content}
+              </p>
+            )}
+
             <div className="flex flex-row items-center gap-3">
               <button
                 onClick={() => {

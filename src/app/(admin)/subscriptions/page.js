@@ -13,6 +13,7 @@ import { Switch } from "@mui/material";
 import LoaderLarge from "@/components/LoaderLarge";
 import { getImageCacheRemover } from "@/Services/Api/Badges/BadgesApi";
 import RobinPagination from "@/components/Pagination";
+import SearchBar from "@/components/AddSearchBar";
 
 function Page() {
   const [data, setData] = useState([]);
@@ -75,9 +76,9 @@ function Page() {
           Subscription
         </p>
         <div className="flex flex-row items-center gap-5">
-          <select className="py-[10px] px-3 border border-[#DCDBE1] rounded-lg text-sm font-sans font-normal text-userblack focus:outline-none">
+          {/* <select className="py-[10px] px-3 border border-[#DCDBE1] rounded-lg text-sm font-sans font-normal text-userblack focus:outline-none">
             <option value="1">Feb 10 - Feb 16, 22</option>
-          </select>
+          </select> */}
           <div className="bg-white border border-[#DCDBE1] py-[10px] px-3 rounded-lg flex flex-row items-center gap-2">
             <Export />
             <p className="text-sm font-sans font-normal text-userblack">
@@ -112,7 +113,7 @@ function Page() {
         </div>
       </div>
       <div className="flex flex-col">
-        <div className="bg-white py-3 px-5 rounded-t-lg w-full flex flex-row items-center justify-between">
+        {/* <div className="bg-white py-3 px-5 rounded-t-lg w-full flex flex-row items-center justify-between">
           <div className="flex flex-row gap-4 items-center">
             <div className="border py-2 px-4 rounded-md border-[#DCDBE1] w-[340px] flex flex-row items-center gap-2">
               <SearchIcon />
@@ -145,7 +146,8 @@ function Page() {
               </button>
             </Link>
           </div>
-        </div>
+        </div> */}
+        <SearchBar route="/subscriptions/add-subscription" />
         <div className="w-full overflow-x-scroll booking-table-wrapper">
           <div className="bg-[#F0F2F5] min-w-fit w-full">
             <div className="items-center grid grid-cols-subscriptionTable justify-between p-4">

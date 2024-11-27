@@ -9,7 +9,6 @@ import Star from "../../../../icons/Star";
 import NoDataIcon from "../../../../icons/NoDataIcon";
 import LoaderLarge from "@/components/LoaderLarge";
 import RobinPagination from "@/components/Pagination";
-import SearchBar from "@/components/SearchBar";
 import {
   revenueChart,
   revenueStats,
@@ -19,6 +18,7 @@ import dayjs from "dayjs";
 import { getTopGuides } from "@/Services/Api/Dashboard/DashboardApi";
 import RevenueChart from "@/components/RevenueChart";
 import { truncateDescription, truncateName } from "@/Utilities/helper";
+import SearchBar from "@/components/AddSearchBar";
 
 export default function Page() {
   const [loading, setLoading] = useState(false);
@@ -235,7 +235,9 @@ export default function Page() {
         </button>
       </div>
       <div className="flex flex-col mt-5">
-        <SearchBar />
+        {/* <SearchBar /> */}
+        <SearchBar showAddButton={false}/>
+        
         {table === "a" && (
           <div className="w-full overflow-x-scroll booking-table-wrapper">
             <div className="bg-[#F0F2F5] min-w-fit w-full">

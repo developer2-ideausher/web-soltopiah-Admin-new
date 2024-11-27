@@ -6,7 +6,7 @@ import Export from "../../icons/Export";
 import Plus from "../../icons/Plus";
 import Link from "next/link";
 
-function SearchBar({ title = "Add", route='/dashboard' }) {
+function SearchBar({ title = "Add", route = "/dashboard" ,showAddButton = true}) {
   return (
     <div className="bg-white py-3 px-5 rounded-t-lg w-full flex flex-row items-center justify-between">
       <div className="flex flex-row gap-4 items-center">
@@ -23,14 +23,17 @@ function SearchBar({ title = "Add", route='/dashboard' }) {
         <div className="bg-white border border-[#DCDBE1] py-2 px-3 rounded-lg flex flex-row items-center gap-2">
           <Sort />
           <p className="text-sm font-sans font-normal text-userblack">Sort</p>
+          
         </div>
       </div>
-      <Link href={route}>
-        <button className="rounded-lg py-2 px-3 flex flex-row items-center gap-3 border border-[#DCDBE1]">
-          <p className="text-sm font-sans font-semibold text-black">{title}</p>
-          <Plus />
-        </button>
-      </Link>
+      {showAddButton && (
+        <Link href={route}>
+          <button className="rounded-lg py-2 px-3 flex flex-row items-center gap-3 border border-[#DCDBE1]">
+            <p className="text-sm font-sans font-semibold text-black">{title}</p>
+            <Plus />
+          </button>
+        </Link>
+      )}
     </div>
   );
 }

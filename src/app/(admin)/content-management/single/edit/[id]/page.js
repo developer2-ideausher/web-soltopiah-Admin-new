@@ -41,7 +41,7 @@ export default function Add() {
 
     const [categoryData,setCategoryData] = useState([])
     const dropdownHandler = (val) => {
-        setCategory(val)
+        setCategory(val._id)
     }
 
     // mutual related data
@@ -169,16 +169,16 @@ export default function Add() {
     const fetchDetails = async () => {
         const response = await getSingleCourse(params.id)
         if(response?.status){
-            setThumbnail(response.data.thumbnail.url)
-            setTitle(response.data.title)
-            setDescription(response.data.description)
-            setAccessibilityTab(response.data.accessibility)
-            setCategory(response.data.category._id)
-            setCategoryName(response.data.category.title)
+            setThumbnail(response.data?.thumbnail?.url)
+            setTitle(response.data?.title)
+            setDescription(response.data?.description)
+            setAccessibilityTab(response.data?.accessibility)
+            setCategory(response.data?.category?._id)
+            setCategoryName(response.data?.category?.title)
             setData(response.data)
-            setDuration(response.data.chapter.durationInMinutes)
-            setCourseType(response.data.courseType)
-            singleChapterHandler(response.data.chapter._id)
+            setDuration(response.data?.chapter?.durationInMinutes)
+            setCourseType(response.data?.courseType)
+            singleChapterHandler(response.data?.chapter?._id)
         }else{
          
         }

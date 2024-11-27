@@ -95,7 +95,7 @@ function Page({ params }) {
           <BackButton />
         </Link>
         <p className="text-xl2 font-sans font-semibold text-userblack">
-          Add Subscription
+          Edit Subscription
         </p>
       </div>
       {loading ? (

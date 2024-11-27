@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Export from "../../../../icons/Export";
-import SearchBar from "@/components/SearchBar";
+// import SearchBar from "@/components/SearchBar";
 import MenuDots from "../../../../icons/MenuDots";
 import StarRating from "../../../../icons/StarRating";
 import Pagination from "@/components/Pagination";
@@ -16,6 +16,7 @@ import { getChapters } from "@/Services/Api/CalmnessFeedback/GetCalmness";
 import dayjs from "dayjs";
 import LoaderLarge from "@/components/LoaderLarge";
 import RobinPagination from "@/components/Pagination";
+import SearchBar from "@/components/AddSearchBar";
 
 function Page() {
   const [data, setData] = useState([]);
@@ -49,9 +50,9 @@ function Page() {
           Calmness Feedback
         </p>
         <div className="flex flex-row items-center gap-5">
-          <select className="py-[10px] px-3 border border-[#DCDBE1] rounded-lg text-sm font-sans font-normal text-userblack focus:outline-none">
+          {/* <select className="py-[10px] px-3 border border-[#DCDBE1] rounded-lg text-sm font-sans font-normal text-userblack focus:outline-none">
             <option value="1">Feb 10 - Feb 16, 22</option>
-          </select>
+          </select> */}
           <div className="bg-white border border-[#DCDBE1] py-[10px] px-3 rounded-lg flex flex-row items-center gap-2">
             <Export />
             <p className="text-sm font-sans font-normal text-userblack">
@@ -61,7 +62,8 @@ function Page() {
         </div>
       </div>
       <div className="flex flex-col">
-        <SearchBar />
+        {/* <SearchBar /> */}
+        <SearchBar showAddButton={false}/>
         <div className="w-full overflow-x-scroll booking-table-wrapper">
           <div className="bg-[#F0F2F5] min-w-fit w-full">
             <div className="items-center grid grid-cols-calmnessTable justify-between p-4">
@@ -109,16 +111,17 @@ function Page() {
                     <p>{item.title} </p>
                   </div>
                   <span className="text-userblack font-sans font-semibold text-sm">
-                    {item.category?.title}
+                    {item.category?.title || "Na"}
                   </span>
                   <span className="text-userblack font-sans font-semibold text-sm">
-                    {item.creator?.firstName
+                    {item.creatorRole==="Admin"?"Admin":(item.creator?.firstName)+(" ")+(item.creator?.lastName)}
+                    {/* {item.creator?.firstName
                       ? `${item.creator.firstName}${
                           item.creator?.lastName
                             ? " " + item.creator.lastName
                             : ""
                         }`
-                      : item.creatorRole}
+                      : item.creatorRole} */}
                   </span>
                   <span className="text-userblack font-sans font-semibold text-sm capitalize">
                     {item.type}

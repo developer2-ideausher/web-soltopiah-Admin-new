@@ -334,24 +334,24 @@ export default function Add() {
     const fetchDetails = async () => {
         const response = await getSingleCourse(params.id)
         if(response?.status){
-            setThumbnail(response.data.thumbnail.url)
-            setTitle(response.data.title)
-            setDescription(response.data.description)
-            setAccessibilityTab(response.data.accessibility)
-            setCategory(response.data.category._id)
-            setCategoryName(response.data.category.title)
-            setCourseType(response.data.courseType)
+            setThumbnail(response.data?.thumbnail?.url)
+            setTitle(response.data?.title)
+            setDescription(response.data?.description)
+            setAccessibilityTab(response.data?.accessibility)
+            setCategory(response.data?.category?._id)
+            setCategoryName(response.data?.category?.title)
+            setCourseType(response.data?.courseType)
             setCourseContentType(response?.data?.courseContentType)
             const temp = []
             response.data.chapters.map((item)=>{
                 const obj = {
                     thumbnail:item.thumbnail?.url,
-                    title:item.title,
-                    accessType:item.accessibility,
-                    media:item.media.url,
-                    duration:item.durationInMinutes,
-                    type:item.type,
-                    _id:item._id
+                    title:item?.title,
+                    accessType:item?.accessibility,
+                    media:item?.media?.url,
+                    duration:item?.durationInMinutes,
+                    type:item?.type,
+                    _id:item?._id
                 }
                 temp.push(obj)
             })
@@ -374,12 +374,12 @@ export default function Add() {
         if(response?.status){
             const obj = {
                 thumbnail:response.data?.thumbnail?.url,
-                title:response.data.title,
-                accessType:response.data.accessibility,
+                title:response.data?.title,
+                accessType:response.data?.accessibility,
                 media:response.data?.media?.url,
-                duration:response.data.durationInMinutes,
-                type:response.data.type,
-                _id:response.data._id
+                duration:response.data?.durationInMinutes,
+                type:response.data?.type,
+                _id:response.data?._id
             }
             temp?.map((item,ind)=>{
                 if(item._id == obj._id){

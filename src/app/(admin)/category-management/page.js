@@ -131,7 +131,7 @@ function Page() {
           Category Management
         </p>
         <div className="flex flex-col">
-          <AddSearchBar route="/category-management/addnew" />
+          <AddSearchBar route="/category-management/addnew"  showAddButton={true} />
           <div className="w-full overflow-x-scroll booking-table-wrapper">
             <div className="bg-[#F0F2F5] min-w-fit w-full">
               <div className="items-center grid grid-cols-categoryMainTable  justify-between p-4">

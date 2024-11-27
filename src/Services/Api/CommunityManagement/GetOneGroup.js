@@ -1,9 +1,9 @@
 import { getToken } from "@/Services/Cookie/userCookie";
-import { apiError, responseValidator } from "@/Utilities/helper";
+import { apiError, responseValidator, tokenValidator } from "@/Utilities/helper";
 
 export const getOnegroupApi = async (details) => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + getToken());
+  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
 
   const requestOptions = {
     method: "GET",
@@ -25,7 +25,7 @@ export const getOnegroupApi = async (details) => {
 
 export const getGroupMembersApi = async (page,details) => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + getToken());
+  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
 
   const requestOptions = {
     method: "GET",

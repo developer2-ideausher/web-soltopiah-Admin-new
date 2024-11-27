@@ -1,5 +1,4 @@
 "use client";
-import SearchBar from "@/components/SearchBar";
 import React, { useEffect, useState } from "react";
 import MenuDots from "../../../../icons/MenuDots";
 import Pagination from "@/components/Pagination";
@@ -15,6 +14,7 @@ import { getAllCommunitiesApi } from "@/Services/Api/CommunityManagement/GetAllC
 import dayjs from "dayjs";
 import LoaderLarge from "@/components/LoaderLarge";
 import RobinPagination from "@/components/Pagination";
+import SearchBar from "@/components/AddSearchBar";
 
 function Page() {
   const [communities, setCommunities] = useState([]);
@@ -46,7 +46,8 @@ function Page() {
         Community Management
       </p>
       <div className="flex flex-col">
-        <SearchBar />
+        {/* <SearchBar /> */}
+        <SearchBar showAddButton={false}/>
         <div className="w-full overflow-x-scroll booking-table-wrapper">
           <div className="bg-[#F0F2F5] min-w-fit w-full">
             <div className="items-center grid grid-cols-communityTable justify-between p-4">

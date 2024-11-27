@@ -233,7 +233,7 @@ function Page() {
             <p className="text-sm font-sans font-semibold text-userblack">
               Challenge cover
             </p>
-            <div className="border border-[#D3D6EE] bg-[#E5E7F5] rounded-lg p-4 flex justify-center items-center flex-col gap-3 relative  ">
+            <div className="border border-[#D3D6EE] bg-[#E5E7F5] rounded-lg p-2 flex justify-center items-center flex-col gap-3 relative w-[400px] h-[300px] object-cover ">
               {imageSrc1 ? (
                 <>
                   {" "}
@@ -267,7 +267,7 @@ function Page() {
               <input
                 type="file"
                 accept="image/png, image/jpeg, image/jpg"
-                className="absolute inset-0 opacity-0 cursor-pointer"
+                className="absolute inset-0 opacity-0 cursor-pointer "
                 onChange={handleImageChange1} 
               />
             </div>
@@ -278,7 +278,7 @@ function Page() {
             </p>
             <input
               type="text"
-              className="bg-white py-3 px-4 rounded-xl border border-[#E7E5E4]"
+              className="bg-white py-3 px-4 rounded-xl border font-sans border-[#E7E5E4]"
               placeholder="Enter title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}

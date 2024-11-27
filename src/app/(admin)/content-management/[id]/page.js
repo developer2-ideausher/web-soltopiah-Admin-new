@@ -5,6 +5,7 @@ import LoaderLarge from '@/components/LoaderLarge'
 import Link from 'next/link'
 import { useParams,useRouter } from 'next/navigation'
 import React, { useEffect, useRef, useState } from 'react'
+import ReactAudioPlayer from 'react-audio-player'
 import { RingLoader } from 'react-spinners'
 import { toast } from 'react-toastify'
 
@@ -65,7 +66,7 @@ export default function ViewPage() {
           <img src={data?.thumbnail?.url ? data?.thumbnail.url : "/cm.svg"} className='w-2/12 rounded-xl xs:w-full' />
 
           <h6 className='text-sm font-semibold text-[#121616] mt-5'>Title</h6>
-          <h5 className='text-[#414554] font-normal text-lg'>{data.title}</h5>
+          <h5 className='text-[#414554] font-normal text-lg'>{data?.title}</h5>
           
           <h6 className='text-sm font-semibold text-[#121616] mt-5'>Description</h6>
           <h5 className='text-[#414554] font-normal text-lg'>{data?.description}</h5>
@@ -74,13 +75,26 @@ export default function ViewPage() {
           <h5 className='text-[#414554] font-normal text-lg'>{data?.courseType}</h5>
 
           <h6 className='text-sm font-semibold text-[#121616] mt-5'>Category</h6>
-          <h5 className='text-[#414554] font-normal text-lg'>{data?.category.title}</h5>
+          <h5 className='text-[#414554] font-normal text-lg'>{data?.category?.title}</h5>
 
           <h6 className='text-sm font-semibold text-[#121616] mt-5'>Content Added</h6>
-          {data?.chapters?.map((item,index)=><div key={index} className='flex flex-wrap w-full mt-1 gap-5 items-center'>
-            <h5 className='text-[#414554] font-semibold text-lg'>{item.title}</h5>
-            <h5 className='text-[#414554] font-normal text-sm underline'>{item.media?.url.substring(69,150)}</h5>
-          </div>)}
+          <div className='w-ful grid grid-cols-3 gap-8 mt-5 mb-5'>
+            {data?.chapters?.map((item,index)=><div key={index} className='w-full'>
+              <h5 className='text-[#414554] font-semibold text-lg'>{item.title}</h5>
+              {item.media?.url != '' && <div className="w-full mt-1">
+              {data?.courseContentType != 'video' && <ReactAudioPlayer
+                src={item.media?.url}
+                style={{ width: '100%' }}
+                className="w-full"
+                controls
+                id="single"
+              />}
+              {data?.courseContentType == 'video' && <video id="video" width="100%" className='rounded-xl xs:w-full' controls height="200">
+                <source src={item.media?.url}  />
+              </video>}
+            </div>}
+            </div>)}
+          </div>
         </div>}
         {!data && <div className='w-full py-10 flex justify-center'>
           <LoaderLarge />

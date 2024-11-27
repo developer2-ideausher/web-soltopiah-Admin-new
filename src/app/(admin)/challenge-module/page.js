@@ -115,9 +115,9 @@ function Page() {
             All challenge programs
           </p>
           <div className="flex flex-row items-center gap-5">
-            <select className="py-[10px] px-3 border border-[#DCDBE1] rounded-lg text-sm font-sans font-normal text-userblack focus:outline-none">
+            {/* <select className="py-[10px] px-3 border border-[#DCDBE1] rounded-lg text-sm font-sans font-normal text-userblack focus:outline-none">
               <option value="1">Feb 10 - Feb 16, 22</option>
-            </select>
+            </select> */}
             <div className="bg-white border border-[#DCDBE1] py-[10px] px-3 rounded-lg flex flex-row items-center gap-2">
               <Export />
               <p className="text-sm font-sans font-normal text-userblack">

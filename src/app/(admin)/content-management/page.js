@@ -5,6 +5,8 @@ import {
   getAllUnitaryCourses,
 } from "@/Utilities/Course";
 import FilterBar from "@/components/FilterBar";
+import FilterPagination from "@/components/FilterPagination";
+import KhushFilterBar from "@/components/KhushFilterBar";
 import LoaderLarge from "@/components/LoaderLarge";
 import SingleCM from "@/components/SingleCM";
 import SingleChapter from "@/components/SingleChapter";
@@ -15,25 +17,112 @@ export default function Page() {
   const queryRef = useRef(false);
   const [tab, setTab] = useState("courses");
   const [data, setData] = useState(null);
+  const [loading,setLoading] = useState(false)
   const [chapters, setChapters] = useState([]);
-  const dataSetter = async () => {
-    const response = await getAllCourses();
+
+  const [filters,setFilters] = useState({
+    status:'',
+    sortOrder:'',
+    sortBy:"",
+    keyword:"",
+    page:1,
+    limit:10
+  })
+  const [filters2,setFilters2] = useState({
+    status:'',
+    sortOrder:'',
+    sortBy:"",
+    keyword:"",
+    page:1,
+    limit:10
+})
+
+  const dataSetter = async (query) => {
+    const response = await getAllCourses(query);
     if (response?.status) {
       setData(response.data);
     } else {
     }
   };
-  const dataSetterChapters = async () => {
-    const response = await getAllUnitaryCourses();
+  const dataSetterChapters = async (query) => {
+    const response = await getAllUnitaryCourses(query);
     if (response?.status) {
       setChapters(response.data);
     } else {
     }
   };
+  const filterHandler = async (status,sortOrder,sortBy,keyword,page,limit,access,type,content) => {
+    setFilters({
+      status:status,
+      sortOrder:sortOrder,
+      sortBy:sortBy,
+      keyword:keyword,
+      page:page,
+      limit:limit,
+      access:access,
+      content:content
+    })
+    let query = ''
+    if(keyword == ''){
+      query = "?page="+page+"&limit="+limit
+    }else{
+      query = '?search='+keyword
+    }
+    if(access != '' && access != undefined){
+      query = query + '&accessibility='+access
+    }
+    // if(type != ''){
+    //   query = query + '&type='+type
+    // }
+    if(sortOrder != ''){
+      query = query + '&sortOrder='+sortOrder
+    }
+    if(sortBy != ''){
+      query = query + '&sortBy='+sortBy
+    }
+    if(content != '' && content != undefined &&  content != 'undefined'){
+      query = query + '&courseContentType='+content
+    }
+    dataSetter(query)  
+  }
+  const filterChaptersHandler = async (status,sortOrder,sortBy,keyword,page,limit,access,type,content) => {
+    setFilters2({
+      sortOrder:sortOrder,
+      sortBy:sortBy,
+      keyword:keyword,
+      page:page,
+      limit:limit,
+      access:access,
+      content:content
+    })
+    let query = "?page="+page+"&limit="+limit
+    if(keyword == ''){
+      if(access != '' && access != undefined){
+        query = query + '&accessibility='+access
+      }
+      // if(type != ''){
+      //   query = query + '&type='+type
+      // }
+      if(sortOrder != ''){
+        query = query + '&sortOrder='+sortOrder
+      }
+      if(sortBy != ''){
+        query = query + '&sortBy='+sortBy
+      }
+      
+      if(content != '' && content != undefined &&  content != 'undefined'){
+        query = query + '&courseContentType='+content
+      }
+      dataSetterChapters(query)
+    }else{
+      let temp = '?search='+keyword
+      dataSetterChapters(temp)
+  }
+  }
   useEffect(() => {
     if (!queryRef.current) {
-      dataSetter();
-      dataSetterChapters();
+      dataSetter("");
+      dataSetterChapters("");
     }
     queryRef.current = true;
   }, []);
@@ -85,7 +174,8 @@ export default function Page() {
         </h6>
       </div>
       <div className="w-full bg-white border border-solid border-[#E7E8EA] rounded-lg mt-4">
-        <FilterBar />
+      {tab == 'courses' && <KhushFilterBar course={true} loading={loading} handler={filterHandler} limit={data?.limit} totalPages={data?.totalPages} page={data?.page}/> }
+      {tab == 'singles' && <KhushFilterBar course={true} loading={loading} handler={filterChaptersHandler} limit={chapters?.limit} totalPages={chapters?.totalPages} page={chapters?.page}/> }
         {tab == "courses" && (
           <div className="w-full flex items-center justify-between bg-[#F0F2F5] py-2 px-5">
             <h6 className="text-[#595C69] font-normal w-3/12 text-sm">
@@ -142,6 +232,7 @@ export default function Page() {
           data?.results.map((item, index) => (
             <SingleCM key={index} data={item} />
           ))}
+           {data && tab == 'courses' && <FilterPagination type="course" handler={filterHandler} filters={filters} limit={data?.limit} totalPages={data?.totalPages} page={data?.page}/>}
 
         {chapters && tab == "singles" && chapters?.results?.length == 0 && (
           <h5 className="text-black p-5 w-full text-center text-sm font-normal">
@@ -153,6 +244,7 @@ export default function Page() {
           chapters?.results.map((item, index) => (
             <SingleChapter key={index} data={item} />
           ))}
+             {data && tab == 'singles' && <FilterPagination type="course" handler={filterChaptersHandler} filters={filters2} limit={chapters?.limit} totalPages={chapters?.totalPages} page={chapters?.page}/>}
       </div>
     </div>
   );

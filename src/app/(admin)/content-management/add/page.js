@@ -161,7 +161,7 @@ export default function Add() {
     const dataSetter = async () => {
         const response = await getAllCategories()
         if(response?.status){
-            setCategoryData(response.data.results)
+            setCategoryData(response.data?.results)
         }else{
             
         }
@@ -268,11 +268,11 @@ export default function Add() {
                 const temp = []
                 contentArray?.map((item,index)=>{
                     const obj = {
-                        thumbnail:item.thumbnail,
-                        title:item.title,
-                        accessibility:item.accessType,
-                        media:item.media,
-                        durationInMinutes:item.duration,
+                        thumbnail:item?.thumbnail,
+                        title:item?.title,
+                        accessibility:item?.accessType,
+                        media:item?.media,
+                        durationInMinutes:item?.duration,
                         category:category,
                     }
                     temp.push(obj)
@@ -306,12 +306,12 @@ export default function Add() {
             toastId:`djhd--${index}`
         })
         const formdata = new FormData();
-        formdata.append("thumbnail", obj.thumbnail);
-        formdata.append("category", obj.category);
-        formdata.append("accessibility", obj.accessibility);
-        formdata.append("title", obj.title);
-        formdata.append("media", obj.media);
-        formdata.append("durationInMinutes", obj.durationInMinutes);
+        formdata.append("thumbnail", obj?.thumbnail);
+        formdata.append("category", obj?.category);
+        formdata.append("accessibility", obj?.accessibility);
+        formdata.append("title", obj?.title);
+        formdata.append("media", obj?.media);
+        formdata.append("durationInMinutes", obj?.durationInMinutes);
         const response = await addChapterInCourse(id,formdata)
         if(response?.status){
             toast.success(`Uploading done for chapter ${index+1}`,{

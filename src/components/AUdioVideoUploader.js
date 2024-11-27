@@ -114,7 +114,7 @@ export default function AudioVideoUploader(props) {
                     accept={type == '' ? "audio/*,video/*" : type == 'audio' ? 'audio/*' : 'video/*' }
                 />
             </div>}
-            {isUploaded && type == 'video' && <video id="video" width="100%" className='rounded-xl' controls height="200">
+            {isUploaded && type == 'video' && <video id="video" width="100%" className='rounded-xl  h-[400px]' controls height="200">
                 <source src={url} type={file?.type}  />
             </video>}
             {isUploaded && type == 'audio' && <div className='w-full'>

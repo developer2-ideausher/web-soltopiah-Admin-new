@@ -5,7 +5,6 @@ import Frame1 from "../../../../public/Frame1.png";
 import GreenLive from "../../../../icons/GreenLive";
 import LiveButton from "../../../../icons/LiveButton";
 import Link from "next/link";
-import SearchBar from "@/components/SearchBar";
 import Loader from "@/components/Loader";
 import { getToken } from "@/Services/Cookie/userCookie";
 import dayjs from "dayjs";
@@ -16,6 +15,7 @@ import LoaderLarge from "@/components/LoaderLarge";
 import { useRouter } from "next/navigation";
 import { getlive, getPendingCount } from "@/Services/Api/LiveManagament/Live";
 import RobinPagination from "@/components/Pagination";
+import SearchBar from "@/components/AddSearchBar";
 
 dayjs.extend(utc);
 
@@ -126,7 +126,7 @@ function Page() {
           </Link>
         </div>
         <div className="flex flex-col">
-          <SearchBar />
+          <SearchBar showAddButton={false} />
           <div className="w-full overflow-x-scroll booking-table-wrapper">
             <div className="bg-[#F0F2F5] min-w-fit w-full">
               <div className="items-center grid grid-cols-LiveMainTable justify-between p-4">

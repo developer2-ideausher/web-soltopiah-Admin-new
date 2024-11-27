@@ -1,5 +1,4 @@
 "use client";
-import SearchBar from "@/components/SearchBar";
 import React, { useEffect, useState } from "react";
 import MenuDots from "../../../../icons/MenuDots";
 
@@ -16,6 +15,7 @@ import LoaderLarge from "@/components/LoaderLarge";
 import DeleteModal from "@/components/DeleteModal";
 import { truncateName } from "@/Utilities/helper";
 import RobinPagination from "@/components/Pagination";
+import SearchBar from "@/components/AddSearchBar";
 
 function Page() {
   const [popupIndex, setPopupIndex] = useState(null);
@@ -123,7 +123,7 @@ function Page() {
           Guide Management
         </p>
         <div className="flex flex-col">
-          <SearchBar />
+          <SearchBar showAddButton={false} />
           <div className="w-full overflow-x-scroll booking-table-wrapper  ">
             <div className="bg-[#F0F2F5] min-w-fit w-full ">
               <div className="items-center grid grid-cols-guideTable p-4 justify-between">

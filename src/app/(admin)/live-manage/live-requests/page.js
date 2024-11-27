@@ -1,7 +1,6 @@
 "use client";
 import BackButton from "@/components/BackButton";
 import Pagination from "@/components/Pagination";
-import SearchBar from "@/components/SearchBar";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import Frame1 from "../../../../../public/Frame1.png";
@@ -13,6 +12,7 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { getPendingCount } from "@/Services/Api/LiveManagament/Live";
 import RobinPagination from "@/components/Pagination";
+import SearchBar from "@/components/AddSearchBar";
 
 dayjs.extend(utc);
 
@@ -47,11 +47,11 @@ function Page() {
           <BackButton />
         </Link>
         <p className="text-userblack font-semibold text-xl2 font-sans">
-          Live Request
+          Live Requests
         </p>
       </div>
       <div className="flex flex-col">
-        <SearchBar />
+        <SearchBar showAddButton={false} />
         <div className="w-full overflow-x-scroll booking-table-wrapper">
           <div className="bg-[#F0F2F5] min-w-fit w-full">
             <div className="items-center grid grid-cols-LiveReqTable justify-between p-4">

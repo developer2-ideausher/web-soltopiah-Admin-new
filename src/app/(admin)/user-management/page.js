@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import SearchBar from "@/components/SearchBar";
 import GreenDot from "../../../../icons/GreenDot";
 import Link from "next/link";
 import RedDot from "../../../../icons/RedDot";
@@ -11,6 +10,7 @@ import LoaderLarge from "@/components/LoaderLarge";
 import dayjs from "dayjs";
 import { Switch } from "@mui/material";
 import RobinPagination from "@/components/Pagination";
+import SearchBar from "@/components/AddSearchBar";
 
 function Page() {
   const [data, setData] = useState([]);
@@ -70,7 +70,7 @@ function Page() {
           </p>
 
           <div className="flex flex-col">
-            <SearchBar />
+            <SearchBar showAddButton={false} />
             <div className="w-full overflow-x-scroll booking-table-wrapper">
               <div className="bg-[#F0F2F5] min-w-fit w-full">
                 <div className="items-center grid grid-cols-userTable justify-between p-4">

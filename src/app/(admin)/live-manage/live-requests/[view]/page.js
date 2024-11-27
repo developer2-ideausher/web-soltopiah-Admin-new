@@ -115,7 +115,7 @@ function Page({ params }) {
             <BackButton />
           </Link>
           <p className="text-userblack font-semibold text-xl2 font-sans">
-            View live session
+            View Live Session
           </p>
         </div>
         {requestData && (

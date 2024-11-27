@@ -142,7 +142,7 @@ function Page() {
           Notification Management
         </p>
         <div className="flex flex-col">
-          <SearchBar route={"/notification-management/create-notification"} />
+          <SearchBar route={"/notification-management/create-notification"} showAddButton={true}/>
           <div className="w-full overflow-x-scroll booking-table-wrapper">
             <div className="bg-[#F0F2F5] min-w-fit w-full">
               <div className="items-center grid grid-cols-notificationTable justify-between p-4">

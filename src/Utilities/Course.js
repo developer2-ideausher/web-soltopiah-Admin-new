@@ -1,11 +1,11 @@
 import Cookies from "js-cookie";
-import { apiError, responseValidator } from "./helper";
+import { apiError, responseValidator, tokenValidator } from "./helper";
 
 // chapters
 export async function createUnitaryCourse(formdata) {
   var myHeaders = new Headers();
   // myHeaders.append("Content-Type", "application/json");
-  myHeaders.append("Authorization", "Bearer " + Cookies.get("auth"));
+  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
   var requestOptions = {
     method: "POST",
     headers: myHeaders,
@@ -22,9 +22,9 @@ export async function createUnitaryCourse(formdata) {
     apiError(e);
   }
 }
-export async function getAllUnitaryCourses() {
+export async function getAllUnitaryCourses(query) {
   var myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + Cookies.get("auth"));
+  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
   var requestOptions = {
     method: "GET",
     headers: myHeaders,
@@ -32,7 +32,7 @@ export async function getAllUnitaryCourses() {
   };
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL + "/courses/unitary",
+      process.env.NEXT_PUBLIC_URL + "/courses/unitary"+query,
       requestOptions
     );
     return responseValidator(response);
@@ -45,7 +45,7 @@ export async function getAllUnitaryCourses() {
 export async function createCourse(formdata) {
   var myHeaders = new Headers();
   // myHeaders.append("Content-Type", "application/json");
-  myHeaders.append("Authorization", "Bearer " + Cookies.get("auth"));
+  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
   var requestOptions = {
     method: "POST",
     headers: myHeaders,
@@ -64,7 +64,7 @@ export async function createCourse(formdata) {
 }
 export async function updateCourse(formdata, id) {
   var myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + Cookies.get("auth"));
+  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
   var requestOptions = {
     method: "PATCH",
     headers: myHeaders,
@@ -83,7 +83,7 @@ export async function updateCourse(formdata, id) {
 }
 export async function addChapterInCourse(id, formdata) {
   var myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + Cookies.get("auth"));
+  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
   var requestOptions = {
     method: "POST",
     headers: myHeaders,
@@ -102,7 +102,7 @@ export async function addChapterInCourse(id, formdata) {
 }
 export async function deleteMediaFromCourse(id, cid) {
   var myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + Cookies.get("auth"));
+  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
   var requestOptions = {
     method: "DELETE",
     headers: myHeaders,
@@ -128,7 +128,7 @@ export async function deleteMediaFromCourse(id, cid) {
 }
 export async function updateChapterInCourse(id, formdata) {
   var myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + Cookies.get("auth"));
+  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
   var requestOptions = {
     method: "PATCH",
     headers: myHeaders,
@@ -148,7 +148,7 @@ export async function updateChapterInCourse(id, formdata) {
 export async function updateChapterAccessibility(id, payload) {
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
-  myHeaders.append("Authorization", "Bearer " + Cookies.get("auth"));
+  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
   const raw = JSON.stringify(payload);
   var requestOptions = {
     method: "PATCH",
@@ -167,9 +167,9 @@ export async function updateChapterAccessibility(id, payload) {
   }
 }
 
-export async function getAllCourses() {
+export async function getAllCourses(query) {
   var myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + Cookies.get("auth"));
+  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
   var requestOptions = {
     method: "GET",
     headers: myHeaders,
@@ -177,7 +177,7 @@ export async function getAllCourses() {
   };
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL + "/courses/standard",
+      process.env.NEXT_PUBLIC_URL + "/courses/standard"+query,
       requestOptions
     );
     return responseValidator(response);
@@ -188,7 +188,7 @@ export async function getAllCourses() {
 
 export async function getAllCategories() {
   var myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + Cookies.get("auth"));
+  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
   var requestOptions = {
     method: "GET",
     headers: myHeaders,
@@ -206,7 +206,7 @@ export async function getAllCategories() {
 }
 export async function getSingleCourse(id) {
   var myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + Cookies.get("auth"));
+  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
   var requestOptions = {
     method: "GET",
     headers: myHeaders,
@@ -224,7 +224,7 @@ export async function getSingleCourse(id) {
 }
 export async function deleteSingleCourse(id) {
   var myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + Cookies.get("auth"));
+  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
   var requestOptions = {
     method: "DELETE",
     headers: myHeaders,
@@ -242,7 +242,7 @@ export async function deleteSingleCourse(id) {
 }
 export const getSingleChapter = async (id) => {
   var myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + Cookies.get("auth"));
+  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
   var requestOptions = {
     method: "GET",
     headers: myHeaders,
