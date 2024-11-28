@@ -236,7 +236,7 @@ export default function Page() {
       </div>
       <div className="flex flex-col mt-5">
         {/* <SearchBar /> */}
-        <SearchBar showAddButton={false}/>
+        <SearchBar  showAddButton={false}/>
         
         {table === "a" && (
           <div className="w-full overflow-x-scroll booking-table-wrapper">

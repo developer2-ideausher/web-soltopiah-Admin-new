@@ -1,7 +1,37 @@
 import { getToken } from "@/Services/Cookie/userCookie";
 import { apiError, responseValidator, tokenValidator, url } from "@/Utilities/helper";
 
-export const getAllNotificationApi = async (page) => {
+// export const getAllNotificationApi = async (page, sortOrder = "desc", search = "") => {
+//   const myHeaders = new Headers();
+//   myHeaders.append("Authorization", "Bearer " + await tokenValidator());
+
+//   const queryParams = new URLSearchParams({
+//     sortBy: "createdAt",
+//     sortOrder,
+//     page,
+//     limit: 10,
+//   });
+
+//   if (search.trim() !== "") {
+//     queryParams.append("search", search); // Add search query only if not empty
+//   }
+
+//   try {
+//     const response = await fetch(
+//       `${url}/notifications/sent-by-admin?${queryParams.toString()}`,
+//       {
+//         method: "GET",
+//         headers: myHeaders,
+//         redirect: "follow",
+//       }
+//     );
+//     return responseValidator(response);
+//   } catch (error) {
+//     apiError(error);
+//   }
+// };
+
+export const getAllNotificationApi = async (page,sortOrder = "desc", search = "") => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + await tokenValidator());
 
@@ -10,9 +40,10 @@ export const getAllNotificationApi = async (page) => {
     headers: myHeaders,
     redirect: "follow",
   };
+  const searchParam = search.trim() !== "" ? `&search=${search}` : "";
   try {
     const response = await fetch(
-      url + `/notifications/sent-by-admin?sortBy=createdAt&sortOrder=desc&page=${page}&limit=10`,
+      url + `/notifications/sent-by-admin?sortBy=createdAt&sortOrder=${sortOrder}&page=${page}&limit=10&${searchParam}`,
       requestOptions
     );
     return responseValidator(response);
@@ -20,6 +51,8 @@ export const getAllNotificationApi = async (page) => {
     apiError(error);
   }
 };
+
+
 
 // export const deleteNotification = async (id) => {
 //   const myHeaders = new Headers();

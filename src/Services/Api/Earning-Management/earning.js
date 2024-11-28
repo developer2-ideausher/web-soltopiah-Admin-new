@@ -1,7 +1,7 @@
 import { getToken } from "@/Services/Cookie/userCookie";
 import { apiError, responseValidator, tokenValidator, url } from "@/Utilities/helper";
 
-export const tableApi = async (tableData, page) => {
+export const tableApi = async (tableData, page,) => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + await tokenValidator());
 

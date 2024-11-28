@@ -21,9 +21,11 @@ function Page() {
   const [refresh, setRefresh] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedId, setSelectedId] = useState(null);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+  const [sort, setSort] = useState("desc");
 
   const token = getToken();
   // const getAllNotificationApi = () => {
@@ -63,17 +65,27 @@ function Page() {
   //       setLoading(false);
   //     });
   // };
-
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+  
+    if (term.trim() === "") {
+      // If search is empty, reset to default data
+      fetchData(currentPage); // Fetch default data
+      return;
+    }
+  
+    // Fetch filtered data based on search term
+    fetchData(currentPage, sort, term);
+  };
   const fetchData = async (page) => {
     setLoading(true);
-    setNotificationData([])
-    const result = await getAllNotificationApi(page);
+    setNotificationData([]);
+    const result = await getAllNotificationApi(page, sort, searchTerm);
 
     if (result.status) {
       console.log(result.data.results);
       setNotificationData(result.data.results);
       setTotalPages(result.data.totalPages);
-
     } else {
       console.error(result.message);
     }
@@ -115,7 +127,7 @@ function Page() {
   };
   const handleConfirmDelete = () => {
     setLoading(true);
-    setNotificationData([])
+    setNotificationData([]);
     deleteNotificationApi(selectedId);
     setShowModal(false);
   };
@@ -126,7 +138,7 @@ function Page() {
   };
   useEffect(() => {
     fetchData(currentPage);
-  }, [refresh,currentPage]);
+  }, [refresh, currentPage, sort, searchTerm]);
   return (
     <>
       {" "}
@@ -142,7 +154,13 @@ function Page() {
           Notification Management
         </p>
         <div className="flex flex-col">
-          <SearchBar route={"/notification-management/create-notification"} showAddButton={true}/>
+          <SearchBar
+            handleSort={sort}
+            setHandleSort={setSort}
+            handleSearch={handleSearch}
+            route={"/notification-management/create-notification"}
+            showAddButton={true}
+          />
           <div className="w-full overflow-x-scroll booking-table-wrapper">
             <div className="bg-[#F0F2F5] min-w-fit w-full">
               <div className="items-center grid grid-cols-notificationTable justify-between p-4">
@@ -163,6 +181,16 @@ function Page() {
                 <LoaderLarge />
               </div>
             )}
+            {!loading &&
+              notifcationData &&
+              notifcationData.length === 0 &&
+              searchTerm && (
+                <div className="flex justify-center items-center bg-white p-10 w-full">
+                  <p className="text-gray-500 text-sm">
+                    No data found for {searchTerm}.
+                  </p>
+                </div>
+              )}
             <div className="flex flex-col bg-white min-w-fit w-full ">
               {notifcationData &&
                 notifcationData.map((item, index) => (
@@ -170,10 +198,16 @@ function Page() {
                     key={item._id || index}
                     className=" grid grid-cols-notificationTable justify-between border-b border-[#E9E9EC] items-center p-4"
                   >
-                    <span title={item.title} className="text-userblack  font-sans font-semibold text-sm break-all">
+                    <span
+                      title={item.title}
+                      className="text-userblack  font-sans font-semibold text-sm break-all"
+                    >
                       {truncateName(item.title)}
                     </span>
-                    <span title={item.description} className="text-userblack font-sans font-semibold text-sm break-all">
+                    <span
+                      title={item.description}
+                      className="text-userblack font-sans font-semibold text-sm break-all"
+                    >
                       {truncateDescription(item.description)}
                     </span>
                     <span className="text-userblack font-sans font-semibold text-sm">
@@ -188,10 +222,11 @@ function Page() {
             </div>
           </div>
           <RobinPagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />         </div>
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />{" "}
+        </div>
       </div>
     </>
   );
