@@ -87,7 +87,7 @@ function Page() {
           </div>
         </div>
       </div>
-      <div className="flex flex-col gap-4 bg-white midxl:w-3/5  xl:w-3/5 2xl:w-2/5 rounded-xl p-8">
+      {/* <div className="flex flex-col gap-4 bg-white midxl:w-3/5  xl:w-3/5 2xl:w-2/5 rounded-xl p-8">
         <div className="flex flex-row items-center justify-between">
           <p className="text-base font-sans font-bold text-userblack">
             Subscription
@@ -111,7 +111,7 @@ function Page() {
             </p>
           </div>
         </div>
-      </div>
+      </div> */}
       <div className="flex flex-col">
         {/* <div className="bg-white py-3 px-5 rounded-t-lg w-full flex flex-row items-center justify-between">
           <div className="flex flex-row gap-4 items-center">
@@ -147,7 +147,7 @@ function Page() {
             </Link>
           </div>
         </div> */}
-        <SearchBar route="/subscriptions/add-subscription" />
+        <SearchBar showFilters={false} sort={false} showSearch={false} route="/subscriptions/add-subscription" />
         <div className="w-full overflow-x-scroll booking-table-wrapper">
           <div className="bg-[#F0F2F5] min-w-fit w-full">
             <div className="items-center grid grid-cols-subscriptionTable justify-between p-4">

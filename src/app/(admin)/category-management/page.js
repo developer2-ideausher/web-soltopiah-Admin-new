@@ -16,6 +16,7 @@ import { toast } from "react-toastify";
 import { getImageCacheRemover } from "@/Services/Api/Badges/BadgesApi";
 import { truncateDescription, truncateName } from "@/Utilities/helper";
 import RobinPagination from "@/components/Pagination";
+import { getCategoryData } from "@/Services/Api/CategoryManagement/Category";
 
 function Page() {
   const [showModal, setShowModal] = useState(false);
@@ -26,50 +27,73 @@ function Page() {
 
   const [loading, setLoading] = useState(false);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sort, setSort] = useState("desc");
   const token = getToken();
 
-  useEffect(() => {
-    if (!token) {
-      toast.error("Session expired, login again");
-      router.push("/login");
-    } else {
-      getCategoryData(currentPage);
-    }
-  }, [token, refresh,currentPage]);
   const router = useRouter();
-  const getCategoryData = (page) => {
-    setLoading(true);
-    const myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + token);
+  const handleSearch = (term) => {
+    setSearchTerm(term);
 
-    const requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow",
-    };
+    if (term.trim() === "") {
+      // If search is empty, reset to default data
+      fetchData(1); // Fetch default data
+      return;
+    }
 
-    fetch(process.env.NEXT_PUBLIC_URL + `/categories?page=${page}&limit=10`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        if (result.message === "Failed to authenticate") {
-          // toast.error(result.message, { toastId: "1wmdewilmh" });
-          router.push("/login");
-        } else {
-          console.log(result.data.results);
-          setCategoryData(result.data.results);
-          setTotalPages(result.data.totalPages);
-
-        }
-
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        toast.error(result.message, { toastId: "1wmoikk" });
-
-        setLoading(false);
-      });
+    // Fetch filtered data based on search term
+    setCurrentPage(1);
+    fetchData(currentPage, sort, term);
   };
+  const fetchData = async (page) => {
+    setLoading(true);
+    setCategoryData([]);
+
+    const result = await getCategoryData(page, sort, searchTerm);
+    if (result.status) {
+      console.log(result.data.results);
+      console.log("Total pages:", result.data.totalPages);
+
+      setCategoryData(result.data?.results);
+      setTotalPages(result.data?.totalPages);
+    } else {
+      console.error(result.message);
+    }
+    setLoading(false);
+  };
+  // const getCategoryData = (page) => {
+  //   setLoading(true);
+  //   const myHeaders = new Headers();
+  //   myHeaders.append("Authorization", "Bearer " + token);
+
+  //   const requestOptions = {
+  //     method: "GET",
+  //     headers: myHeaders,
+  //     redirect: "follow",
+  //   };
+
+  //   fetch(process.env.NEXT_PUBLIC_URL + `/categories?page=${page}&limit=10`, requestOptions)
+  //     .then((response) => response.json())
+  //     .then((result) => {
+  //       if (result.message === "Failed to authenticate") {
+  //         // toast.error(result.message, { toastId: "1wmdewilmh" });
+  //         router.push("/login");
+  //       } else {
+  //         console.log(result.data.results);
+  //         setCategoryData(result.data.results);
+  //         setTotalPages(result.data.totalPages);
+
+  //       }
+
+  //       setLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //       toast.error(result.message, { toastId: "1wmoikk" });
+
+  //       setLoading(false);
+  //     });
+  // };
   const deleteCategoryApi = (categoryId) => {
     setLoading(true);
     const myHeaders = new Headers();
@@ -117,6 +141,9 @@ function Page() {
     setShowModal(false);
     setSelectedCategoryId(null);
   };
+  useEffect(() => {
+    fetchData(currentPage);
+  }, [refresh, currentPage, sort, searchTerm]);
   return (
     <>
       {showModal && (
@@ -131,7 +158,13 @@ function Page() {
           Category Management
         </p>
         <div className="flex flex-col">
-          <AddSearchBar route="/category-management/addnew"  showAddButton={true} />
+          <AddSearchBar
+            handleSort={sort}
+            setHandleSort={setSort}
+            handleSearch={handleSearch}
+            route="/category-management/addnew"
+            showAddButton={true}
+          />
           <div className="w-full overflow-x-scroll booking-table-wrapper">
             <div className="bg-[#F0F2F5] min-w-fit w-full">
               <div className="items-center grid grid-cols-categoryMainTable  justify-between p-4">
@@ -152,51 +185,60 @@ function Page() {
                 <span className="text-[#666576] font-sans font-normal text-sm"></span>
               </div>
             </div>
-            {loading ? (
+            {loading && (
               <div className="flex justify-center bg-white items-center p-10 w-full ">
                 <LoaderLarge />
               </div>
-            ) : (
-              <div className="flex flex-col bg-white min-w-fit w-full ">
-                {categoryData &&
-                  categoryData.map((item, index) => (
-                    <div
-                      key={item._id || index}
-                      onClick={() =>
-                        router.push(`/category-management/${item._id}`)
-                      }
-                      className=" grid grid-cols-categoryMainTable justify-between border-b border-[#E9E9EC] items-center p-4 cursor-pointer"
-                    >
-                      <div className="flex flex-row items-center gap-4">
-                        <img
-                          className="h-8 w-8 object-cover rounded-full"
-                          src={getImageCacheRemover(
-                            item.image?.url,
-                            "image1.png"
-                          )}
-                          alt=""
-                        />
-                        <p className="text-sm font-sans font-semibold text-[#252322] break-all mr-10 ">
-                          {truncateName(item.title)}
-                        </p>
-                      </div>
-                      <p className="text-sm font-sans font-semibold capitalize text-[#252322]">
-                        {item.pageType}
-                      </p>
-
-                      <span className="text-userblack font-sans font-semibold text-sm">
-                        {dayjs(item.createdAt).format("MMM DD YYYY")}
-                      </span>
-                      <span className="text-userblack font-sans font-semibold text-sm">
-                        {dayjs(item.updatedAt).format("MMM DD YYYY")}
-                      </span>
-                      <button onClick={(e) => handleDelete(item._id, e)}>
-                        <MaroonDustbin />
-                      </button>
-                    </div>
-                  ))}
-              </div>
             )}
+            {!loading &&
+              categoryData &&
+              categoryData.length === 0 &&
+              searchTerm && (
+                <div className="flex justify-center items-center bg-white p-10 w-full">
+                  <p className="text-gray-500 text-sm">
+                    No data found for {searchTerm}.
+                  </p>
+                </div>
+              )}
+            <div className="flex flex-col bg-white min-w-fit w-full ">
+              {categoryData &&
+                categoryData.map((item, index) => (
+                  <div
+                    key={item._id || index}
+                    onClick={() =>
+                      router.push(`/category-management/${item._id}`)
+                    }
+                    className=" grid grid-cols-categoryMainTable justify-between border-b border-[#E9E9EC] items-center p-4 cursor-pointer"
+                  >
+                    <div className="flex flex-row items-center gap-4">
+                      <img
+                        className="h-8 w-8 object-cover rounded-full"
+                        src={getImageCacheRemover(
+                          item.image?.url,
+                          "image1.png"
+                        )}
+                        alt=""
+                      />
+                      <p className="text-sm font-sans font-semibold text-[#252322] break-all mr-10 ">
+                        {truncateName(item.title)}
+                      </p>
+                    </div>
+                    <p className="text-sm font-sans font-semibold capitalize text-[#252322]">
+                      {item.pageType}
+                    </p>
+
+                    <span className="text-userblack font-sans font-semibold text-sm">
+                      {dayjs(item.createdAt).format("MMM DD YYYY")}
+                    </span>
+                    <span className="text-userblack font-sans font-semibold text-sm">
+                      {dayjs(item.updatedAt).format("MMM DD YYYY")}
+                    </span>
+                    <button onClick={(e) => handleDelete(item._id, e)}>
+                      <MaroonDustbin />
+                    </button>
+                  </div>
+                ))}
+            </div>
           </div>
           <RobinPagination
             currentPage={currentPage}

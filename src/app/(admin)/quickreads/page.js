@@ -15,6 +15,10 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import LoaderLarge from "@/components/LoaderLarge";
 import RobinPagination from "@/components/Pagination";
+import {
+  getAllQuickreadsDataApi,
+  getPendingQuickReadsCount,
+} from "@/Services/Api/quickReads/quickReads";
 
 function Page() {
   const [quickReadData, setQuickReadData] = useState([]);
@@ -22,56 +26,94 @@ function Page() {
   const [pendingCount, setPendingCount] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sort, setSort] = useState("desc");
   const router = useRouter();
   useEffect(() => {
-    if (!token) {
-      toast.error("Session expired, login again");
-      router.push("/login");
-    } else {
-      getAllQuickreadsDataApi(currentPage);
-    }
-  }, [currentPage]);
+    fetchPendingData();
+    fetchData(currentPage);
+  }, [currentPage, sort, searchTerm]);
+
   const token = getToken();
-  const getAllQuickreadsDataApi = (page) => {
-    const myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + token);
+  const handleSearch = (term) => {
+    setSearchTerm(term);
 
-    const requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow",
-    };
-    setLoading(true);
-    setQuickReadData([])
-    fetch(process.env.NEXT_PUBLIC_URL + `/quick-reads?page=${page}&limit=10`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result.data.results);
-        if (result.message === "Failed to authenticate") {
-          toast.error(result.message, { toastId: "1wmdewimmmmm" });
-          router.push("/login");
-        } else {
-          
-          setQuickReadData(result.data.results);
-          setTotalPages(result.data.totalPages);
+    if (term.trim() === "") {
+      // If search is empty, reset to default data
+      fetchData(1); // Fetch default data
+      return;
+    }
 
-          const quickReads = result.data.results;
-          const pendingQuickReads = quickReads.filter(
-            (item) => item.status === "pending"
-          ).length;
-          setPendingCount(pendingQuickReads);
-        }
-
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        toast.error("An error occurred while fetching data.", {
-          toastId: "fetchError",
-        });
-        setLoading(false);
-      });
+    // Fetch filtered data based on search term
+    setCurrentPage(1);
+    fetchData(currentPage, sort, term);
   };
+  const fetchData = async (page) => {
+    setLoading(true);
+    setQuickReadData([]);
+
+    const result = await getAllQuickreadsDataApi(page, sort, searchTerm);
+    if (result.status) {
+      console.log(result.data.results);
+      console.log("Total pages:", result.data.totalPages);
+
+      setQuickReadData(result.data?.results);
+      setTotalPages(result.data?.totalPages);
+    } else {
+      console.error(result.message);
+    }
+    setLoading(false);
+  };
+  const fetchPendingData = async () => {
+    const result = await getPendingQuickReadsCount();
+    if (result.status) {
+      console.log(result.data.results);
+
+      setPendingCount(result.data?.totalResults);
+    } else {
+      console.error(result.message);
+    }
+  };
+  // const getAllQuickreadsDataApi = (page) => {
+  //   const myHeaders = new Headers();
+  //   myHeaders.append("Authorization", "Bearer " + token);
+
+  //   const requestOptions = {
+  //     method: "GET",
+  //     headers: myHeaders,
+  //     redirect: "follow",
+  //   };
+  //   setLoading(true);
+  //   setQuickReadData([])
+  //   fetch(process.env.NEXT_PUBLIC_URL + `/quick-reads?page=${page}&limit=10`, requestOptions)
+  //     .then((response) => response.json())
+  //     .then((result) => {
+  //       console.log(result.data.results);
+  //       if (result.message === "Failed to authenticate") {
+  //         toast.error(result.message, { toastId: "1wmdewimmmmm" });
+  //         router.push("/login");
+  //       } else {
+
+  //         setQuickReadData(result.data.results);
+  //         setTotalPages(result.data.totalPages);
+
+  //         const quickReads = result.data.results;
+  //         const pendingQuickReads = quickReads.filter(
+  //           (item) => item.status === "pending"
+  //         ).length;
+  //         setPendingCount(pendingQuickReads);
+  //       }
+
+  //       setLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //       toast.error("An error occurred while fetching data.", {
+  //         toastId: "fetchError",
+  //       });
+  //       setLoading(false);
+  //     });
+  // };
   return (
     <>
       {" "}
@@ -90,7 +132,13 @@ function Page() {
           </Link>
         </div>
         <div className="flex flex-col">
-          <AddSearchBar  title="Add new" route="/quickreads/add-new-quickread" />
+          <AddSearchBar
+            handleSort={sort}
+            setHandleSort={setSort}
+            handleSearch={handleSearch}
+            title="Add new"
+            route="/quickreads/add-new-quickread"
+          />
           <div className="w-full overflow-x-scroll booking-table-wrapper">
             <div className="bg-[#F0F2F5] min-w-fit w-full">
               <div className="items-center grid grid-cols-quickreadsMainTable justify-between p-4">
@@ -117,6 +165,16 @@ function Page() {
                 <LoaderLarge />
               </div>
             )}
+            {!loading &&
+              quickReadData &&
+              quickReadData.length === 0 &&
+              searchTerm && (
+                <div className="flex justify-center items-center bg-white p-10 w-full">
+                  <p className="text-gray-500 text-sm">
+                    No data found for {searchTerm}.
+                  </p>
+                </div>
+              )}
             <div className="flex flex-col bg-white min-w-fit w-full ">
               {quickReadData &&
                 quickReadData.map((item, index) => (
@@ -173,10 +231,11 @@ function Page() {
             </div>
           </div>
           <RobinPagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />        </div>
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />{" "}
+        </div>
       </div>
     </>
   );

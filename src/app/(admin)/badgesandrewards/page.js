@@ -13,25 +13,46 @@ import LoaderLarge from "@/components/LoaderLarge";
 import Link from "next/link";
 import { Switch } from "@mui/material";
 import { truncateDescription, truncateName } from "@/Utilities/helper";
+import RobinPagination from "@/components/Pagination";
+import SearchBar from "@/components/AddSearchBar";
 
 function Page() {
   const [badges, setBadges] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sort, setSort] = useState("desc");
 
-  const fetchData = async () => {
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+  
+    if (term.trim() === "") {
+      // If search is empty, reset to default data
+      fetchData(1);
+       // Fetch default data
+      return;
+    }
+    setCurrentPage(1)
+    // Fetch filtered data based on search term
+    fetchData(currentPage, sort, term);
+  };
+  const fetchData = async (page) => {
     setLoading(true);
-    const result = await getAllBadgesApi();
+    setBadges("");
+    const result = await getAllBadgesApi(page, sort, searchTerm);
     if (result.status) {
       console.log(result.data.results);
       setBadges(result.data.results);
+      setTotalPages(result.data.totalPages);
     } else {
       console.error(result.message);
     }
     setLoading(false);
   };
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(currentPage);
+  }, [currentPage, sort, searchTerm]);
   const handleToggle = async (index) => {
     const badge = badges[index];
     console.log(index);
@@ -61,14 +82,15 @@ function Page() {
         Badges and Rewards
       </p>
       <div className="flex flex-col">
-        <div className="bg-white py-3 px-5 rounded-t-lg w-full flex flex-row items-center justify-between">
-          <div className="flex flex-row gap-4 items-center">
-            <div className="border py-2 px-4 rounded-md border-[#DCDBE1] w-[340px] flex flex-row items-center gap-2">
-              <SearchIcon />
-              <input type="text" placeholder="Search in users" />
-            </div>
-          </div>
-        </div>
+        
+          <SearchBar
+            handleSort={sort}
+            setHandleSort={setSort}
+            handleSearch={handleSearch}
+            showAddButton={false}
+            showFilters={false}
+          />
+        
         <div className="w-full  booking-table-wrapper">
           <div className="bg-[#F0F2F5] min-w-fit w-full">
             <div className="items-center grid grid-cols-badgeTable justify-between p-4">
@@ -94,6 +116,16 @@ function Page() {
               <LoaderLarge />
             </div>
           )}
+          {!loading &&
+              badges &&
+              badges.length === 0 &&
+              searchTerm && (
+                <div className="flex justify-center items-center bg-white p-10 w-full">
+                  <p className="text-gray-500 text-sm">
+                    No data found for {searchTerm}.
+                  </p>
+                </div>
+              )}
           <div>
             {badges &&
               badges.map((item, index) => (
@@ -111,12 +143,18 @@ function Page() {
                         alt="badge"
                         className="w-11 h-11 rounded-full"
                       />
-                      <p title={item.name} className="text-userblack font-sans font-semibold text-sm capitalize">
+                      <p
+                        title={item.name}
+                        className="text-userblack font-sans font-semibold text-sm capitalize"
+                      >
                         {truncateName(item.name)}
                       </p>
                     </div>
 
-                    <span title={item.description} className="text-userblack font-sans font-semibold text-sm capitalize">
+                    <span
+                      title={item.description}
+                      className="text-userblack font-sans font-semibold text-sm capitalize"
+                    >
                       {truncateDescription(item.description)}
                     </span>
                     <div className="flex items-center gap-4">
@@ -139,6 +177,11 @@ function Page() {
               ))}
           </div>
         </div>
+        <RobinPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       </div>
     </div>
   );

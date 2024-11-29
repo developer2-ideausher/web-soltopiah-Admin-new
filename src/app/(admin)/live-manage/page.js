@@ -25,6 +25,8 @@ function Page() {
   const [pendingCount, setPendingCount] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sort, setSort] = useState("desc");
 
   const router = useRouter();
 
@@ -76,11 +78,24 @@ function Page() {
   //     });
   // };
 
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+
+    if (term.trim() === "") {
+      // If search is empty, reset to default data
+      fetchData(1); // Fetch default data
+      return;
+    }
+
+    // Fetch filtered data based on search term
+    setCurrentPage(1);
+    fetchData(currentPage, sort, term);
+  };
   const fetchData = async (page) => {
     setLoading(true);
-    setLiveManagementData([])
+    setLiveManagementData([]);
 
-    const result = await getlive(page);
+    const result = await getlive(page, sort, searchTerm);
     if (result.status) {
       console.log(result.data.results);
       console.log("Total pages:", result.data.totalPages);
@@ -107,7 +122,7 @@ function Page() {
   useEffect(() => {
     fetchData(currentPage);
     fetchPendingCount(currentPage);
-  }, [currentPage]);
+  }, [currentPage, sort, searchTerm]);
 
   return (
     <>
@@ -126,7 +141,12 @@ function Page() {
           </Link>
         </div>
         <div className="flex flex-col">
-          <SearchBar showAddButton={false} />
+          <SearchBar
+            handleSort={sort}
+            setHandleSort={setSort}
+            handleSearch={handleSearch}
+            showAddButton={false}
+          />
           <div className="w-full overflow-x-scroll booking-table-wrapper">
             <div className="bg-[#F0F2F5] min-w-fit w-full">
               <div className="items-center grid grid-cols-LiveMainTable justify-between p-4">
@@ -154,6 +174,16 @@ function Page() {
                 <LoaderLarge />
               </div>
             )}
+            {!loading &&
+              liveManagementData &&
+              liveManagementData.length === 0 &&
+              searchTerm && (
+                <div className="flex justify-center items-center bg-white p-10 w-full">
+                  <p className="text-gray-500 text-sm">
+                    No data found for {searchTerm}.
+                  </p>
+                </div>
+              )}
             <div className="flex flex-col bg-white min-w-fit w-full">
               {liveManagementData &&
                 liveManagementData.map((item, index) => (

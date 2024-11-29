@@ -131,7 +131,7 @@ export default function Page() {
         </div>
       </div>
       <div className="flex  justify-between gap-10 mt-6">
-        <div className="lg:w-full xl:w-1/2 2xl:w-1/2 bg-white rounded-xl p-5 flex flex-col  gap-4">
+        {/* <div className="lg:w-full xl:w-1/2 2xl:w-1/2 bg-white rounded-xl p-5 flex flex-col  gap-4">
           <div className="flex flex-row justify-between items-center ">
             <p className="text-base font-sans font-bold text-[#2A2D3E]">
               Earning Trends
@@ -168,7 +168,7 @@ export default function Page() {
               </p>
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="lg:w-full xl:w-1/2 2xl:w-1/2 bg-white p-5 rounded-xl flex flex-col gap-6">
           <p className="text-deepBlue  text-base font-sans font-bold">
             Top 5 Guides

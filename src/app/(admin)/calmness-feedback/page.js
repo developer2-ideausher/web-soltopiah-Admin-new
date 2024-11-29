@@ -23,14 +23,28 @@ function Page() {
   const [loading, setLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sort, setSort] = useState("desc");
   const handleClick = () => {
     setShowPopUp(!showPopUp);
   };
+  const handleSearch = (term) => {
+    setSearchTerm(term);
 
+    if (term.trim() === "") {
+      // If search is empty, reset to default data
+      fetchData(1); // Fetch default data
+      return;
+    }
+
+    // Fetch filtered data based on search term
+    setCurrentPage(1)
+    fetchData(currentPage, sort, term);
+  };
   const fetchData = async (page) => {
     setLoading(true);
-    setData([])
-    const result = await getChapters(page);
+    setData([]);
+    const result = await getChapters(page, sort, searchTerm);
     if (result.status) {
       console.log(result.data.results);
       setData(result.data.results);
@@ -42,7 +56,7 @@ function Page() {
   };
   useEffect(() => {
     fetchData(currentPage);
-  }, [currentPage]);
+  }, [currentPage, sort, searchTerm]);
   return (
     <div className="flex flex-col gap-7">
       <div className="flex flex-row justify-between items-center">
@@ -63,7 +77,12 @@ function Page() {
       </div>
       <div className="flex flex-col">
         {/* <SearchBar /> */}
-        <SearchBar showAddButton={false}/>
+        <SearchBar
+          handleSort={sort}
+          setHandleSort={setSort}
+          handleSearch={handleSearch}
+          showAddButton={false}
+        />
         <div className="w-full overflow-x-scroll booking-table-wrapper">
           <div className="bg-[#F0F2F5] min-w-fit w-full">
             <div className="items-center grid grid-cols-calmnessTable justify-between p-4">
@@ -95,6 +114,16 @@ function Page() {
               <LoaderLarge />
             </div>
           )}
+          {!loading &&
+            data &&
+            data.length === 0 &&
+            searchTerm && (
+              <div className="flex justify-center items-center bg-white p-10 w-full">
+                <p className="text-gray-500 text-sm">
+                  No data found for {searchTerm}.
+                </p>
+              </div>
+            )}
           <div className="flex flex-col bg-white min-w-fit w-full ">
             {data &&
               data.map((item, index) => (
@@ -114,7 +143,9 @@ function Page() {
                     {item.category?.title || "Na"}
                   </span>
                   <span className="text-userblack font-sans font-semibold text-sm">
-                    {item.creatorRole==="Admin"?"Admin":(item.creator?.firstName)+(" ")+(item.creator?.lastName)}
+                    {item.creatorRole === "Admin"
+                      ? "Admin"
+                      : item.creator?.firstName + " " + item.creator?.lastName}
                     {/* {item.creator?.firstName
                       ? `${item.creator.firstName}${
                           item.creator?.lastName

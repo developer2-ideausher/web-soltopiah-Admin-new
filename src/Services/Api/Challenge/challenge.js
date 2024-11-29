@@ -1,9 +1,14 @@
 import { getToken } from "@/Services/Cookie/userCookie";
-import { apiError, responseValidator, tokenValidator, url } from "@/Utilities/helper";
+import {
+  apiError,
+  responseValidator,
+  tokenValidator,
+  url,
+} from "@/Utilities/helper";
 
 export const getAddContentChapters = async (page) => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
   const requestOptions = {
     method: "GET",
@@ -24,7 +29,7 @@ export const getAddContentChapters = async (page) => {
 };
 export const getChallengeForumPosts = async (id, day) => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
   const requestOptions = {
     method: "GET",
@@ -45,7 +50,7 @@ export const getChallengeForumPosts = async (id, day) => {
 };
 export const getReplies = async (id) => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
   const requestOptions = {
     method: "GET",
@@ -66,7 +71,7 @@ export const getReplies = async (id) => {
 };
 export const createPost = async (id, day, content) => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
   const formdata = new FormData();
   formdata.append("content", content);
@@ -91,7 +96,7 @@ export const createPost = async (id, day, content) => {
 };
 export const deleteForumPost = async (id) => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
   const requestOptions = {
     method: "DELETE",
@@ -109,7 +114,7 @@ export const deleteForumPost = async (id) => {
 };
 export const commentApi = async (id) => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
   const raw = "";
 
@@ -131,7 +136,7 @@ export const commentApi = async (id) => {
 export const postReply = async (id, content) => {
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
-  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
   const raw = JSON.stringify({
     content: content,
@@ -159,7 +164,7 @@ export const postReply = async (id, content) => {
 export const commentPost = async (id, content) => {
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
-  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
   const raw = JSON.stringify({
     content: content,
@@ -184,7 +189,7 @@ export const commentPost = async (id, content) => {
 export const deleteComment = async (id) => {
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
-  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
   const raw = JSON.stringify({
     content: "I have now edited this comment",
@@ -209,7 +214,7 @@ export const deleteComment = async (id) => {
 export const patchForumPost = async (id, data) => {
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
-  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
   const raw = JSON.stringify({
     likesEnabled: true,
@@ -224,6 +229,27 @@ export const patchForumPost = async (id, data) => {
   };
   try {
     const response = await fetch(url + `/posts/${id}`, requestOptions);
+
+    const result = await responseValidator(response);
+    return result;
+  } catch (error) {
+    return apiError(error);
+  }
+};
+
+export const getAllChallengeApi = async (page,sortOrder = "desc", search = "") => {
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
+
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+  const searchParam = search.trim() !== "" ? `&search=${search}` : "";
+
+  try {
+    const response = await fetch(url + `/challenges?page=${page}&limit=10&sortBy=createdAt&sortOrder=${sortOrder}&${searchParam}`, requestOptions);
 
     const result = await responseValidator(response);
     return result;

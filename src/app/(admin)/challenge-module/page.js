@@ -15,6 +15,7 @@ import DeleteModal from "@/components/DeleteModal";
 import { toast } from "react-toastify";
 import { truncateName } from "@/Utilities/helper";
 import RobinPagination from "@/components/Pagination";
+import { getAllChallengeApi } from "@/Services/Api/Challenge/challenge";
 
 function Page() {
   const [challengeData, setChallengeData] = useState([]);
@@ -25,33 +26,67 @@ function Page() {
   const [refresh, setRefresh] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sort, setSort] = useState("desc");
   const router = useRouter();
   useEffect(() => {
-    getAllChallengeApi(currentPage);
-  }, [currentPage,refresh]);
-  const token = getToken();
-  const getAllChallengeApi = (page) => {
-    setLoading(true);
-    const myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + token);
-    const requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow",
-    };
+    fetchData(currentPage);
+  }, [currentPage, refresh,sort, searchTerm]);
 
-    fetch(process.env.NEXT_PUBLIC_URL + `/challenges?page=${page}&limit=10`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result.data.results);
-        setChallengeData(result.data.results);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        setLoading(false);
-      });
+
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+
+    if (term.trim() === "") {
+      // If search is empty, reset to default data
+      fetchData(1); // Fetch default data
+      return;
+    }
+
+    // Fetch filtered data based on search term
+    setCurrentPage(1)
+    fetchData(currentPage, sort, term);
   };
+  const fetchData = async (page) => {
+    setLoading(true);
+    setChallengeData([]);
+    const result = await getAllChallengeApi(page, sort, searchTerm);
+    if (result.status) {
+      console.log(result.data.results);
+      setChallengeData(result.data.results);
+      setTotalPages(result.data.totalPages);
+    } else {
+      console.log(result.message);
+    }
+    setLoading(false);
+  };
+
+  const token = getToken();
+  // const getAllChallengeApi = (page) => {
+  //   setLoading(true);
+  //   const myHeaders = new Headers();
+  //   myHeaders.append("Authorization", "Bearer " + token);
+  //   const requestOptions = {
+  //     method: "GET",
+  //     headers: myHeaders,
+  //     redirect: "follow",
+  //   };
+
+  //   fetch(
+  //     process.env.NEXT_PUBLIC_URL + `/challenges?page=${page}&limit=10`,
+  //     requestOptions
+  //   )
+  //     .then((response) => response.json())
+  //     .then((result) => {
+  //       console.log(result.data.results);
+  //       setChallengeData(result.data.results);
+  //       setLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //       setLoading(false);
+  //     });
+  // };
   const handleDelete = (challengeId, e) => {
     e.stopPropagation();
     setSelectedChallengeId(challengeId);
@@ -128,6 +163,9 @@ function Page() {
         </div>
         <div className="flex flex-col">
           <SearchBar
+          handleSort={sort}
+          setHandleSort={setSort}
+          handleSearch={handleSearch}
             title="Create Challenge"
             route="/challenge-module/create-challenge"
           />
@@ -165,7 +203,17 @@ function Page() {
                 <LoaderLarge />
               </div>
             )}
-            {!loading && challengeData.length === 0 && (
+            {!loading &&
+            challengeData &&
+            challengeData.length === 0 &&
+            searchTerm && (
+              <div className="flex justify-center items-center bg-white p-10 w-full">
+                <p className="text-gray-500 text-sm">
+                  No data found for {searchTerm}.
+                </p>
+              </div>
+            )}
+            {!loading && challengeData.length === 0 &&  searchTerm.trim() === ""  && (
               <div className="text-center text-md font-semibold min-w-fit w-full text-gray-600 bg-white p-4">
                 No data yet.
               </div>

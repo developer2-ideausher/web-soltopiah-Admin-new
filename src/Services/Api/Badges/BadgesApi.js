@@ -1,7 +1,7 @@
 import { getToken } from "@/Services/Cookie/userCookie";
 import { apiError, responseValidator, tokenValidator } from "@/Utilities/helper";
 
-export const getAllBadgesApi = async () => {
+export const getAllBadgesApi = async (page,sortOrder = "desc", search = "") => {
   const myHeaders = new Headers();
   myHeaders.append("Cache-Control", "no-cache");
   myHeaders.append("Authorization", "Bearer " + await tokenValidator());
@@ -11,9 +11,11 @@ export const getAllBadgesApi = async () => {
     headers: myHeaders,
     redirect: "follow",
   };
+  const searchParam = search.trim() !== "" ? `&search=${search}` : "";
+
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL + "/badges",
+      process.env.NEXT_PUBLIC_URL + `/badges?page=${page}&limit=10&sortBy=createdAt&sortOrder=${sortOrder}&${searchParam}`,
       requestOptions
     );
     const result = await responseValidator(response);

@@ -1,7 +1,7 @@
 import { getToken } from "@/Services/Cookie/userCookie";
 import { apiError, responseValidator, url } from "@/Utilities/helper";
 
-export const getlive = async (page) => {
+export const getlive = async (page, sortOrder = "desc", search = "") => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + getToken());
 
@@ -10,9 +10,15 @@ export const getlive = async (page) => {
     headers: myHeaders,
     redirect: "follow",
   };
+  const searchParam = search.trim() !== "" ? `&search=${search}` : "";
+
   try {
-    const response = await fetch(url + `/live-events?page=${page}&limit=10`, requestOptions);
-// const alok ={data:response}
+    const response = await fetch(
+      url +
+        `/live-events?page=${page}&limit=10&sortBy=createdAt&sortOrder=${sortOrder}&${searchParam}`,
+      requestOptions
+    );
+    // const alok ={data:response}
     return responseValidator(response);
   } catch (error) {
     apiError(error);

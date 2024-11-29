@@ -70,10 +70,11 @@ function Page() {
   
     if (term.trim() === "") {
       // If search is empty, reset to default data
-      fetchData(currentPage); // Fetch default data
+      fetchData(1);
+       // Fetch default data
       return;
     }
-  
+    setCurrentPage(1)
     // Fetch filtered data based on search term
     fetchData(currentPage, sort, term);
   };
