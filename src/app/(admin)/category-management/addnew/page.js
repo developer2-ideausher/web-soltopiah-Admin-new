@@ -25,7 +25,7 @@ function Page() {
       setPreview(URL.createObjectURL(files[0]));
     }
   };
-  const isFormValid = formData.thumbnail && formData.name && formData.pageType;
+  const isFormValid = formData.thumbnail && formData.name && formData.description && formData.pageType;
   const router = useRouter();
   const token = getToken();
   const postCategory = (e) => {
@@ -35,6 +35,7 @@ function Page() {
     myHeaders.append("Authorization", "Bearer " + token);
     const formdata = new FormData();
     formdata.append("title", formData.name);
+    formdata.append("description", formData.description);
     formdata.append("image", formData.thumbnail);
     formdata.append("pageType", formData.pageType);
 
@@ -102,6 +103,17 @@ function Page() {
             className="py-3 px-4 rounded-xl bg-white border border-[#E7E5E4] text-sm font-sans font-normal text-black"
             placeholder="Enter title"
             value={formData.name}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="flex flex-col gap-2">
+          <p className="text-sm font-sans font-semibold text-userblack">Description</p>
+          <textarea
+            type="text"
+            name="description"
+            className="py-3 px-4 rounded-xl bg-white border border-[#E7E5E4] text-sm font-sans font-normal text-black"
+            placeholder="Enter description"
+            value={formData.description}
             onChange={handleChange}
           />
         </div>

@@ -17,6 +17,22 @@ function Page() {
   const [loading, setLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sort, setSort] = useState("desc");
+  const [filter, setFilter] = useState("");
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+
+    if (term.trim() === "") {
+      // If search is empty, reset to default data
+      fetchData(1);
+      // Fetch default data
+      return;
+    }
+    setCurrentPage(1);
+    // Fetch filtered data based on search term
+    fetchData(currentPage, sort, term);
+  };
   const theme = createTheme({
     palette: {
       customRed: {
@@ -26,8 +42,8 @@ function Page() {
   });
   const fetchData = async (page) => {
     setLoading(true);
-    setData([])
-    const result = await getAllUsersApi(page);
+    setData([]);
+    const result = await getAllUsersApi(page, sort, searchTerm, filter);
     if (result.status) {
       console.log(result.data.results);
       setData(result.data.results);
@@ -39,7 +55,7 @@ function Page() {
   };
   useEffect(() => {
     fetchData(currentPage);
-  }, [currentPage]);
+  }, [currentPage, sort, searchTerm, filter]);
   const handleToggle = async (index) => {
     const user = data[index];
     const newStatus = !user.isBlocked;
@@ -70,7 +86,21 @@ function Page() {
           </p>
 
           <div className="flex flex-col">
-            <SearchBar showAddButton={false} />
+            <SearchBar
+              filterArray={[
+                { value: "free", label: "Free" },
+                { value: "premium", label: "Premium" },
+                { value: "all", label: "All" },
+                { value: "yes", label: "Blocked" },
+                
+              ]}
+              name={"Type"}
+              handleSort={sort}
+              setHandleSort={setSort}
+              setHandleFilter={setFilter}
+              handleSearch={handleSearch}
+              showAddButton={false}
+            />
             <div className="w-full overflow-x-scroll booking-table-wrapper">
               <div className="bg-[#F0F2F5] min-w-fit w-full">
                 <div className="items-center grid grid-cols-userTable justify-between p-4">
@@ -98,6 +128,13 @@ function Page() {
               {loading && (
                 <div className="flex justify-center bg-white items-center p-10 w-full ">
                   <LoaderLarge />
+                </div>
+              )}
+              {!loading && data && data.length === 0 && searchTerm && (
+                <div className="flex justify-center items-center bg-white p-10 w-full">
+                  <p className="text-gray-500 text-sm">
+                    No data found for {searchTerm}.
+                  </p>
                 </div>
               )}
               <div className="flex flex-col bg-white min-w-fit w-full ">

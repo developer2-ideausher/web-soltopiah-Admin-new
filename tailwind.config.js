@@ -46,7 +46,7 @@ module.exports = {
   			contentTable: '408px 400px 200px 200px 150px 150px 100px ',
   			contentSinglesTable: '350px  200px 200px 150px 150px 100px ',
   			categoryTable: '258px 320px 382px 168px 150px 150px 50px',
-  			categoryMainTable: '300px 170px 152px 158px 50px ',
+  			categoryMainTable: '300px 170px 200px 152px 158px 50px ',
   			quickreadsMainTable: '320px 220px 200px  100px 100px ',
   			LiveMainTable: '250px 200px 150px 100px  100px',
   			earning: '200px 100px 150px 150px  ',

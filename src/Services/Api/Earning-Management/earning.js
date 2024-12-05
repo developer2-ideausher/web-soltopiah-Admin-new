@@ -1,7 +1,7 @@
 import { getToken } from "@/Services/Cookie/userCookie";
 import { apiError, responseValidator, tokenValidator, url } from "@/Utilities/helper";
 
-export const tableApi = async (tableData, page,) => {
+export const tableApi = async (tableData, page,sortOrder = "desc", search = "",type="") => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + await tokenValidator());
 
@@ -10,9 +10,11 @@ export const tableApi = async (tableData, page,) => {
     headers: myHeaders,
     redirect: "follow",
   };
+    const searchParam = search.trim() !== "" ? `&search=${search}` : "";
+
   try {
     const response = await fetch(
-      url + `/revenues?revenueSource=${tableData}&page=${page}&limit=10`,
+      url + `/revenues?revenueSource=${tableData}&page=${page}&limit=10&sortBy=createdAt&sortOrder=${sortOrder}${searchParam}`,
       requestOptions
     );
     return responseValidator(response);

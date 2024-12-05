@@ -1,6 +1,7 @@
 import { getToken } from "@/Services/Cookie/userCookie";
 import {
   apiError,
+  buildQueryParams,
   responseValidator,
   tokenValidator,
   url,
@@ -237,7 +238,7 @@ export const patchForumPost = async (id, data) => {
   }
 };
 
-export const getAllChallengeApi = async (page,sortOrder = "desc", search = "") => {
+export const getAllChallengeApi = async (page,sortOrder = "desc", search = "",type="") => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
@@ -246,10 +247,18 @@ export const getAllChallengeApi = async (page,sortOrder = "desc", search = "") =
     headers: myHeaders,
     redirect: "follow",
   };
-  const searchParam = search.trim() !== "" ? `&search=${search}` : "";
+  const queryParams = buildQueryParams({
+    page,
+    limit: 10,
+    sortBy: "createdAt",
+    sortOrder,
+    search: search.trim(),
+    accessibility: type || undefined, // Only include `type` if it's truthy
+  });
+  // const searchParam = search.trim() !== "" ? `&search=${search}` : "";
 
   try {
-    const response = await fetch(url + `/challenges?page=${page}&limit=10&sortBy=createdAt&sortOrder=${sortOrder}&${searchParam}`, requestOptions);
+    const response = await fetch(url + `/challenges?${queryParams}`, requestOptions);
 
     const result = await responseValidator(response);
     return result;

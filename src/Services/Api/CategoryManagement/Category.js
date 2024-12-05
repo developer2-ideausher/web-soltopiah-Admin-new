@@ -1,5 +1,6 @@
 import {
   apiError,
+  buildQueryParams,
   responseValidator,
   tokenValidator,
   url,
@@ -8,7 +9,8 @@ import {
 export const getCategoryData = async (
   page,
   sortOrder = "desc",
-  search = ""
+  search = "",
+  type = ""
 ) => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
@@ -18,12 +20,19 @@ export const getCategoryData = async (
     headers: myHeaders,
     redirect: "follow",
   };
-  const searchParam = search.trim() !== "" ? `&search=${search}` : "";
+  // const searchParam = search.trim() !== "" ? `&search=${search}` : "";
+  const queryParams = buildQueryParams({
+    page,
+    limit: 10,
+    sortBy: "createdAt",
+    sortOrder,
+    search: search.trim(),
+    pageType: type || undefined, // Only include `type` if it's truthy
+  });
 
   try {
     const response = await fetch(
-      url +
-        `/categories?page=${page}&limit=10&sortBy=createdAt&sortOrder=${sortOrder}&${searchParam}`,
+      url + `/categories?${queryParams}`,
       requestOptions
     );
 

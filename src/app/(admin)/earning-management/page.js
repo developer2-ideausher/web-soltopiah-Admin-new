@@ -30,6 +30,9 @@ export default function Page() {
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [timePeriod, setTimePeriod] = useState("weekly");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sort, setSort] = useState("desc");
+  const [filter, setFilter] = useState("");
 
   const fetchChartData = async (period) => {
     const result = await revenueChart(period);
@@ -40,10 +43,23 @@ export default function Page() {
       console.error(result.message);
     }
   };
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+
+    if (term.trim() === "") {
+      // If search is empty, reset to default data
+      fetchData(1);
+      // Fetch default data
+      return;
+    }
+    setCurrentPage(1);
+    // Fetch filtered data based on search term
+    fetchData(currentPage, sort, term);
+  };
   const fetchData = async (tableData, page) => {
     setLoading(true);
     setData([]);
-    const result = await tableApi(tableData, page);
+    const result = await tableApi(tableData, page, sort, searchTerm, filter);
     if (result.status) {
       console.log(result.data.results);
       setData(result.data.results);
@@ -89,8 +105,8 @@ export default function Page() {
     fetchData(tableData, currentPage);
     fetchGuideData();
     fetchChartData(timePeriod);
-    fetchStatsData()
-  }, [table, currentPage, timePeriod]);
+    fetchStatsData();
+  }, [table, currentPage, timePeriod, sort, searchTerm,filter]);
   return (
     <div className="w-full flex flex-col font-sans">
       <div className="w-full flex justify-between items-center">
@@ -105,7 +121,9 @@ export default function Page() {
       <div className="w-full grid grid-cols-4 gap-5 mt-5">
         <div className="bg-white rounded-xl px-5 py-4">
           <h6 className="font-normal text-[#606B6C] text-xs">Total Revenue</h6>
-          <h4 className="text-xl text-[#121616] font-bold mt-3">{"$"+" "+statsData?.totalPlatformEarnings}</h4>
+          <h4 className="text-xl text-[#121616] font-bold mt-3">
+            {"$" + " " + statsData?.totalPlatformEarnings || "Na"}
+          </h4>
         </div>
         {/* <div className="bg-white rounded-xl px-5 py-4">
           <h6 className="font-normal text-[#606B6C] text-xs">
@@ -117,17 +135,24 @@ export default function Page() {
           <h6 className="font-normal text-[#606B6C] text-xs">
             Subscription Revenue
           </h6>
-          <h4 className="text-xl text-[#121616] font-bold mt-3">{"$ " + (
-            statsData?.earningsByRevenueSource?.find(item => item._id === "SubscriptionRevenue")?.platformEarnings || 0
-          )}</h4>
+          <h4 className="text-xl text-[#121616] font-bold mt-3">
+            {"$ " +
+              (statsData?.earningsByRevenueSource?.find(
+                (item) => item._id === "SubscriptionRevenue"
+              )?.platformEarnings || 0)}
+          </h4>
         </div>
         <div className="bg-white rounded-xl px-5 py-4">
           <h6 className="font-normal text-[#606B6C] text-xs">
             Sessions Revenue
           </h6>
-          <h4 className="text-xl text-[#121616] font-bold mt-3"> {"$ " + (
-            statsData?.earningsByRevenueSource?.find(item => item._id === "GuideSessionBookingRevenue")?.platformEarnings || 0
-          )}</h4>
+          <h4 className="text-xl text-[#121616] font-bold mt-3">
+            {" "}
+            {"$ " +
+              (statsData?.earningsByRevenueSource?.find(
+                (item) => item._id === "GuideSessionBookingRevenue"
+              )?.platformEarnings || 0)}
+          </h4>
         </div>
       </div>
       <div className="flex  justify-between gap-10 mt-6">
@@ -236,8 +261,17 @@ export default function Page() {
       </div>
       <div className="flex flex-col mt-5">
         {/* <SearchBar /> */}
-        <SearchBar  showAddButton={false}/>
-        
+        <SearchBar
+         
+          name={"Type"}
+          handleSort={sort}
+          showFilters={false}
+          setHandleSort={setSort}
+          setHandleFilter={setFilter}
+          handleSearch={handleSearch}
+          showAddButton={false}
+        />
+
         {table === "a" && (
           <div className="w-full overflow-x-scroll booking-table-wrapper">
             <div className="bg-[#F0F2F5] min-w-fit w-full">

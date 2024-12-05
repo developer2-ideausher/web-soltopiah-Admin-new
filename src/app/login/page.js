@@ -384,7 +384,7 @@ function Page() {
 
             <button
               type="submit"
-              className="bg-primary flex justify-center py-4 mt-5 rounded-lg text-base font-semibold text-white w-full"
+              className="bg-primary flex justify-center py-4 mt-5 rounded-lg text-base font-semibold font-sans text-white w-full"
             >
               {!loading ? "Verify" : <LoaderSmall />}
             </button>
@@ -407,7 +407,7 @@ function Page() {
               <OTP handler={otpCallback} />
               <button
                 onClick={otpSubmitHandler}
-                className="bg-primary flex justify-center py-4 px-4 rounded-lg text-base font-semibold text-white w-full  "
+                className="bg-primary flex justify-center py-4 px-4 rounded-lg text-base font-semibold font-sans text-white w-full  "
               >
                 {!loading ? "Verify" : <LoaderSmall />}
               </button>

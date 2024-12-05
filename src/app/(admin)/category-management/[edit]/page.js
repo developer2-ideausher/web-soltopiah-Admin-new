@@ -12,17 +12,20 @@ import { toast } from "react-toastify";
 function Page({ params }) {
   const { edit } = params;
   const [smallLoading, setSmallLoading] = useState(false);
-  const [loading,setLoading] =useState(false)
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     thumbnail: null,
     name: "",
+    description: "",
     pageType: "none",
   });
 
   const [initialData, setInitialData] = useState({
     thumbnail: null,
     name: "",
+    description: "",
+
     pageType: "none",
   });
 
@@ -44,6 +47,7 @@ function Page({ params }) {
   const isFormChanged =
     formData.thumbnail !== initialData.thumbnail ||
     formData.name !== initialData.name ||
+    formData.description !== initialData.description ||
     formData.pageType !== initialData.pageType;
 
   const patchCategoryApi = () => {
@@ -53,6 +57,7 @@ function Page({ params }) {
 
     const formdata = new FormData();
     formdata.append("title", formData.name);
+    formdata.append("description", formData.description);
     formdata.append("pageType", formData.pageType);
     if (formData.thumbnail instanceof File) {
       formdata.append("image", formData.thumbnail);
@@ -65,10 +70,7 @@ function Page({ params }) {
       redirect: "follow",
     };
 
-    fetch(
-      process.env.NEXT_PUBLIC_URL + "/categories/" + edit,
-      requestOptions
-    )
+    fetch(process.env.NEXT_PUBLIC_URL + "/categories/" + edit, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         toast.success("Category Edited");
@@ -82,7 +84,7 @@ function Page({ params }) {
   };
 
   const getOneCategoryData = () => {
-    setLoading(true)
+    setLoading(true);
     const myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer " + token);
     const requestOptions = {
@@ -91,21 +93,19 @@ function Page({ params }) {
       redirect: "follow",
     };
 
-    fetch(
-      process.env.NEXT_PUBLIC_URL + "/categories/" + edit,
-      requestOptions
-    )
+    fetch(process.env.NEXT_PUBLIC_URL + "/categories/" + edit, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        setLoading(false)
+        setLoading(false);
         const fetchedData = {
-          thumbnail: result.data.image.url,
-          name: result.data.title,
-          pageType: result.data.pageType || "none", // Set the pageType from API
+          thumbnail: result.data?.image?.url,
+          name: result.data?.title,
+          description: result.data?.description,
+          pageType: result.data?.pageType || "none", // Set the pageType from API
         };
         setFormData(fetchedData);
         setInitialData(fetchedData);
-        setPreview(result.data.image.url);
+        setPreview(result.data?.image?.url);
       })
       .catch((error) => console.error(error));
   };
@@ -174,6 +174,19 @@ function Page({ params }) {
               className="py-3 px-4 rounded-xl bg-white border border-[#E7E5E4] text-sm font-sans font-normal text-black"
               placeholder="Enter title"
               value={formData.name}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <p className="text-sm font-sans font-semibold text-userblack">
+              Description
+            </p>
+            <input
+              type="text"
+              name="description"
+              className="py-3 px-4 rounded-xl bg-white border border-[#E7E5E4] text-sm font-sans font-normal text-black"
+              placeholder="Enter title"
+              value={formData.description}
               onChange={handleChange}
             />
           </div>

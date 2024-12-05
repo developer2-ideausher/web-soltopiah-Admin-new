@@ -12,47 +12,77 @@ import { toast } from "react-toastify";
 import LoaderLarge from "@/components/LoaderLarge";
 import RobinPagination from "@/components/Pagination";
 import SearchBar from "@/components/AddSearchBar";
-
+import { getPendingQuickReadsCount } from "@/Services/Api/quickReads/quickReads";
 
 function Page() {
   const [QuickRequestsData, setQuickRequestsData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
-  useEffect(() => {
-    getAllQuickRequestApi(currentPage);
-  }, [currentPage]);
-  const token = getToken();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sort, setSort] = useState("desc");
+  const handleSearch = (term) => {
+    setSearchTerm(term);
 
-  const getAllQuickRequestApi = (page) => {
-    const myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + token);
-    const requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-
-      redirect: "follow",
-    };
-    setLoading(true);
-    setQuickRequestsData([])
-
-    fetch(
-      process.env.NEXT_PUBLIC_URL + `/quick-reads?status=pending&page=${page}&limit=10`,
-      requestOptions
-    )
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result.data.results);
-        setQuickRequestsData(result.data.results);
-        setTotalPages(result.data.totalPages);
-
-        setLoading(false);
-      })
-      .catch((error) => {console.error(error)
-        toast.error('Failed to fetch data');
-        setLoading(false)
-      });
+    if (term.trim() === "") {
+      // If search is empty, reset to default data
+      fetchData(1);
+      // Fetch default data
+      return;
+    }
+    setCurrentPage(1);
+    // Fetch filtered data based on search term
+    fetchData(currentPage, sort, term);
   };
+  // const token = getToken();
+  const fetchData = async (page) => {
+    setLoading(true);
+    setQuickRequestsData([]);
+
+    const result = await getPendingQuickReadsCount(page, sort, searchTerm);
+    if (result.status) {
+      console.log(result.data.results);
+      console.log("Total pages:", result.data.totalPages);
+
+      setQuickRequestsData(result.data?.results);
+      setTotalPages(result.data?.totalPages);
+    } else {
+      console.error(result.message);
+    }
+    setLoading(false);
+  };
+  useEffect(() => {
+    fetchData(currentPage);
+  }, [currentPage, sort, searchTerm]);
+  // const getAllQuickRequestApi = (page) => {
+  //   const myHeaders = new Headers();
+  //   myHeaders.append("Authorization", "Bearer " + token);
+  //   const requestOptions = {
+  //     method: "GET",
+  //     headers: myHeaders,
+
+  //     redirect: "follow",
+  //   };
+  //   setLoading(true);
+  //   setQuickRequestsData([])
+
+  //   fetch(
+  //     process.env.NEXT_PUBLIC_URL + `/quick-reads?status=pending&page=${page}&limit=10`,
+  //     requestOptions
+  //   )
+  //     .then((response) => response.json())
+  //     .then((result) => {
+  //       console.log(result.data.results);
+  //       setQuickRequestsData(result.data.results);
+  //       setTotalPages(result.data.totalPages);
+
+  //       setLoading(false);
+  //     })
+  //     .catch((error) => {console.error(error)
+  //       toast.error('Failed to fetch data');
+  //       setLoading(false)
+  //     });
+  // };
 
   return (
     <>
@@ -62,11 +92,19 @@ function Page() {
             <BackButton />
           </Link>
           <p className="text-userblack font-semibold text-xl2 font-sans">
-            Quick reads Requests
+            Quick reads Request
           </p>
         </div>
         <div className="flex flex-col">
-          <SearchBar showAddButton={false} />
+          <SearchBar
+            name={"Type"}
+            handleSort={sort}
+            setHandleSort={setSort}
+            setHandleFilter={""}
+            handleSearch={handleSearch}
+            showAddButton={false}
+            showFilters={false}
+          />
           <div className="w-full overflow-x-scroll booking-table-wrapper">
             <div className="bg-[#F0F2F5] min-w-fit w-full">
               <div className="items-center grid grid-cols-quickReadsRequestTable justify-between p-4">
@@ -80,7 +118,6 @@ function Page() {
                   Date
                 </span>
 
-                
                 <span className="text-[#666576] font-sans font-normal text-sm">
                   Time
                 </span>
@@ -90,18 +127,26 @@ function Page() {
               </div>
             </div>
             {loading && (
-            <div className="flex justify-center bg-white items-center p-10 w-full ">
-              <LoaderLarge />
-            </div>
+              <div className="flex justify-center bg-white items-center p-10 w-full ">
+                <LoaderLarge />
+              </div>
+            )}
+             {!loading &&
+            QuickRequestsData &&
+            QuickRequestsData.length === 0 &&
+            searchTerm && (
+              <div className="flex justify-center items-center bg-white p-10 w-full">
+                <p className="text-gray-500 text-sm">
+                  No data found for {searchTerm}.
+                </p>
+              </div>
             )}
             <div className="flex flex-col bg-white min-w-fit w-full">
               {QuickRequestsData &&
                 QuickRequestsData.map((item, index) => (
                   <Link
                     key={index}
-                   
                     href={`/quickreads/quick-reads-requests/${item._id}`}
-
                   >
                     <div className=" grid grid-cols-quickReadsRequestTable justify-between border-b border-[#E9E9EC] items-center p-4">
                       <span className="text-userblack  font-sans font-semibold text-base">
@@ -119,15 +164,17 @@ function Page() {
                           }
                           alt=""
                         />
-                        <p> {item.creatorRole == "Guide"
-                          ? item?.creator?.firstName
-                          : "Soltopiah"}</p>
+                        <p>
+                          {" "}
+                          {item.creatorRole == "Guide"
+                            ? item?.creator?.firstName
+                            : "Soltopiah"}
+                        </p>
                       </div>
 
                       <span className="text-userblack font-sans font-semibold text-base">
                         {dayjs(item.updatedAt).format("MMM DD,YYYY")}
                       </span>
-                     
 
                       <div className="text-userblack  font-sans font-semibold text-base">
                         {dayjs(item.updatedAt).format("h:mm a")}
@@ -141,10 +188,11 @@ function Page() {
             </div>
           </div>
           <RobinPagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />        </div>
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />{" "}
+        </div>
       </div>
     </>
   );

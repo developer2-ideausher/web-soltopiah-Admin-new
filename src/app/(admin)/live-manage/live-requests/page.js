@@ -22,12 +22,27 @@ function Page() {
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sort, setSort] = useState("desc");
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+
+    if (term.trim() === "") {
+      // If search is empty, reset to default data
+      fetchPendingCount(1);
+      // Fetch default data
+      return;
+    }
+    setCurrentPage(1);
+    // Fetch filtered data based on search term
+    fetchPendingCount(currentPage, sort, term);
+  };
 
   const fetchPendingCount = async (page) => {
     setLoading(true);
-    setLiveData([])
+    setLiveData([]);
 
-    const result = await getPendingCount(page);
+    const result = await getPendingCount(page, sort, searchTerm);
     if (result.status) {
       console.log(result.data);
       setLiveData(result.data?.results);
@@ -39,7 +54,7 @@ function Page() {
   };
   useEffect(() => {
     fetchPendingCount(currentPage);
-  }, [currentPage]);
+  }, [currentPage, sort, searchTerm]);
   return (
     <div className="flex flex-col gap-7">
       <div className="flex flex-row items-center gap-5">
@@ -51,7 +66,15 @@ function Page() {
         </p>
       </div>
       <div className="flex flex-col">
-        <SearchBar showAddButton={false} />
+        <SearchBar
+          name={"Type"}
+          handleSort={sort}
+          setHandleSort={setSort}
+          setHandleFilter={""}
+          handleSearch={handleSearch}
+          showAddButton={false}
+          showFilters={false}
+        />
         <div className="w-full overflow-x-scroll booking-table-wrapper">
           <div className="bg-[#F0F2F5] min-w-fit w-full">
             <div className="items-center grid grid-cols-LiveReqTable justify-between p-4">
@@ -75,6 +98,16 @@ function Page() {
               <LoaderLarge />
             </div>
           )}
+          {!loading &&
+            liveData &&
+            liveData.length === 0 &&
+            searchTerm && (
+              <div className="flex justify-center items-center bg-white p-10 w-full">
+                <p className="text-gray-500 text-sm">
+                  No data found for {searchTerm}.
+                </p>
+              </div>
+            )}
           <div className="flex flex-col bg-white min-w-fit w-full">
             {liveData &&
               liveData.map((item, index) => (

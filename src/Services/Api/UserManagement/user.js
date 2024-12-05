@@ -1,20 +1,45 @@
 import { getToken } from "@/Services/Cookie/userCookie";
-import { apiError, responseValidator, url } from "@/Utilities/helper";
+import {
+  apiError,
+  buildQueryParams,
+  responseValidator,
+  tokenValidator,
+  url,
+} from "@/Utilities/helper";
 
-export const getAllUsersApi = async (page) => {
+export const getAllUsersApi = async (
+  page,
+  sortOrder = "desc",
+  search = "",
+  type = ""
+) => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + getToken());
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
   const requestOptions = {
     method: "GET",
     headers: myHeaders,
     redirect: "follow",
   };
+  const checkFilter = (guideFilter = "") => {
+    if (guideFilter === "premium") {
+      return true;
+    } else if (guideFilter === "free") {
+      return false;
+    }
+    return undefined;
+  };
+  const queryParams = buildQueryParams({
+    page,
+    limit: 10,
+    sortBy: "createdAt",
+    sortOrder,
+    search: search.trim(),
+    hasPremiumPlan: checkFilter(type),
+    isBlocked: type === "yes" ? true : undefined, // Only include `type` if it's truthy
+  });
   try {
-    const response = await fetch(
-      process.env.NEXT_PUBLIC_URL + `/users?page=${page}&limit=10`,
-      requestOptions
-    );
+    const response = await fetch(url + `/users?${queryParams}`, requestOptions);
     const result = await responseValidator(response);
     return result;
   } catch (error) {
@@ -24,7 +49,7 @@ export const getAllUsersApi = async (page) => {
 
 export const getUserInfo = async (id) => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + getToken());
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
   const requestOptions = {
     method: "GET",
@@ -43,19 +68,25 @@ export const getUserInfo = async (id) => {
   }
 };
 
-export const getFriends = async (id, page) => {
+export const getFriends = async (id, page, sortOrder = "desc", search = "") => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + getToken());
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
   const requestOptions = {
     method: "GET",
     headers: myHeaders,
     redirect: "follow",
   };
+  const queryParams = buildQueryParams({
+    page,
+    limit: 10,
+    sortBy: "createdAt",
+    sortOrder,
+    search: search.trim(),
+  });
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL +
-        `/users/${id}/friendships?page=${page}&limit=10`,
+      url + `/users/${id}/friendships?${queryParams}`,
       requestOptions
     );
     const result = await responseValidator(response);
@@ -64,20 +95,30 @@ export const getFriends = async (id, page) => {
     apiError(error);
   }
 };
-export const userParticipated = async (id, page) => {
+export const userParticipated = async (
+  id,
+  page,
+  sortOrder = "desc",
+  search = ""
+) => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + getToken());
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
   const requestOptions = {
     method: "GET",
     headers: myHeaders,
     redirect: "follow",
   };
-
+  const queryParams = buildQueryParams({
+    page,
+    limit: 10,
+    sortBy: "createdAt",
+    sortOrder,
+    search: search.trim(),
+  });
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL +
-        `/users/${id}/challenges/participated?page=${page}&limit=10`,
+      url + `/users/${id}/challenges/participated?${queryParams}`,
       requestOptions
     );
     const result = await responseValidator(response);
@@ -86,20 +127,30 @@ export const userParticipated = async (id, page) => {
     apiError(error);
   }
 };
-export const getParticipatedCommunities = async (id, page) => {
+export const getParticipatedCommunities = async (
+  id,
+  page,
+  sortOrder = "desc",
+  search = ""
+) => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + getToken());
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
   const requestOptions = {
     method: "GET",
     headers: myHeaders,
     redirect: "follow",
   };
-
+  const queryParams = buildQueryParams({
+    page,
+    limit: 10,
+    sortBy: "createdAt",
+    sortOrder,
+    search: search.trim(),
+  });
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL +
-        `/users/${id}/groups/participated?page=${page}&limit=10`,
+      url + `/users/${id}/groups/participated?${queryParams}`,
       requestOptions
     );
     const result = responseValidator(response);
@@ -109,19 +160,30 @@ export const getParticipatedCommunities = async (id, page) => {
   }
 };
 
-export const getCommunitiesCreated = async (id, page) => {
+export const getCommunitiesCreated = async (
+  id,
+  page,
+  sortOrder = "desc",
+  search = ""
+) => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + getToken());
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
   const requestOptions = {
     method: "GET",
     headers: myHeaders,
     redirect: "follow",
   };
+  const queryParams = buildQueryParams({
+    page,
+    limit: 10,
+    sortBy: "createdAt",
+    sortOrder,
+    search: search.trim(),
+  });
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL +
-        `/users/${id}/groups/owned?page=${page}&limit=10`,
+      url + `/users/${id}/groups/owned?${queryParams}`,
       requestOptions
     );
 
@@ -132,19 +194,30 @@ export const getCommunitiesCreated = async (id, page) => {
   }
 };
 
-export const getCreatedChallenges = async (id, page) => {
+export const getCreatedChallenges = async (
+  id,
+  page,
+  sortOrder = "desc",
+  search = ""
+) => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + getToken());
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
   const requestOptions = {
     method: "GET",
     headers: myHeaders,
     redirect: "follow",
   };
+  const queryParams = buildQueryParams({
+    page,
+    limit: 10,
+    sortBy: "createdAt",
+    sortOrder,
+    search: search.trim(),
+  });
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL +
-        `/users/${id}/challenges/replicated?page=${page}&limit=10`,
+      url + `/users/${id}/challenges/replicated?${queryParams}`,
       requestOptions
     );
     const result = await responseValidator(response);
@@ -154,20 +227,31 @@ export const getCreatedChallenges = async (id, page) => {
   }
 };
 
-export const getGuideBookings = async (id, page) => {
+export const getGuideBookings = async (
+  id,
+  page,
+  sortOrder = "desc",
+  search = ""
+) => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + getToken());
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
   const requestOptions = {
     method: "GET",
     headers: myHeaders,
     redirect: "follow",
   };
-  ``;
+  const queryParams = buildQueryParams({
+    page,
+    limit: 10,
+    sortBy: "createdAt",
+    sortOrder,
+    search: search.trim(),
+  });
   try {
     const response = await fetch(
       process.env.NEXT_PUBLIC_URL +
-        `/users/${id}/guide-session-bookings?page=${page}&limit=10`,
+        `/users/${id}/guide-session-bookings?${queryParams}`,
 
       // `/guide-session-bookings/users/${id}?page=${page}&limit=10`,
       requestOptions
@@ -182,7 +266,7 @@ export const getGuideBookings = async (id, page) => {
 export const switchUser = async (id, isBlocked) => {
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
-  myHeaders.append("Authorization", "Bearer " + getToken());
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
   const raw = JSON.stringify({
     isBlocked: isBlocked,
@@ -207,7 +291,7 @@ export const switchUser = async (id, isBlocked) => {
 };
 export const getSubsData = async (id) => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + getToken());
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
   const requestOptions = {
     method: "GET",
@@ -228,19 +312,30 @@ export const getSubsData = async (id) => {
   }
 };
 
-export const userCourses = async (id, page) => {
+export const userCourses = async (
+  id,
+  page,
+  sortOrder = "desc",
+  search = ""
+) => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + getToken());
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
   const requestOptions = {
     method: "GET",
     headers: myHeaders,
     redirect: "follow",
   };
-
+  const queryParams = buildQueryParams({
+    page,
+    limit: 10,
+    sortBy: "createdAt",
+    sortOrder,
+    search: search.trim(),
+  });
   try {
     const response = await fetch(
-      url + `/users/${id}/courses/standard/completed?page=${page}&limit=10`,
+      url + `/users/${id}/courses/standard/completed?${queryParams}`,
       requestOptions
     );
 
@@ -250,19 +345,30 @@ export const userCourses = async (id, page) => {
     apiError(error);
   }
 };
-export const getWatchedVideo = async (id, page) => {
+export const getWatchedVideo = async (
+  id,
+  page,
+  sortOrder = "desc",
+  search = ""
+) => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + getToken());
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
   const requestOptions = {
     method: "GET",
     headers: myHeaders,
     redirect: "follow",
   };
+  const queryParams = buildQueryParams({
+    page,
+    limit: 10,
+    sortBy: "createdAt",
+    sortOrder,
+    search: search.trim(),
+  });
   try {
     const response = await fetch(
-      url +
-        `/users/${id}/chapters/watched?chapterType=video&page=${page}&limit=10`,
+      url + `/users/${id}/chapters/watched?chapterType=video&${queryParams}`,
       requestOptions
     );
 
@@ -272,19 +378,30 @@ export const getWatchedVideo = async (id, page) => {
     apiError(error);
   }
 };
-export const getListenedAudio = async (id, page) => {
+export const getListenedAudio = async (
+  id,
+  page,
+  sortOrder = "desc",
+  search = ""
+) => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + getToken());
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
   const requestOptions = {
     method: "GET",
     headers: myHeaders,
     redirect: "follow",
   };
+  const queryParams = buildQueryParams({
+    page,
+    limit: 10,
+    sortBy: "createdAt",
+    sortOrder,
+    search: search.trim(),
+  });
   try {
     const response = await fetch(
-      url +
-        `/users/${id}/chapters/watched?chapterType=audio&page=${page}&limit=10`,
+      url + `/users/${id}/chapters/watched?chapterType=audio&${queryParams}`,
       requestOptions
     );
 

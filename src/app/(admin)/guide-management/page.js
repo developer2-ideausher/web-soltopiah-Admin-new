@@ -16,6 +16,7 @@ import DeleteModal from "@/components/DeleteModal";
 import { truncateName } from "@/Utilities/helper";
 import RobinPagination from "@/components/Pagination";
 import SearchBar from "@/components/AddSearchBar";
+import { getAllGuideApi } from "@/Services/Api/Guide/GuideApi";
 
 function Page() {
   const [popupIndex, setPopupIndex] = useState(null);
@@ -27,10 +28,23 @@ function Page() {
   const [refresh, setRefresh] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sort, setSort] = useState("desc");
+  const [filter, setFilter] = useState("")
+  const handleSearch = (term) => {
+    setSearchTerm(term);
 
-  useEffect(() => {
-    getAllGuideApi(currentPage);
-  }, [refresh, currentPage]);
+    if (term.trim() === "") {
+      // If search is empty, reset to default data
+      fetchData(1);
+      // Fetch default data
+      return;
+    }
+    setCurrentPage(1);
+    // Fetch filtered data based on search term
+    fetchData(currentPage, sort, term);
+  };
+ 
   const handleDelete = (id) => {
     const myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer " + token);
@@ -62,35 +76,51 @@ function Page() {
       });
   };
   const token = getToken();
-  const getAllGuideApi = (page) => {
-    const myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + token);
 
-    const requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow",
-    };
+  const fetchData = async (page) => {
     setLoading(true);
-    setGuideData([])
-    fetch(
-      process.env.NEXT_PUBLIC_URL + `/guides?page=${page}&limit=10`,
-      requestOptions
-    )
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result.data.results);
-        setGuideData(result.data.results);
-        setTotalPages(result.data.totalPages);
+    setGuideData([]);
+    const result = await getAllGuideApi(page, sort, searchTerm, filter);
 
-        setLoading(false);
-      })
+    if (result.status) {
+      console.log(result.data.results);
+      setGuideData(result.data.results);
+      setTotalPages(result.data.totalPages);
+    } else {
+      console.error(result.message);
+    }
 
-      .catch((error) => {
-        console.error(error);
-        setLoading(false);
-      });
+    setLoading(false);
   };
+  // const getAllGuideApi = (page) => {
+  //   const myHeaders = new Headers();
+  //   myHeaders.append("Authorization", "Bearer " + token);
+
+  //   const requestOptions = {
+  //     method: "GET",
+  //     headers: myHeaders,
+  //     redirect: "follow",
+  //   };
+  //   setLoading(true);
+  //   setGuideData([]);
+  //   fetch(
+  //     process.env.NEXT_PUBLIC_URL + `/guides?page=${page}&limit=10`,
+  //     requestOptions
+  //   )
+  //     .then((response) => response.json())
+  //     .then((result) => {
+  //       console.log(result.data.results);
+  //       setGuideData(result.data.results);
+  //       setTotalPages(result.data.totalPages);
+
+  //       setLoading(false);
+  //     })
+
+  //     .catch((error) => {
+  //       console.error(error);
+  //       setLoading(false);
+  //     });
+  // };
   const confirmDelete = (id) => {
     setGuideToDelete(id);
     setShowModal(true);
@@ -108,6 +138,9 @@ function Page() {
       handleDelete(guideToDelete);
     }
   };
+  useEffect(() => {
+    fetchData(currentPage);
+  }, [refresh, currentPage, sort, searchTerm, filter]);
   return (
     <>
       {showModal && (
@@ -123,7 +156,19 @@ function Page() {
           Guide Management
         </p>
         <div className="flex flex-col">
-          <SearchBar showAddButton={false} />
+          <SearchBar
+            filterArray={[
+              { value: "free", label: "Free" },
+              { value: "premium", label: "Premium" },
+              { value: "all", label: "All" },
+            ]}
+            name={"Type"}
+            handleSort={sort}
+            setHandleSort={setSort}
+            setHandleFilter={setFilter}
+            handleSearch={handleSearch}
+            showAddButton={false}
+          />
           <div className="w-full overflow-x-scroll booking-table-wrapper  ">
             <div className="bg-[#F0F2F5] min-w-fit w-full ">
               <div className="items-center grid grid-cols-guideTable p-4 justify-between">
@@ -153,7 +198,18 @@ function Page() {
                 <LoaderLarge />
               </div>
             )}
+             {!loading &&
+            guideData &&
+            guideData.length === 0 &&
+            searchTerm && (
+              <div className="flex justify-center items-center bg-white p-10 w-full">
+                <p className="text-gray-500 text-sm">
+                  No data found for {searchTerm}.
+                </p>
+              </div>
+            )}
             <div className="flex flex-col bg-white min-w-fit w-full ">
+              <>
               {guideData &&
                 guideData.map((item, index) => {
                   return (
@@ -185,7 +241,7 @@ function Page() {
                         {dayjs(item.createdAt).format("MMM DD YYYY")}
                       </span>
                       <span className="text-base font-sans font-semibold text-userblack text-center">
-                        {item.hasPremiumPlan?"Premium" :"Free"}
+                        {item.hasPremiumPlan ? "Premium" : "Free"}
                       </span>
                       <span className="text-base font-sans font-semibold text-userblack text-center">
                         NA
@@ -236,14 +292,14 @@ function Page() {
                     </div>
                   );
                 })}
+                </>
             </div>
-            <RobinPagination
+          </div>
+          <RobinPagination
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={setCurrentPage}
           />
-          </div>
-          
         </div>
       </div>
     </>

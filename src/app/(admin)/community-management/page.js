@@ -23,23 +23,24 @@ function Page() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [sort, setSort] = useState("desc");
-
+  const [filter, setFilter] = useState("");
   const handleSearch = (term) => {
     setSearchTerm(term);
 
     if (term.trim() === "") {
       // If search is empty, reset to default data
-      fetchData(currentPage); // Fetch default data
+      fetchData(1);
+      // Fetch default data
       return;
     }
-
+    setCurrentPage(1);
     // Fetch filtered data based on search term
     fetchData(currentPage, sort, term);
   };
   const fetchData = async (page) => {
     setLoading(true);
     setCommunities([]);
-    const result = await getAllCommunitiesApi(page, sort, searchTerm);
+    const result = await getAllCommunitiesApi(page, sort, searchTerm, filter);
 
     if (result.status) {
       console.log(result.data.results);
@@ -53,7 +54,7 @@ function Page() {
   };
   useEffect(() => {
     fetchData(currentPage);
-  }, [currentPage, sort, searchTerm]);
+  }, [currentPage, sort, searchTerm, filter]);
 
   return (
     <div className="flex flex-col gap-7 ">
@@ -63,8 +64,14 @@ function Page() {
       <div className="flex flex-col">
         {/* <SearchBar /> */}
         <SearchBar
+          filterArray={[
+            { value: "public", label: "Public" },
+            { value: "private", label: "Private" },
+          ]}
+          name={"Type"}
           handleSort={sort}
           setHandleSort={setSort}
+          setHandleFilter={setFilter}
           handleSearch={handleSearch}
           showAddButton={false}
         />

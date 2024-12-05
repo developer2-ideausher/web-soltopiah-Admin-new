@@ -7,7 +7,7 @@ import {
   getGroupMembersApi,
   getOnegroupApi,
 } from "@/Services/Api/CommunityManagement/GetOneGroup";
-import Frame1 from "../../../../../public/Frame1.png"
+import Frame1 from "../../../../../public/Frame1.png";
 import dayjs from "dayjs";
 import LoaderLarge from "@/components/LoaderLarge";
 import RobinPagination from "@/components/Pagination";
@@ -72,26 +72,22 @@ function Page({ params }) {
             </div>
             <div className="flex flex-col gap-5 w-full">
               <div className="flex flex-row items-center justify-between">
-                <p className="text-white font-sans font-normal text-sm ">
-                  Community Detail
-                </p>
+                <div className="flex flex-col gap-3">
+                  <h2 className="text-[#252322] font-sans font-semibold text-3xl">
+                    {data.name}
+                  </h2>
+                  <p className="text-sm font-sans font-semibold text-[#414554]">
+                    {dayjs(data.createdAt).format("DD/MM/YYYY")}
+                    {"[ Members:" + data.participantsCount + " " + "]"}
+                  </p>
+                  <p className="text-[#4F546B] text-sm font-sans font-normal">
+                    {data.description}
+                  </p>
+                </div>
                 <p className="bg-[#FCF1F3] border border-[#B6576B] py-2 px-6 rounded-md text-base font-sans font-semibold text-[#595C69]">
                   {data.type === "public"
                     ? "Public Community"
                     : "Private Community"}
-                </p>
-              </div>
-              <div className="flex flex-col gap-3">
-                <h2 className="text-[#252322] font-sans font-semibold text-3xl">
-                  {data.name}
-                </h2>
-                <p className="text-sm font-sans font-semibold text-[#414554]">
-                  {dayjs(data.createdAt).format("DD/MM/YYYY")}
-{" "}
-                  {"[ Members:" +data.participantsCount +" "+ "]"}
-                </p>
-                <p className="text-[#4F546B] text-sm font-sans font-normal">
-                  {data.description}
                 </p>
               </div>
             </div>
@@ -146,7 +142,7 @@ function Page({ params }) {
                         {dayjs(item.createdAt).format("DD/MM/YYYY")}
                       </span>
                       <span className="text-userblack font-sans font-semibold text-sm">
-                        {item.user?.__t==="Guide"?"Guide":"Normal User"}
+                        {item.user?.__t === "Guide" ? "Guide" : "Normal User"}
                       </span>
                       <span className="text-userblack font-sans font-semibold text-sm">
                         Free

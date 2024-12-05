@@ -29,6 +29,8 @@ function Page() {
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [sort, setSort] = useState("desc");
+  const [filter, setFilter] = useState("");
+
   const token = getToken();
 
   const router = useRouter();
@@ -49,7 +51,7 @@ function Page() {
     setLoading(true);
     setCategoryData([]);
 
-    const result = await getCategoryData(page, sort, searchTerm);
+    const result = await getCategoryData(page, sort, searchTerm,filter);
     if (result.status) {
       console.log(result.data.results);
       console.log("Total pages:", result.data.totalPages);
@@ -143,7 +145,7 @@ function Page() {
   };
   useEffect(() => {
     fetchData(currentPage);
-  }, [refresh, currentPage, sort, searchTerm]);
+  }, [refresh, currentPage, sort, searchTerm,filter]);
   return (
     <>
       {showModal && (
@@ -159,11 +161,19 @@ function Page() {
         </p>
         <div className="flex flex-col">
           <AddSearchBar
+             filterArray={[
+              { value: "homescreen", label: "Homescreen" },
+              { value: "sleep", label: "Sleep" },
+              { value: "none", label: "None" },
+              { value: "", label: "All" },
+            ]}
+            name={"Type"}
             handleSort={sort}
             setHandleSort={setSort}
+            setHandleFilter={setFilter}
             handleSearch={handleSearch}
-            route="/category-management/addnew"
             showAddButton={true}
+            route="/category-management/addnew"
           />
           <div className="w-full overflow-x-scroll booking-table-wrapper">
             <div className="bg-[#F0F2F5] min-w-fit w-full">
@@ -174,6 +184,9 @@ function Page() {
 
                 <span className="text-[#666576] font-sans font-normal text-sm">
                   Page Type
+                </span>
+                <span className="text-[#666576] font-sans font-normal text-sm">
+                  Description
                 </span>
                 <span className="text-[#666576] font-sans font-normal text-sm">
                   Date Created
@@ -219,13 +232,16 @@ function Page() {
                         )}
                         alt=""
                       />
-                      <p className="text-sm font-sans font-semibold text-[#252322] break-all mr-10 ">
+                      <p title={item.title} className="text-sm font-sans font-semibold text-[#252322] break-all ">
                         {truncateName(item.title)}
                       </p>
                     </div>
                     <p className="text-sm font-sans font-semibold capitalize text-[#252322]">
                       {item.pageType}
                     </p>
+                    <p title={item.description}  className="text-sm font-sans font-semibold text-[#252322] break-all  ">
+                        {truncateDescription(item.description) || "--"}
+                      </p>
 
                     <span className="text-userblack font-sans font-semibold text-sm">
                       {dayjs(item.createdAt).format("MMM DD YYYY")}

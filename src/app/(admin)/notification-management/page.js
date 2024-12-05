@@ -26,6 +26,8 @@ function Page() {
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [sort, setSort] = useState("desc");
+  const [filter, setFilter] = useState("");
+
 
   const token = getToken();
   // const getAllNotificationApi = () => {
@@ -67,21 +69,22 @@ function Page() {
   // };
   const handleSearch = (term) => {
     setSearchTerm(term);
-  
+
     if (term.trim() === "") {
       // If search is empty, reset to default data
       fetchData(1);
-       // Fetch default data
+      // Fetch default data
       return;
     }
-    setCurrentPage(1)
+    setCurrentPage(1);
     // Fetch filtered data based on search term
     fetchData(currentPage, sort, term);
   };
   const fetchData = async (page) => {
     setLoading(true);
     setNotificationData([]);
-    const result = await getAllNotificationApi(page, sort, searchTerm);
+    console.log(searchTerm,"Robin",filter,"amin")
+    const result = await getAllNotificationApi(page, sort, searchTerm,filter);
 
     if (result.status) {
       console.log(result.data.results);
@@ -139,7 +142,7 @@ function Page() {
   };
   useEffect(() => {
     fetchData(currentPage);
-  }, [refresh, currentPage, sort, searchTerm]);
+  }, [refresh, currentPage, sort, searchTerm,filter]);
   return (
     <>
       {" "}
@@ -156,8 +159,15 @@ function Page() {
         </p>
         <div className="flex flex-col">
           <SearchBar
+           filterArray={[
+            { value: "All", label: "All" },
+            { value: "Guide", label: "Guide" },
+            { value: "NormalUser", label: "Users" },
+          ]}
+            name={"Sent to"}
             handleSort={sort}
             setHandleSort={setSort}
+            setHandleFilter={setFilter}
             handleSearch={handleSearch}
             route={"/notification-management/create-notification"}
             showAddButton={true}

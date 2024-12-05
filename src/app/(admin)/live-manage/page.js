@@ -27,6 +27,8 @@ function Page() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [sort, setSort] = useState("desc");
+  const [filter, setFilter] = useState("");
+
 
   const router = useRouter();
 
@@ -95,7 +97,7 @@ function Page() {
     setLoading(true);
     setLiveManagementData([]);
 
-    const result = await getlive(page, sort, searchTerm);
+    const result = await getlive(page, sort, searchTerm,filter);
     if (result.status) {
       console.log(result.data.results);
       console.log("Total pages:", result.data.totalPages);
@@ -122,7 +124,7 @@ function Page() {
   useEffect(() => {
     fetchData(currentPage);
     fetchPendingCount(currentPage);
-  }, [currentPage, sort, searchTerm]);
+  }, [currentPage, sort, searchTerm,filter]);
 
   return (
     <>
@@ -142,8 +144,16 @@ function Page() {
         </div>
         <div className="flex flex-col">
           <SearchBar
+            filterArray={[
+              { value: "pending", label: "Pending" },
+              { value: "approved", label: "Approved" },
+              { value: "declined", label: "declined" }
+              
+            ]}
+            name={"Status"}
             handleSort={sort}
             setHandleSort={setSort}
+            setHandleFilter={setFilter}
             handleSearch={handleSearch}
             showAddButton={false}
           />

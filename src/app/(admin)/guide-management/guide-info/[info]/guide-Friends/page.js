@@ -31,6 +31,7 @@ function Page({ params }) {
     }
     setLoading(false)
   };
+  
   useEffect(() => {
     fetchData(currentPage);
   }, [currentPage]);
@@ -79,7 +80,7 @@ function Page({ params }) {
               {data &&
                 data.map((item, index) => {
                   const currentUser =
-                    item.user1?._id === users ? item.user2 : item.user1;
+                    item.user1?._id === info ? item.user2 : item.user1;
                   return (
                     <div
                       key={item._id || index}

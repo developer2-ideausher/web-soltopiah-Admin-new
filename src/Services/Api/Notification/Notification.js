@@ -1,5 +1,10 @@
 import { getToken } from "@/Services/Cookie/userCookie";
-import { apiError, responseValidator, tokenValidator, url } from "@/Utilities/helper";
+import {
+  apiError,
+  responseValidator,
+  tokenValidator,
+  url,
+} from "@/Utilities/helper";
 
 // export const getAllNotificationApi = async (page, sortOrder = "desc", search = "") => {
 //   const myHeaders = new Headers();
@@ -31,19 +36,30 @@ import { apiError, responseValidator, tokenValidator, url } from "@/Utilities/he
 //   }
 // };
 
-export const getAllNotificationApi = async (page,sortOrder = "desc", search = "") => {
+export const getAllNotificationApi = async (
+  page,
+  sortOrder = "desc",
+  search = "",
+  targetRole = ""
+) => {
+  console.log(targetRole, "hi");
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
   const requestOptions = {
     method: "GET",
     headers: myHeaders,
     redirect: "follow",
   };
+
   const searchParam = search.trim() !== "" ? `&search=${search}` : "";
+  const typeParam = targetRole === "" ? "" : `&targetRole=${targetRole}`; //  if present
+  console.log("Amin", targetRole);
+
   try {
     const response = await fetch(
-      url + `/notifications/sent-by-admin?sortBy=createdAt&sortOrder=${sortOrder}&page=${page}&limit=10&${searchParam}`,
+      url +
+        `/notifications/sent-by-admin?sortBy=createdAt&sortOrder=${sortOrder}&page=${page}&limit=10${searchParam}${typeParam}`,
       requestOptions
     );
     return responseValidator(response);
@@ -51,8 +67,6 @@ export const getAllNotificationApi = async (page,sortOrder = "desc", search = ""
     apiError(error);
   }
 };
-
-
 
 // export const deleteNotification = async (id) => {
 //   const myHeaders = new Headers();

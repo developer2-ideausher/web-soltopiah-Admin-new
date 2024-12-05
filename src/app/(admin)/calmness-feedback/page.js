@@ -25,6 +25,8 @@ function Page() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [sort, setSort] = useState("desc");
+  const [filter, setFilter] = useState("");
+
   const handleClick = () => {
     setShowPopUp(!showPopUp);
   };
@@ -44,7 +46,7 @@ function Page() {
   const fetchData = async (page) => {
     setLoading(true);
     setData([]);
-    const result = await getChapters(page, sort, searchTerm);
+    const result = await getChapters(page, sort, searchTerm,filter);
     if (result.status) {
       console.log(result.data.results);
       setData(result.data.results);
@@ -56,7 +58,7 @@ function Page() {
   };
   useEffect(() => {
     fetchData(currentPage);
-  }, [currentPage, sort, searchTerm]);
+  }, [currentPage, sort, searchTerm,filter]);
   return (
     <div className="flex flex-col gap-7">
       <div className="flex flex-row justify-between items-center">
@@ -78,6 +80,13 @@ function Page() {
       <div className="flex flex-col">
         {/* <SearchBar /> */}
         <SearchBar
+        filterArray={[
+          { value: "audio", label: "Audio" },
+          { value: "video", label: "Video" },
+        ]}
+        name={"Type"}
+        setHandleFilter={setFilter}
+
           handleSort={sort}
           setHandleSort={setSort}
           handleSearch={handleSearch}

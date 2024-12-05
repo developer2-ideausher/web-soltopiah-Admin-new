@@ -28,10 +28,12 @@ function Page() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [sort, setSort] = useState("desc");
+  const [filter, setFilter] = useState("");
+
   const router = useRouter();
   useEffect(() => {
     fetchData(currentPage);
-  }, [currentPage, refresh,sort, searchTerm]);
+  }, [currentPage, refresh,sort, searchTerm,filter]);
 
 
   const handleSearch = (term) => {
@@ -50,7 +52,7 @@ function Page() {
   const fetchData = async (page) => {
     setLoading(true);
     setChallengeData([]);
-    const result = await getAllChallengeApi(page, sort, searchTerm);
+    const result = await getAllChallengeApi(page, sort, searchTerm,filter);
     if (result.status) {
       console.log(result.data.results);
       setChallengeData(result.data.results);
@@ -163,9 +165,16 @@ function Page() {
         </div>
         <div className="flex flex-col">
           <SearchBar
+           filterArray={[
+            { value: "free", label: "Free" },
+            { value: "premium", label: "Premium" },
+          ]}
+          name={"Type"}
           handleSort={sort}
           setHandleSort={setSort}
+          setHandleFilter={setFilter}
           handleSearch={handleSearch}
+          showAddButton={false}
             title="Create Challenge"
             route="/challenge-module/create-challenge"
           />

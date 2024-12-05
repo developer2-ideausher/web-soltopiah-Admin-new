@@ -1,7 +1,7 @@
 import { getToken } from "@/Services/Cookie/userCookie";
-import { apiError, responseValidator, tokenValidator } from "@/Utilities/helper";
+import { apiError, buildQueryParams, responseValidator, tokenValidator, url } from "@/Utilities/helper";
 
-export const getAllCommunitiesApi = async (page,sortOrder = "desc", search = "") => {
+export const getAllCommunitiesApi = async (page,sortOrder = "desc", search = "",type="") => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + await tokenValidator());
 
@@ -10,11 +10,24 @@ export const getAllCommunitiesApi = async (page,sortOrder = "desc", search = "")
     headers: myHeaders,
     redirect: "follow",
   };
-  const searchParam = search.trim() !== "" ? `&search=${search}` : "";
+  // const searchParam = search.trim() !== "" ? `&search=${search}` : "";
+  // const typeParam = type ? `&type=${type}` : ""; //  if present
+  const queryParams = buildQueryParams({
+    page,
+    limit: 10,
+    sortBy: "createdAt",
+    sortOrder,
+    search: search.trim(),
+    type: type || undefined, // Only include `type` if it's truthy
+  });
 
   try {
+    // const response = await fetch(
+    //   process.env.NEXT_PUBLIC_URL + `/groups?page=${page}&limit=10&sortBy=createdAt&sortOrder=${sortOrder}&${searchParam}${typeParam}`,
+    //   requestOptions
+    // );
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL + `/groups?page=${page}&limit=10&sortBy=createdAt&sortOrder=${sortOrder}&${searchParam}`,
+      url+`/groups?${queryParams}`,
       requestOptions
     );
 

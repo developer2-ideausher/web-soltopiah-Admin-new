@@ -28,11 +28,13 @@ function Page() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [sort, setSort] = useState("desc");
+  const [filter, setFilter] = useState("");
+
   const router = useRouter();
   useEffect(() => {
     fetchPendingData();
     fetchData(currentPage);
-  }, [currentPage, sort, searchTerm]);
+  }, [currentPage, sort, searchTerm,filter]);
 
   const token = getToken();
   const handleSearch = (term) => {
@@ -52,7 +54,7 @@ function Page() {
     setLoading(true);
     setQuickReadData([]);
 
-    const result = await getAllQuickreadsDataApi(page, sort, searchTerm);
+    const result = await getAllQuickreadsDataApi(page, sort, searchTerm,filter);
     if (result.status) {
       console.log(result.data.results);
       console.log("Total pages:", result.data.totalPages);
@@ -133,9 +135,17 @@ function Page() {
         </div>
         <div className="flex flex-col">
           <AddSearchBar
+            filterArray={[
+              { value: "Admin", label: "Admin" },
+              { value: "Guide", label: "Guide" },
+              { value: "", label: "All" },
+            ]}
+            name={"Created By"}
             handleSort={sort}
             setHandleSort={setSort}
+            setHandleFilter={setFilter}
             handleSearch={handleSearch}
+            showAddButton={false}
             title="Add new"
             route="/quickreads/add-new-quickread"
           />

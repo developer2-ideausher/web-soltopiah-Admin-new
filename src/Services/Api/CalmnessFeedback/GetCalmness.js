@@ -1,20 +1,38 @@
 import { getToken } from "@/Services/Cookie/userCookie";
-import { apiError, responseValidator, tokenValidator } from "@/Utilities/helper";
+import {
+  apiError,
+  buildQueryParams,
+  responseValidator,
+  tokenValidator,
+  url,
+} from "@/Utilities/helper";
 
-export const getChapters = async (page,sortOrder = "desc", search = "") => {
+export const getChapters = async (
+  page,
+  sortOrder = "desc",
+  search = "",
+  type = ""
+) => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
   const requestOptions = {
     method: "GET",
     headers: myHeaders,
     redirect: "follow",
   };
-  const searchParam = search.trim() !== "" ? `&search=${search}` : "";
-
+  // const searchParam = search.trim() !== "" ? `&search=${search}` : "";
+  const queryParams = buildQueryParams({
+    page,
+    limit: 10,
+    sortBy: "createdAt",
+    sortOrder,
+    search: search.trim(),
+    type: type || undefined, // Only include `type` if it's truthy
+  });
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL + `/chapters?page=${page}&limit=10&sortBy=createdAt&sortOrder=${sortOrder}&${searchParam}`,
+      url + `/chapters?${queryParams}`,
       requestOptions
     );
 

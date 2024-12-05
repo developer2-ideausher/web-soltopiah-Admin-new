@@ -13,16 +13,24 @@ function SearchBar({
   showAddButton = true,
   showFilters = true,
   sort = true,
-  showSearch=true,
+  showSearch = true,
   handleSort,
   setHandleSort,
+  setHandleFilter,
   handleSearch,
+  name,
+  filterArray
 }) {
   const [showSort, setShowSort] = useState(false);
+  const [showFilterDropDown, setShowFilterDropDown] = useState(false);
   const [selectedSort, setSelectedSort] = useState("desc");
+  const [selectedFilter, setSelectedFilter] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [debounceTimeout, setDebounceTimeout] = useState(null);
-
+  // const filterArray = [
+  //   { value: "public", label: "Public" },
+  //   { value: "private", label: "Private" },
+  // ];
   const handleSelection = (value) => {
     setSelectedSort?.(value); // Update selected sort value
     setHandleSort?.(value); // Update parent sort handler
@@ -30,6 +38,15 @@ function SearchBar({
     // Close modal after 3 seconds
     setTimeout(() => {
       setShowSort(false);
+    }, 1000);
+  };
+  const handleFilterSelection = (value) => {
+    setSelectedFilter?.(value); // Update selected sort value
+    setHandleFilter?.(value); // Update parent sort handler
+
+    // Close modal after 3 seconds
+    setTimeout(() => {
+      setShowFilterDropDown(false);
     }, 1000);
   };
   const handleInputChange = (e) => {
@@ -71,17 +88,69 @@ function SearchBar({
           </div>
         )}
         {showFilters && (
-          <div className="bg-white border border-[#DCDBE1] py-2 px-3 rounded-lg flex flex-row items-center gap-2">
-            <Filter />
-            <p className="text-sm font-sans font-normal text-userblack">
-              Filters
-            </p>
+          <div className="flex flex-col gap-2 relative">
+            <button
+              onClick={() => {
+                setShowFilterDropDown(!showFilterDropDown);
+                setShowSort(false);
+              }}
+              className="bg-white border border-[#DCDBE1] py-2 px-3 rounded-lg flex flex-row items-center gap-2"
+            >
+              <Filter />
+              <p className="text-sm font-sans font-normal text-userblack">
+                Filters
+              </p>
+            </button>
+            {showFilterDropDown && (
+              <div className="w-32 bg-white p-4 rounded-xl absolute top-12 border border-[#ededed] z-50 right-0 left-0">
+                <h5 className="text-black text-sm font-semibold">{name}</h5>
+                {filterArray &&
+                  filterArray.map((item, index) => (
+                    <label
+                      key={index}
+                      className="w-full flex items-center gap-2 mt-4 cursor-pointer"
+                    >{console.log(selectedFilter,item.value)}
+                      <input
+                        checked={selectedFilter == item.value}
+                        
+                        onChange={(e) =>
+                          handleFilterSelection(e.currentTarget.value)
+                        }
+                        type="radio"
+                        name="time"
+                        id="declined"
+                        value={item.value}
+                      />
+                      
+                      <h6 className="text-xs text-black font-normal">
+                        {item.label}
+                      </h6>
+                    </label>
+                  ))}
+                {/* <label className="w-full flex items-center gap-2 mt-4 cursor-pointer">
+                  <input
+                    checked={selectedFilter === "public"}
+                    onChange={(e) =>
+                      handleFilterSelection(e.currentTarget.value)
+                    }
+                    type="radio"
+                    name="time"
+                    id="all"
+                    value="public"
+                  />
+                  <h6 className="text-xs text-black font-normal">Public</h6>
+                </label> */}
+              </div>
+            )}
           </div>
         )}
         {sort && (
           <div className="flex flex-col gap-2 relative">
             <button
-              onClick={() => setShowSort(!showSort)}
+              onClick={() => {
+                setShowSort(!showSort);
+                setShowFilterDropDown(false);
+              }}
               className="bg-white border border-[#DCDBE1] py-2 px-3 rounded-lg flex flex-row items-center gap-2"
             >
               <Sort />

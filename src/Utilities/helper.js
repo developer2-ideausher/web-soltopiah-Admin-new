@@ -159,3 +159,9 @@ export const truncateName = (Name) => {
   }
   return Name || ""; // Return empty string if Name is undefined or null
 };
+export function buildQueryParams(params) {
+  return Object.entries(params)
+    .filter(([_, value]) => value !== undefined && value !== "") // Include only present params
+    .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`) // Encode key and value
+    .join("&"); // Join with `&`
+}
