@@ -27,15 +27,8 @@ function Page() {
   const handleSearch = (term) => {
     setSearchTerm(term);
 
-    if (term.trim() === "") {
-      // If search is empty, reset to default data
-      fetchPendingCount(1);
-      // Fetch default data
-      return;
-    }
+   
     setCurrentPage(1);
-    // Fetch filtered data based on search term
-    fetchPendingCount(currentPage, sort, term);
   };
 
   const fetchPendingCount = async (page) => {

@@ -19,7 +19,7 @@ function SearchBar({
   setHandleFilter,
   handleSearch,
   name,
-  filterArray
+  filterArray,
 }) {
   const [showSort, setShowSort] = useState(false);
   const [showFilterDropDown, setShowFilterDropDown] = useState(false);
@@ -52,7 +52,10 @@ function SearchBar({
   const handleInputChange = (e) => {
     const value = e.target.value.trimStart(); // Remove leading spaces
     setSearchTerm?.(value);
-
+    console.log(searchTerm,"robin")
+    if(value.length>3){
+      
+    }
     // Clear previous debounce timeout
     if (debounceTimeout) {
       clearTimeout(debounceTimeout);
@@ -60,6 +63,7 @@ function SearchBar({
 
     // Handle empty input immediately
     if (value.trim() === "") {
+      setSearchTerm("")
       handleSearch?.(""); // Fetch default data
       return;
     }
@@ -109,10 +113,10 @@ function SearchBar({
                     <label
                       key={index}
                       className="w-full flex items-center gap-2 mt-4 cursor-pointer"
-                    >{console.log(selectedFilter,item.value)}
+                    >
+                      {console.log(selectedFilter, item.value)}
                       <input
                         checked={selectedFilter == item.value}
-                        
                         onChange={(e) =>
                           handleFilterSelection(e.currentTarget.value)
                         }
@@ -121,7 +125,7 @@ function SearchBar({
                         id="declined"
                         value={item.value}
                       />
-                      
+
                       <h6 className="text-xs text-black font-normal">
                         {item.label}
                       </h6>

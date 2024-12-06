@@ -1,9 +1,9 @@
 "use client";
+import SearchBar from "@/components/AddSearchBar";
 import BackButton from "@/components/BackButton";
 import LoaderLarge from "@/components/LoaderLarge";
 import RobinPagination from "@/components/Pagination";
 import Pagination from "@/components/Pagination";
-import SearchBar from "@/components/SearchBar";
 import UserDetailsBox from "@/components/UserManagement/UserDetailsBox";
 import { getListenedAudio } from "@/Services/Api/UserManagement/user";
 import { truncateDescription, truncateName } from "@/Utilities/helper";
@@ -19,9 +19,18 @@ function Page({ params }) {
   const [loading, setLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sort, setSort] = useState("desc");
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+
+    
+    setCurrentPage(1);
+   
+  };
   const fetchData = async (page) => {
     setLoading(true);
-    const result = await getListenedAudio(info, page);
+    const result = await getListenedAudio(info, page, sort, searchTerm);
     if (result.status) {
       console.log(result.data.results);
       setData(result.data.results);
@@ -34,7 +43,7 @@ function Page({ params }) {
   };
   useEffect(() => {
     fetchData(currentPage);
-  }, [currentPage]);
+  }, [currentPage, sort, searchTerm]);
   return (
     <div className="flex flex-col gap-7">
       <div className="flex flex-row gap-5 items-center">
@@ -48,7 +57,15 @@ function Page({ params }) {
       </div>
       {/* <UserDetailsBox /> */}
       <div className="flex flex-col">
-        <SearchBar />
+        <SearchBar
+          name={"Type"}
+          handleSort={sort}
+          setHandleSort={setSort}
+          setHandleFilter={""}
+          handleSearch={handleSearch}
+          showAddButton={false}
+          showFilters={false}
+        />
         <div className="w-full overflow-x-scroll booking-table-wrapper">
           <div className="bg-[#F0F2F5] min-w-fit w-full">
             <div className="items-center grid grid-cols-userAudioTable justify-between p-4">
@@ -84,14 +101,16 @@ function Page({ params }) {
           <div className="flex flex-col bg-white min-w-fit w-full">
             {data &&
               data.map((item, index) => (
-                <div key={item._id || index} className=" grid grid-cols-userAudioTable justify-between border-b border-[#E9E9EC] items-center p-4">
+                <div
+                  key={item._id || index}
+                  className=" grid grid-cols-userAudioTable justify-between border-b border-[#E9E9EC] items-center p-4"
+                >
                   <span className="text-userblack font-sans font-semibold text-base">
-                   {truncateName(item.chapter?.title)}
+                    {truncateName(item.chapter?.title)}
                   </span>
                   <div className="text-userblack font-sans  gap-2 font-normal text-base">
                     <p>
-                    {truncateDescription(item.chapter?.description) || "NA"}
-
+                      {truncateDescription(item.chapter?.description) || "NA"}
                     </p>
                   </div>
                   <span className="text-userblack font-sans font-normal  text-base">

@@ -39,15 +39,9 @@ function Page() {
   const handleSearch = (term) => {
     setSearchTerm(term);
 
-    if (term.trim() === "") {
-      // If search is empty, reset to default data
-      fetchData(1); // Fetch default data
-      return;
-    }
-
-    // Fetch filtered data based on search term
+  
     setCurrentPage(1)
-    fetchData(currentPage, sort, term);
+  
   };
   const fetchData = async (page) => {
     setLoading(true);
@@ -168,6 +162,7 @@ function Page() {
            filterArray={[
             { value: "free", label: "Free" },
             { value: "premium", label: "Premium" },
+            { value: "", label: "All" },
           ]}
           name={"Type"}
           handleSort={sort}
