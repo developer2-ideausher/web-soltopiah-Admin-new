@@ -11,7 +11,7 @@ export default function RootLayout({ children }) {
       </div>
       <div className="w-full overflow-x-hidden h-screen flex flex-col">
         <Header />
-        <div className="py-7 px-6 w-full ">{children}</div>
+        <div id="right-side" className="py-7 px-6 w-full ">{children}</div>
       </div>
     </div>
     // <div className='flex w-full h-scree justify-en'>

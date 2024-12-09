@@ -19,6 +19,7 @@ import { getTopGuides } from "@/Services/Api/Dashboard/DashboardApi";
 import RevenueChart from "@/components/RevenueChart";
 import { truncateDescription, truncateName } from "@/Utilities/helper";
 import SearchBar from "@/components/AddSearchBar";
+import html2canvas from "html2canvas";
 
 export default function Page() {
   const [loading, setLoading] = useState(false);
@@ -34,6 +35,25 @@ export default function Page() {
   const [sort, setSort] = useState("desc");
   const [filter, setFilter] = useState("");
 
+  const handleExport = async () => {
+    const element = document.getElementById("right-side"); // or any other element you want to capture
+    const titleElement = document.getElementById("titleName");
+  const titleText = titleElement ? titleElement.textContent.trim() : "Record";
+    html2canvas(element, {
+      useCORS: true,
+      logging: true,
+      renderer: {
+        type: 'canvas',
+        quality: 1,
+      },
+    }).then(canvas => {
+      const imageDataURL = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.download = `${titleText}-${dayjs().format("DD-MM-YYYY")}.png`;
+      link.href = imageDataURL;
+      link.click();
+    });
+  };
   const fetchChartData = async (period) => {
     const result = await revenueChart(period);
     if (result.status) {
@@ -104,13 +124,13 @@ export default function Page() {
   return (
     <div className="w-full flex flex-col font-sans">
       <div className="w-full flex justify-between items-center">
-        <h2 className="text-xl2 font-semibold text-[#17161D]">
+        <h2 id="titleName" className="text-xl2 font-semibold text-[#17161D]">
           Earning Management
         </h2>
-        <div className="bg-white border border-[#DCDBE1] py-[10px] px-3 rounded-lg flex flex-row items-center gap-2">
+        <button onClick={handleExport} className="bg-white border border-[#DCDBE1] py-[10px] px-3 rounded-lg flex flex-row items-center gap-2">
           <Export />
           <p className="text-sm font-sans font-normal text-userblack">Export</p>
-        </div>
+        </button>
       </div>
       <div className="w-full grid grid-cols-4 gap-5 mt-5">
         <div className="bg-white rounded-xl px-5 py-4">

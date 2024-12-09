@@ -14,12 +14,32 @@ import LoaderLarge from "@/components/LoaderLarge";
 import { getImageCacheRemover } from "@/Services/Api/Badges/BadgesApi";
 import RobinPagination from "@/components/Pagination";
 import SearchBar from "@/components/AddSearchBar";
+import html2canvas from "html2canvas";
 
 function Page() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   // const [totalPages, setTotalPages] = useState(1);
   // const [currentPage, setCurrentPage] = useState(1);
+  const handleExport = async () => {
+    const element = document.getElementById("right-side"); // or any other element you want to capture
+    const titleElement = document.getElementById("titleName");
+  const titleText = titleElement ? titleElement.textContent.trim() : "Record";
+    html2canvas(element, {
+      useCORS: true,
+      logging: true,
+      renderer: {
+        type: 'canvas',
+        quality: 1,
+      },
+    }).then(canvas => {
+      const imageDataURL = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.download = `${titleText}-${dayjs().format("DD-MM-YYYY")}.png`;
+      link.href = imageDataURL;
+      link.click();
+    });
+  };
   const fetchData = async (page) => {
     setLoading(true);
 
@@ -72,19 +92,19 @@ function Page() {
   return (
     <div className="flex flex-col gap-7">
       <div className="flex flex-row justify-between items-center">
-        <p className="text-xl2 font-semibold text-userblack font-sans">
+        <p id="titleName" className="text-xl2 font-semibold text-userblack font-sans">
           Subscription
         </p>
         <div className="flex flex-row items-center gap-5">
           {/* <select className="py-[10px] px-3 border border-[#DCDBE1] rounded-lg text-sm font-sans font-normal text-userblack focus:outline-none">
             <option value="1">Feb 10 - Feb 16, 22</option>
           </select> */}
-          <div className="bg-white border border-[#DCDBE1] py-[10px] px-3 rounded-lg flex flex-row items-center gap-2">
+          <button onClick={handleExport} className="bg-white border border-[#DCDBE1] py-[10px] px-3 rounded-lg flex flex-row items-center gap-2">
             <Export />
             <p className="text-sm font-sans font-normal text-userblack">
               Export
             </p>
-          </div>
+          </button>
         </div>
       </div>
       {/* <div className="flex flex-col gap-4 bg-white midxl:w-3/5  xl:w-3/5 2xl:w-2/5 rounded-xl p-8">
