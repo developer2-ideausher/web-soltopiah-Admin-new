@@ -2,14 +2,14 @@
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import LeftBlackarrow from "../../../../../../../icons/LeftBlackarrow";
-import SearchBar from "@/components/SearchBar";
-import Pagination from "@/components/Pagination";
 import BackButton from "@/components/BackButton";
 import isBetween from "dayjs/plugin/isBetween";
 import LoaderLarge from "@/components/LoaderLarge";
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
 import { guideSessionBooked } from "@/Services/Api/Guide/GuideApi";
+import RobinPagination from "@/components/Pagination";
+import SearchBar from "@/components/AddSearchBar";
 
 dayjs.extend(isBetween);
 
@@ -18,9 +18,21 @@ function Page({ params }) {
   const router = useRouter();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const fetchData = async () => {
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sort, setSort] = useState("desc");
+
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+
+    setCurrentPage(1);
+    // Fetch filtered data based on search term
+  };
+  const fetchData = async (page) => {
     setLoading(true);
-    const result = await guideSessionBooked(info);
+    setData([])
+    const result = await guideSessionBooked(info,page, sort, searchTerm);
     if (result.status) {
       console.log(result.data.results);
       setData(result.data.results);
@@ -32,8 +44,8 @@ function Page({ params }) {
     setLoading(false);
   };
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(currentPage);
+  }, [currentPage, sort, searchTerm]);
   const getSessionStatus = (bookingDate, startTime, endTime) => {
     const sessionStart = dayjs(`${bookingDate} ${startTime}`);
     const sessionEnd = dayjs(`${bookingDate} ${endTime}`);
@@ -59,7 +71,13 @@ function Page({ params }) {
         </p>
       </div>
       <div className="flex flex-col">
-        <SearchBar />
+        <SearchBar  name={"Type"}
+          handleSort={sort}
+          setHandleSort={setSort}
+          setHandleFilter={""}
+          handleSearch={handleSearch}
+          showAddButton={false}
+          showFilters={false} />
         <div className="w-full overflow-x-scroll booking-table-wrapper">
           <div className="bg-[#F0F2F5] min-w-fit w-full ">
             <div className="items-center grid grid-cols-sessionTable p-4 justify-between">
@@ -98,11 +116,19 @@ function Page({ params }) {
               </div>
             )}
 
-            {!loading && data.length === 0 && (
+{!loading &&
+            data.length === 0 &&
+            (searchTerm ? (
+              <div className="flex justify-center items-center bg-white p-10 w-full">
+                <p className="text-gray-500 text-sm">
+                  No data found for {searchTerm}.
+                </p>
+              </div>
+            ) : (
               <div className="text-center bg-white text-lg font-semibold text-gray-600 p-4">
                 No data yet.
-                </div>
-            )}
+              </div>
+            ))}
           <div className="flex flex-col bg-white min-w-fit w-full ">
             {data &&
               data.map((item, index) => (
@@ -144,8 +170,15 @@ function Page({ params }) {
               ))}
           </div>
         </div>
-        <Pagination />
-      </div>
+        {data.length <= 0 ? (
+          ""
+        ) : (
+          <RobinPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        )}{" "}      </div>
     </div>
   );
 }

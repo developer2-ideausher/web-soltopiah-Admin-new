@@ -12,12 +12,38 @@ import { useSearchParams } from "next/navigation";
 import { getToken } from "@/Services/Cookie/userCookie";
 import LoaderLarge from "@/components/LoaderLarge";
 import { truncateName } from "@/Utilities/helper";
+import dayjs from "dayjs";
+import html2canvas from "html2canvas";
 
 function Page({ params }) {
   const { info } = params;
 
   const [IdData, setIdData] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const handleExport = async () => {
+    const element = document.getElementById("right-side"); // or any other element you want to capture
+    const titleElement = document.getElementById("titleName");
+  const titleText = titleElement ? titleElement.textContent.trim() : "Record";
+    html2canvas(element, {
+      useCORS: true,
+      logging: true,
+      renderer: {
+        type: 'canvas',
+        quality: 1,
+      },
+    }).then(canvas => {
+      const imageDataURL = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.download = `${titleText}-${dayjs().format("DD-MM-YYYY")}.png`;
+      link.href = imageDataURL;
+      link.click();
+    });
+  };
+
+
+
+
   useEffect(() => {
     getIdDataApi();
   }, []);
@@ -53,21 +79,21 @@ function Page({ params }) {
           <Link href="/guide-management">
             <BackButton />
           </Link>
-          <p className="text-xl2 font-semibold text-userblack font-sans">
+          <p id="titleName" className="text-xl2 font-semibold text-userblack font-sans">
             Guide Management
           </p>
         </div>
 
         <div className="flex flex-row items-center gap-5">
-          <select className="py-[10px] px-3 border border-[#DCDBE1] rounded-lg text-sm font-sans font-normal text-userblack focus:outline-none">
+          {/* <select className="py-[10px] px-3 border border-[#DCDBE1] rounded-lg text-sm font-sans font-normal text-userblack focus:outline-none">
             <option value="1">Feb 10 - Feb 16, 22</option>
-          </select>
-          <div className="bg-white border border-[#DCDBE1] py-[10px] px-3 rounded-lg flex flex-row items-center gap-2">
+          </select> */}
+          <button onClick={handleExport} className="bg-white border border-[#DCDBE1] py-[10px] px-3 rounded-lg flex flex-row items-center gap-2">
             <Export />
             <p className="text-sm font-sans font-normal text-userblack">
               Export
             </p>
-          </div>
+          </button>
         </div>
       </div>
       {loading ? (
@@ -193,12 +219,12 @@ function Page({ params }) {
                     <Link
                       href={`/guide-management/guide-info/${info}/video-Watched/`}
                     >
-                      <GuideCards Title=" Video Watched" />
+                      <GuideCards Title=" Video Created" />
                     </Link>
                     <Link
                       href={`/guide-management/guide-info/${info}/audio-Listened/`}
                     >
-                      <GuideCards Title=" Audio Listened" />
+                      <GuideCards Title=" Audio Created" />
                     </Link>
                     <Link
                       href={`/guide-management/guide-info/${info}/guide-courses/`}

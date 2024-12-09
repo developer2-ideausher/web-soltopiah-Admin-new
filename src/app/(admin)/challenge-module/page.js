@@ -13,7 +13,7 @@ import LoaderLarge from "@/components/LoaderLarge";
 import Image from "next/image";
 import DeleteModal from "@/components/DeleteModal";
 import { toast } from "react-toastify";
-import { truncateName } from "@/Utilities/helper";
+import { truncateDescription, truncateName } from "@/Utilities/helper";
 import RobinPagination from "@/components/Pagination";
 import { getAllChallengeApi } from "@/Services/Api/Challenge/challenge";
 import html2canvas from "html2canvas";
@@ -145,12 +145,12 @@ function Page() {
       })
       .catch((error) => console.error(error));
   };
-  const truncateDescription = (description) => {
-    if (description.length > 80) {
-      return description.substring(0, 80) + "...";
-    }
-    return description;
-  };
+  // const truncateDescription = (description) => {
+  //   if (description.length > 80) {
+  //     return description.substring(0, 80) + "...";
+  //   }
+  //   return description;
+  // };
   return (
     <>
       {showModal && (

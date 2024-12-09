@@ -7,20 +7,24 @@ import {
   url,
 } from "@/Utilities/helper";
 
-export const getAllGuideApi = async (page,sortOrder = "desc", search = "",type="") => {
+export const getAllGuideApi = async (
+  page,
+  sortOrder = "desc",
+  search = "",
+  type = ""
+) => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
-  
-  const checkFilter=(guideFilter="")=>{
-    if(guideFilter==="premium"){
-      return true
-     }
-     else if(guideFilter==="free"){
-      return false
-     }
-     return undefined
-  }
- 
+
+  const checkFilter = (guideFilter = "") => {
+    if (guideFilter === "premium") {
+      return true;
+    } else if (guideFilter === "free") {
+      return false;
+    }
+    return undefined;
+  };
+
   const requestOptions = {
     method: "GET",
     headers: myHeaders,
@@ -48,7 +52,12 @@ export const getAllGuideApi = async (page,sortOrder = "desc", search = "",type="
   }
 };
 
-export const getLiveCreated = async (id) => {
+export const getLiveCreated = async (
+  id,
+  page,
+  sortOrder = "desc",
+  search = ""
+) => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + getToken());
 
@@ -57,9 +66,16 @@ export const getLiveCreated = async (id) => {
     headers: myHeaders,
     redirect: "follow",
   };
+  const queryParams = buildQueryParams({
+    page,
+    limit: 10,
+    sortBy: "createdAt",
+    sortOrder,
+    search: search.trim(),
+  });
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL + `/guides/${id}/live-events/owned`,
+      process.env.NEXT_PUBLIC_URL + `/guides/${id}/live-events/owned?${queryParams}`,
       requestOptions
     );
     const result = await responseValidator(response);
@@ -68,7 +84,10 @@ export const getLiveCreated = async (id) => {
     apiError(error);
   }
 };
-export const getQuickReads = async (id) => {
+export const getQuickReads = async (id,
+  page,
+  sortOrder = "desc",
+  search = "") => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + getToken());
 
@@ -77,9 +96,16 @@ export const getQuickReads = async (id) => {
     headers: myHeaders,
     redirect: "follow",
   };
+  const queryParams = buildQueryParams({
+    page,
+    limit: 10,
+    sortBy: "createdAt",
+    sortOrder,
+    search: search.trim(),
+  });
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL + `/guides/${id}/quick-reads/owned`,
+      process.env.NEXT_PUBLIC_URL + `/guides/${id}/quick-reads/owned?${queryParams}`,
       requestOptions
     );
     const result = await responseValidator(response);
@@ -89,7 +115,10 @@ export const getQuickReads = async (id) => {
   }
 };
 
-export const getContent = async (id, page) => {
+export const getContent = async (id,
+  page,
+  sortOrder = "desc",
+  search = "") => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + getToken());
 
@@ -98,10 +127,17 @@ export const getContent = async (id, page) => {
     headers: myHeaders,
     redirect: "follow",
   };
+  const queryParams = buildQueryParams({
+    page,
+    limit: 10,
+    sortBy: "createdAt",
+    sortOrder,
+    search: search.trim(),
+  });
   try {
     const response = await fetch(
       process.env.NEXT_PUBLIC_URL +
-        `/guides/${id}/chapters/owned?page=${page}&limit=10`,
+        `/guides/${id}/chapters/owned?${queryParams}`,
       requestOptions
     );
     const result = await responseValidator(response);
@@ -111,7 +147,10 @@ export const getContent = async (id, page) => {
   }
 };
 
-export const guideSessionBooked = async (id) => {
+export const guideSessionBooked = async (id,
+  page,
+  sortOrder = "desc",
+  search = "") => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + getToken());
 
@@ -120,11 +159,153 @@ export const guideSessionBooked = async (id) => {
     headers: myHeaders,
     redirect: "follow",
   };
+  const queryParams = buildQueryParams({
+    page,
+    limit: 10,
+    sortBy: "createdAt",
+    sortOrder,
+    search: search.trim(),
+  });
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL + `/guides/${id}/guide-session-bookings`,
+      process.env.NEXT_PUBLIC_URL + `/guides/${id}/guide-session-bookings?${queryParams}`,
       requestOptions
     );
+    const result = await responseValidator(response);
+    return result;
+  } catch (error) {
+    apiError(error);
+  }
+};
+export const guideCourses = async (
+  id,
+  page,
+  sortOrder = "desc",
+  search = ""
+) => {
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
+
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+  const queryParams = buildQueryParams({
+    page,
+    limit: 10,
+    sortBy: "createdAt",
+    sortOrder,
+    search: search.trim(),
+  });
+  try {
+    const response = await fetch(
+      url + `/guides/${id}/courses/standard/owned?${queryParams}`,
+      requestOptions
+    );
+
+    const result = await responseValidator(response);
+    return result;
+  } catch (error) {
+    apiError(error);
+  }
+};
+export const guideVideos = async (
+  id,
+  page,
+  sortOrder = "desc",
+  search = ""
+) => {
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
+
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+  const queryParams = buildQueryParams({
+    page,
+    limit: 10,
+    sortBy: "createdAt",
+    sortOrder,
+    search: search.trim(),
+  });
+
+  try {
+    const response = await fetch(
+      url + `/guides/${id}/chapters/owned?type=video&${queryParams}`,
+      requestOptions
+    );
+
+    const result = await responseValidator(response);
+    return result;
+  } catch (error) {
+    apiError(error);
+  }
+};
+export const guideAudios = async (
+  id,
+  page,
+  sortOrder = "desc",
+  search = ""
+) => {
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
+
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+  const queryParams = buildQueryParams({
+    page,
+    limit: 10,
+    sortBy: "createdAt",
+    sortOrder,
+    search: search.trim(),
+  });
+
+  try {
+    const response = await fetch(
+      url + `/guides/${id}/chapters/owned?type=audio&${queryParams}`,
+      requestOptions
+    );
+
+    const result = await responseValidator(response);
+    return result;
+  } catch (error) {
+    apiError(error);
+  }
+};
+export const getGuideBookingsData = async (
+  id,
+  page,
+  sortOrder = "desc",
+  search = ""
+) => {
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
+
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+  const queryParams = buildQueryParams({
+    page,
+    limit: 10,
+    sortBy: "createdAt",
+    sortOrder,
+    search: search.trim(),
+  });
+  try {
+    const response = await fetch(
+      url +
+        `/guides/${id}/guide-session-bookings?type=completed&${queryParams}`,
+      requestOptions
+    );
+
     const result = await responseValidator(response);
     return result;
   } catch (error) {

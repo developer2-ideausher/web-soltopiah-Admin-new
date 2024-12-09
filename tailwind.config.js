@@ -40,6 +40,7 @@ module.exports = {
   			userCommunityCreatedTable: '300px 500px 150px',
   			userFriendsTable: '300px 200px 150px 150px',
   			userVideoTable: '200px 350px 250px 150px 150px 100px',
+  			guideVideoTable: '300px 350px 250px 150px 150px 100px',
   			userAudioTable: '350px 450px 200px 200px 100px ',
 			userCourses : '300px 200px 200px 100px',
   			guideTable: '288px 251px 152px 150px 100px 140px 40px',

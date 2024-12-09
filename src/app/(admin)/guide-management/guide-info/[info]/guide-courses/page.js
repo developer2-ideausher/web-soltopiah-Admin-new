@@ -1,7 +1,6 @@
 "use client";
 import BackButton from "@/components/BackButton";
 import Pagination from "@/components/Pagination";
-import SearchBar from "@/components/SearchBar";
 import UserDetailsBox from "@/components/UserManagement/UserDetailsBox";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -13,6 +12,8 @@ import {
 import LoaderLarge from "@/components/LoaderLarge";
 import { truncateDescription, truncateName } from "@/Utilities/helper";
 import RobinPagination from "@/components/Pagination";
+import { guideCourses } from "@/Services/Api/Guide/GuideApi";
+import SearchBar from "@/components/AddSearchBar";
 
 function Page({ params }) {
   const { info } = params;
@@ -21,9 +22,20 @@ function Page({ params }) {
   const [loading, setLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const [sort, setSort] = useState("desc");
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+
+    setCurrentPage(1);
+    // Fetch filtered data based on search term
+  };
   const fetchData = async (page) => {
     setLoading(true);
-    const result = await userCourses(info, page);
+    setData([]);
+    console.log(info);
+    const result = await guideCourses(info, page, sort, searchTerm);
     if (result.status) {
       console.log(result.data.results);
       setData(result.data.results);
@@ -35,7 +47,7 @@ function Page({ params }) {
   };
   useEffect(() => {
     fetchData(currentPage);
-  }, [currentPage]);
+  }, [currentPage, sort, searchTerm]);
 
   return (
     <div className="flex flex-col gap-7">
@@ -49,7 +61,15 @@ function Page({ params }) {
       </div>
       {/* <UserDetailsBox  /> */}
       <div className="flex flex-col">
-        <SearchBar />
+        <SearchBar
+          name={"Type"}
+          handleSort={sort}
+          setHandleSort={setSort}
+          setHandleFilter={""}
+          handleSearch={handleSearch}
+          showAddButton={false}
+          showFilters={false}
+        />
         <div className="w-full overflow-x-scroll booking-table-wrapper">
           <div className="bg-[#F0F2F5] min-w-fit w-full">
             <div className="items-center grid grid-cols-userCourses justify-between p-4">
@@ -57,7 +77,7 @@ function Page({ params }) {
                 Name
               </span>
               <span className="text-[#666576] font-sans font-normal text-sm">
-                Progress
+                Description
               </span>
 
               <span className="text-[#666576] font-sans font-normal text-sm">
@@ -74,11 +94,19 @@ function Page({ params }) {
             </div>
           )}
 
-          {!loading && data.length === 0 && (
-            <div className="text-center bg-white text-lg font-semibold text-gray-600 p-4">
-              No data yet.
-            </div>
-          )}
+{!loading &&
+            data.length === 0 &&
+            (searchTerm ? (
+              <div className="flex justify-center items-center bg-white p-10 w-full">
+                <p className="text-gray-500 text-sm">
+                  No data found for {searchTerm}.
+                </p>
+              </div>
+            ) : (
+              <div className="text-center bg-white text-lg font-semibold text-gray-600 p-4">
+                No data yet.
+              </div>
+            ))}
           <div className="flex flex-col bg-white min-w-fit w-full">
             {data &&
               data.map((item, index) => (
@@ -88,32 +116,36 @@ function Page({ params }) {
                 >
                   <div className="text-userblack font-sans flex flex-row items-center gap-3 font-semibold text-base ">
                     <img
-                      src={item.course?.thumbnail.url || "/Frame1.png"}
+                      src={item.thumbnail?.url || "/Frame1.png"}
                       alt="image"
                       className="w-11 h-11 rounded-md"
                     />
-                    <p>{truncateName(item.course?.title)}</p>
+                    <p>{truncateName(item.title)}</p>
                   </div>
                   <span className="text-userblack w-[350px] font-sans font-semibold text-base">
-                    {item.progressPercentage + "%"}
+                    {truncateDescription(item.description)}
                   </span>
 
                   <span className="text-userblack font-sans font-semibold text-base capitalize">
-                    {item.course?.accessibility}
+                    {item.accessibility}
                   </span>
 
                   <div className="font-sans font-normal text-base capitalize">
-                    {item.course?.courseContentType}
+                    {item.courseType}
                   </div>
                 </div>
               ))}
           </div>
         </div>
-        <RobinPagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />{" "}
+        {data.length <= 0 ? (
+          ""
+        ) : (
+          <RobinPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        )}
       </div>
     </div>
   );

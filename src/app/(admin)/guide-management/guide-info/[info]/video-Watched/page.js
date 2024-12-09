@@ -1,10 +1,11 @@
 "use client";
+import SearchBar from "@/components/AddSearchBar";
 import BackButton from "@/components/BackButton";
 import LoaderLarge from "@/components/LoaderLarge";
 import RobinPagination from "@/components/Pagination";
 import Pagination from "@/components/Pagination";
-import SearchBar from "@/components/SearchBar";
 import UserDetailsBox from "@/components/UserManagement/UserDetailsBox";
+import { guideVideos } from "@/Services/Api/Guide/GuideApi";
 import { getWatchedVideo } from "@/Services/Api/UserManagement/user";
 import { truncateDescription, truncateName } from "@/Utilities/helper";
 import dayjs from "dayjs";
@@ -19,9 +20,18 @@ function Page({ params }) {
   const [loading, setLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sort, setSort] = useState("desc");
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+
+    setCurrentPage(1);
+    // Fetch filtered data based on search term
+  };
   const fetchData = async (page) => {
     setLoading(true);
-    const result = await getWatchedVideo(info, page);
+    setData([])
+    const result = await guideVideos(info, page, sort, searchTerm);
     if (result.status) {
       console.log(result.data.results);
       setData(result.data.results);
@@ -34,7 +44,7 @@ function Page({ params }) {
   };
   useEffect(() => {
     fetchData(currentPage);
-  }, [currentPage]);
+  }, [currentPage, sort, searchTerm]);
   return (
     <div className="flex flex-col gap-7">
       <div className="flex flex-row gap-5 items-center">
@@ -43,15 +53,23 @@ function Page({ params }) {
         </div>
         <p className="text-userblack font-semibold text-xl2 font-sans">
           Guide management -{" "}
-          <span className="text-[#AE445A]"> Video watched</span>{" "}
+          <span className="text-[#AE445A]"> Video Created</span>{" "}
         </p>
       </div>
       {/* <UserDetailsBox/> */}
       <div className="flex flex-col">
-        <SearchBar />
+        <SearchBar
+          name={"Type"}
+          handleSort={sort}
+          setHandleSort={setSort}
+          setHandleFilter={""}
+          handleSearch={handleSearch}
+          showAddButton={false}
+          showFilters={false}
+        />
         <div className="w-full overflow-x-scroll booking-table-wrapper">
           <div className="bg-[#F0F2F5] min-w-fit w-full">
-            <div className="items-center grid grid-cols-userVideoTable justify-between p-4">
+            <div className="items-center grid grid-cols-guideVideoTable justify-between p-4">
               <span className="text-[#666576] font-sans font-normal text-sm">
                 Title
               </span>
@@ -80,45 +98,61 @@ function Page({ params }) {
             </div>
           )}
 
-          {!loading && data.length === 0 && (
-            <div className="text-center text-md font-semibold text-gray-600 bg-white p-4">
-              No data yet.
-            </div>
-          )}
+          {!loading &&
+            data.length === 0 &&
+            (searchTerm ? (
+              <div className="flex justify-center items-center bg-white p-10 w-full">
+                <p className="text-gray-500 text-sm">
+                  No data found for {searchTerm}.
+                </p>
+              </div>
+            ) : (
+              <div className="text-center bg-white text-lg font-semibold text-gray-600 p-4">
+                No data yet.
+              </div>
+            ))}
           <div className="flex flex-col bg-white min-w-fit w-full">
             {data &&
               data.map((item, index) => (
-                <div key={item._id || index} className=" grid grid-cols-userVideoTable justify-between border-b border-[#E9E9EC] items-center p-4">
+                <div
+                  key={item._id || index}
+                  className=" grid grid-cols-guideVideoTable justify-between border-b border-[#E9E9EC] items-center p-4"
+                >
                   <span className="text-userblack font-sans font-semibold text-base">
-                    {truncateName(item.chapter?.title)}
+                    {truncateName(item?.title)}
                   </span>
                   <div className="text-userblack font-sans w-[350px]  gap-2 font-normal text-base">
                     <p>
-                     {truncateDescription(item.chapter?.description)|| "--Na--"}
+                      {truncateDescription(item?.description) ||
+                        "--Na--"}
                     </p>
                   </div>
                   <span className="text-userblack font-sans font-normal  text-base">
-                    {item.chapterCategory?.title}
+                    {item.category?.title}
                   </span>
                   <span className="text-userblack font-sans font-normal  text-base">
                     {dayjs(item.createdAt).format("DD/MMYYYY")}
                   </span>
                   <span className="text-userblack font-sans font-normal  text-base">
-                    {truncateName(item.chapterCreator?.firstName) || "NA"}
+                    {truncateName(item.creator?.firstName+" "+item.creator?.lastName) || "NA"}
                   </span>
 
                   <div className="font-sans font-normal text-userblack text-base capitalize">
-                    {item.chapter?.accessibility}
+                    {item?.accessibility}
                   </div>
                 </div>
               ))}
           </div>
         </div>
-        <RobinPagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
+        {data.length <= 0 ? (
+          ""
+        ) : (
+          <RobinPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        )}
       </div>
     </div>
   );

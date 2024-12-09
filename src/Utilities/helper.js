@@ -148,7 +148,7 @@ export const truncateDescription = (description) => {
   if (description && description.length > 80) {
     return description.substring(0, 80) + "...";
   }
-  return description;
+  return description || "";
 };
 export const truncateName = (Name) => {
   if (typeof Name !== "string") {
