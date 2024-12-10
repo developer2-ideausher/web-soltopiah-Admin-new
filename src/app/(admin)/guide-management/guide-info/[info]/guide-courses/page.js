@@ -94,7 +94,7 @@ function Page({ params }) {
             </div>
           )}
 
-{!loading &&
+          {!loading &&
             data.length === 0 &&
             (searchTerm ? (
               <div className="flex justify-center items-center bg-white p-10 w-full">
@@ -137,9 +137,7 @@ function Page({ params }) {
               ))}
           </div>
         </div>
-        {data.length <= 0 ? (
-          ""
-        ) : (
+        {data.length > 0 && (
           <RobinPagination
             currentPage={currentPage}
             totalPages={totalPages}

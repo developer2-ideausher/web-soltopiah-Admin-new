@@ -8,12 +8,11 @@ import GuideCards from "@/components/GuideCards";
 import Link from "next/link";
 import BackButton from "@/components/BackButton";
 
-import { useSearchParams } from "next/navigation";
-import { getToken } from "@/Services/Cookie/userCookie";
 import LoaderLarge from "@/components/LoaderLarge";
 import { truncateName } from "@/Utilities/helper";
 import dayjs from "dayjs";
 import html2canvas from "html2canvas";
+import { getGuideByID } from "@/Services/Api/Guide/GuideApi";
 
 function Page({ params }) {
   const { info } = params;
@@ -24,54 +23,63 @@ function Page({ params }) {
   const handleExport = async () => {
     const element = document.getElementById("right-side"); // or any other element you want to capture
     const titleElement = document.getElementById("titleName");
-  const titleText = titleElement ? titleElement.textContent.trim() : "Record";
+    const titleText = titleElement ? titleElement.textContent.trim() : "Record";
     html2canvas(element, {
       useCORS: true,
       logging: true,
       renderer: {
-        type: 'canvas',
+        type: "canvas",
         quality: 1,
       },
-    }).then(canvas => {
-      const imageDataURL = canvas.toDataURL('image/png');
-      const link = document.createElement('a');
+    }).then((canvas) => {
+      const imageDataURL = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
       link.download = `${titleText}-${dayjs().format("DD-MM-YYYY")}.png`;
       link.href = imageDataURL;
       link.click();
     });
   };
 
-
-
-
   useEffect(() => {
-    getIdDataApi();
+    fetchData();
   }, []);
-  const token = getToken();
-  const getIdDataApi = () => {
+  const fetchData = async () => {
     setLoading(true);
+    const result = await getGuideByID(info);
 
-    const myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + token);
-    const requestOptions = {
-      method: "GET",
-      headers: myHeaders,
+    if (result.status) {
+      console.log(result.data.results);
+      setIdData(result.data);
+    } else {
+      console.error(result.message);
+    }
 
-      redirect: "follow",
-    };
-
-    fetch(process.env.NEXT_PUBLIC_URL + "/guides/" + info, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result.data);
-        setIdData(result.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        setLoading(false);
-      });
+    setLoading(false);
   };
+  // const getIdDataApi = () => {
+  //   setLoading(true);
+
+  //   const myHeaders = new Headers();
+  //   myHeaders.append("Authorization", "Bearer " + token);
+  //   const requestOptions = {
+  //     method: "GET",
+  //     headers: myHeaders,
+
+  //     redirect: "follow",
+  //   };
+
+  //   fetch(process.env.NEXT_PUBLIC_URL + "/guides/" + info, requestOptions)
+  //     .then((response) => response.json())
+  //     .then((result) => {
+  //       console.log(result.data);
+  //       setIdData(result.data);
+  //       setLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //       setLoading(false);
+  //     });
+  // };
   return (
     <div className="flex flex-col gap-7 ">
       <div className="flex flex-row justify-between items-center">
@@ -79,7 +87,10 @@ function Page({ params }) {
           <Link href="/guide-management">
             <BackButton />
           </Link>
-          <p id="titleName" className="text-xl2 font-semibold text-userblack font-sans">
+          <p
+            id="titleName"
+            className="text-xl2 font-semibold text-userblack font-sans"
+          >
             Guide Management
           </p>
         </div>
@@ -88,7 +99,10 @@ function Page({ params }) {
           {/* <select className="py-[10px] px-3 border border-[#DCDBE1] rounded-lg text-sm font-sans font-normal text-userblack focus:outline-none">
             <option value="1">Feb 10 - Feb 16, 22</option>
           </select> */}
-          <button onClick={handleExport} className="bg-white border border-[#DCDBE1] py-[10px] px-3 rounded-lg flex flex-row items-center gap-2">
+          <button
+            onClick={handleExport}
+            className="bg-white border border-[#DCDBE1] py-[10px] px-3 rounded-lg flex flex-row items-center gap-2"
+          >
             <Export />
             <p className="text-sm font-sans font-normal text-userblack">
               Export
@@ -168,7 +182,7 @@ function Page({ params }) {
                     <p>:</p>
                     <p className="text-userblack font-sans font-semibold text-base">
                       {" "}
-                      {"$ "+IdData.totalMoneyWithdrawn}
+                      {"$ " + IdData.totalMoneyWithdrawn}
                     </p>
                   </div>
                   <div className="flex flex-row  gap-5">
@@ -199,11 +213,26 @@ function Page({ params }) {
                     Soul module data
                   </p>
                   <div className="grid  lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 justify-between items-center">
-                    <Link href={`/guide-management/guide-info/${info}/participated-Challenges/`}><GuideCards Title="Participated challenges" /></Link>
-                    <Link href={`/guide-management/guide-info/${info}/communities-Participated/`}><GuideCards Title="Community participation" /></Link>
-                    <Link href={`/guide-management/guide-info/${info}/communities-Created/`}><GuideCards Title="Communities created" /></Link>
-                    <Link href={`/guide-management/guide-info/${info}/challenges-Created/`}
-                    ><GuideCards Title="Challenges created" /></Link>
+                    <Link
+                      href={`/guide-management/guide-info/${info}/participated-Challenges/`}
+                    >
+                      <GuideCards Title="Participated challenges" />
+                    </Link>
+                    <Link
+                      href={`/guide-management/guide-info/${info}/communities-Participated/`}
+                    >
+                      <GuideCards Title="Community participation" />
+                    </Link>
+                    <Link
+                      href={`/guide-management/guide-info/${info}/communities-Created/`}
+                    >
+                      <GuideCards Title="Communities created" />
+                    </Link>
+                    <Link
+                      href={`/guide-management/guide-info/${info}/challenges-Created/`}
+                    >
+                      <GuideCards Title="Challenges created" />
+                    </Link>
                     <Link
                       href={`/guide-management/guide-info/${info}/guide-Friends/`}
                     >

@@ -114,6 +114,7 @@ function Page() {
           </p>
           <select className="py-2 px-3 rounded-lg border border-[#DCDBE1]">
             <option value="1">Weekly</option>
+            <option value="1">Monthly</option>
           </select>
         </div>
         <EarningsChart />

@@ -89,10 +89,10 @@ export default function SessionBookingChart({ subscriberData, guideData, timePer
   };
 
   useEffect(() => {
-    // Log the data for debugging
-    console.log("Subscriber Data: ", subscriberData);
-    console.log("Guide Data: ", guideData);
-    console.log("Time Period: ", timePeriod);
+    // // Log the data for debugging
+    // console.log("Subscriber Data: ", subscriberData);
+    // console.log("Guide Data: ", guideData);
+    // console.log("Time Period: ", timePeriod);
 
     // Choose the correct categories for the x-axis based on time period
     const categories = timePeriod === "monthly" ? monthlyCategories : weeklyCategories;
@@ -102,12 +102,12 @@ export default function SessionBookingChart({ subscriberData, guideData, timePer
     const mappedSubscriberData = mapDataToPeriod(subscriberData, timePeriod);
 
     // Log mapped data for debugging
-    console.log("Mapped Guide Data: ", mappedGuideData);
-    console.log("Mapped Subscriber Data: ", mappedSubscriberData);
+    // console.log("Mapped Guide Data: ", mappedGuideData);
+    // console.log("Mapped Subscriber Data: ", mappedSubscriberData);
 
     // Ensure valid categories and mapped data
     if (!categories || categories.length === 0) {
-      console.error("Invalid categories for x-axis!");
+      // console.error("Invalid categories for x-axis!");
       return;
     }
 

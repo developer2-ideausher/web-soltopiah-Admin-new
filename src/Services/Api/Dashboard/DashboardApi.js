@@ -1,9 +1,9 @@
 import { getToken } from "@/Services/Cookie/userCookie";
-import { apiError, responseValidator, url } from "@/Utilities/helper";
+import { apiError, responseValidator, tokenValidator, url } from "@/Utilities/helper";
 
 export const getTopGuides = async () => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + getToken());
+  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
 
   const requestOptions = {
     method: "GET",
@@ -23,7 +23,7 @@ export const getTopGuides = async () => {
 };
 export const getTopCategories = async () => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + getToken());
+  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
 
   const requestOptions = {
     method: "GET",
@@ -43,7 +43,7 @@ export const getTopCategories = async () => {
 };
 export const getUserGrowth = async (type = "monthly") => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + getToken());
+  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
 
   const requestOptions = {
     method: "GET",
@@ -65,7 +65,7 @@ export const getUserGrowth = async (type = "monthly") => {
 
 export const getStats = async () => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + getToken());
+  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
 
   const requestOptions = {
     method: "GET",
@@ -83,9 +83,9 @@ export const getStats = async () => {
   }
 };
 
-export const getRevenueChart = async (type = "monthly") => {
+export const getRevenueChart = async (type) => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + getToken());
+  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
 
   const requestOptions = {
     method: "GET",

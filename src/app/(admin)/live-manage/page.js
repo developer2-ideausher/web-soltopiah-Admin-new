@@ -140,7 +140,7 @@ function Page() {
             filterArray={[
               { value: "pending", label: "Pending" },
               { value: "approved", label: "Approved" },
-              { value: "declined", label: "declined" },
+              { value: "declined", label: "Declined" },
               { value: "", label: "All" }
               
             ]}

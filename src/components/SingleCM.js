@@ -1,3 +1,4 @@
+import { getImageCacheRemover } from "@/Services/Api/Badges/BadgesApi";
 import dayjs from "dayjs";
 import Link from "next/link";
 import React from "react";
@@ -10,9 +11,7 @@ export default function SingleCM(props) {
     >
       <div className="flex items-center gap-2 w-3/12">
         <img
-          src={
-            props.data?.thumbnail?.url ? props.data.thumbnail.url : "/cm.svg"
-          }
+          src={getImageCacheRemover(props.data?.thumbnail?.url, "/cm.svg")}
           className="w-2/12 rounded-md h-12"
         />
         <h6 className="text-[#252322] font-semibold text-sm">

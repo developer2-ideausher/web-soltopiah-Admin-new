@@ -20,6 +20,7 @@ import LoaderSmall from "@/components/LoaderSmall";
 import LoaderLarge from "@/components/LoaderLarge";
 import NoData from "../../../../icons/NoData";
 import NoDataIcon from "../../../../icons/NoDataIcon";
+import BarChart from "@/components/DashBoardNew/BarChart";
 export default function Page() {
   const [guideData, setGuideData] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
@@ -27,14 +28,14 @@ export default function Page() {
   const [statsData, setStatsData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [userLoading, setUserLoading] = useState(false);
-  const [revenueData,setRevenueData]=useState([])
+  const [revenueData, setRevenueData] = useState([]);
   const router = useRouter();
 
   const fetchGuideData = async () => {
     setLoading(true);
     const result = await getTopGuides();
     if (result.status) {
-      console.log(result.data);
+      // console.log(result.data);
       setGuideData(result.data);
     } else {
       console.error(result.message);
@@ -46,7 +47,7 @@ export default function Page() {
 
     const result = await getTopCategories();
     if (result.status) {
-      console.log(result.data);
+      // console.log(result.data);
       setCategoryData(result.data);
     } else {
       console.error(result.message);
@@ -60,7 +61,7 @@ export default function Page() {
 
     const result = await getUserGrowth(period);
     if (result.status) {
-      console.log(result.data);
+      // console.log(result.data);
       setUserData(result.data);
     } else {
       console.error(result.message);
@@ -74,20 +75,25 @@ export default function Page() {
 
     const result = await getRevenueChart(period);
     if (result.status) {
-      console.log(result.data);
+      console.log("Revenue Chart", result.data);
       setRevenueData(result.data);
     } else {
       console.error(result.message);
     }
     setUserLoading(false);
   };
-
+  const mapRevenueData = (revenueData, id) => {
+    return (
+      revenueData.earningsByRevenueSource?.find((item) => item._id === id)
+        ?.platformEarnings || 0
+    );
+  };
   const fetchStatsData = async () => {
     setLoading(true);
 
     const result = await getStats();
     if (result.status) {
-      console.log(result.data);
+      // console.log(result.data);
       setStatsData(result.data);
     } else {
       console.error(result.message);
@@ -101,9 +107,11 @@ export default function Page() {
     fetchStatsData();
   }, []);
   useEffect(() => {
+    fetchRevenueData(timeRevenue);
+  }, [timeRevenue]);
+  useEffect(() => {
     fetchUserData(timePeriod);
-    fetchRevenueData(timeRevenue)
-  }, [timePeriod,timeRevenue]);
+  }, [timePeriod]);
 
   return (
     <div className=" flex flex-col gap-11 ">
@@ -169,10 +177,10 @@ export default function Page() {
           />
         </div>
         <div className="flex lg:flex-col xl:flex-row 2xl:flex-row items-center gap-4">
-          {/* <div className="lg:w-full xl:w-1/2 2xl:w-1/2 bg-white rounded-xl p-5 flex flex-col gap-4">
+          <div className="lg:w-full xl:w-1/2 2xl:w-1/2 bg-white rounded-xl p-5 flex flex-col gap-4">
             <div className="flex flex-row justify-between items-center ">
               <p className="text-base font-sans font-bold text-[#2A2D3E]">
-                Revenue
+                Revenue($)
               </p>
 
               <select
@@ -180,17 +188,29 @@ export default function Page() {
                 value={timeRevenue} // Bind value to state
                 className="focus:outline-none py-2 px-3 bg-white border border-[#DCDBE1] rounded-lg text-sm font-sans font-normal text-[#17161D]"
               >
+                {console.log("yessssssssssssss", timeRevenue)}
                 <option value="weekly">Weekly</option>
                 <option value="monthly">Monthly</option>
               </select>
             </div>
-            <div className="w-full h-auto ">
+            <div className="w-full h-auto mb-3">
+              <BarChart
+                guide={
+                  mapRevenueData(revenueData, "GuideSessionBookingRevenue") || 0
+                }
+                revenue={mapRevenueData(revenueData, "DonationRevenue") || 0}
+                subscription={
+                  mapRevenueData(revenueData, "SubscriptionRevenue") || 0
+                }
+              />
+            </div>
+            {/* <div className="w-full h-auto ">
               <SessionBookingChart
               subscriberData={revenueData.SubscriptionRevenue || []}
               guideData={revenueData.GuideSessionBookingRevenue || []}
               timePeriod={timeRevenue} />
-            </div>
-            <div className="flex flex-row justify-center gap-10">
+            </div> */}
+            {/* <div className="flex flex-row justify-center gap-10">
               <div className="gap-2 flex flex-row items-center">
                 <p className="w-3 h-3 bg-[#DADADA] rounded-[4px]"></p>
                 <p className="text-sm font-inter font-light text-[#121616]">
@@ -203,8 +223,8 @@ export default function Page() {
                   Subscribers
                 </p>
               </div>
-            </div>
-          </div> */}
+            </div> */}
+          </div>
           <div className="lg:w-full xl:w-1/2 2xl:w-1/2 bg-white rounded-xl p-5 flex flex-col gap-4">
             <div className="flex flex-row justify-between items-center ">
               <p className="text-base font-sans font-bold text-[#2A2D3E]">
@@ -307,7 +327,11 @@ export default function Page() {
                   className="flex items-center justify-between"
                 >
                   <div className="flex items-center justify-center gap-2">
-                    <img src={item.category?.image?.url || "dash.png"} alt="image" className="w-11 h-11 rounded-full object-cover" />
+                    <img
+                      src={item.category?.image?.url || "dash.png"}
+                      alt="image"
+                      className="w-11 h-11 rounded-full object-cover"
+                    />
                     <p className="text-[#414554] text-sm font-normal font-sans">
                       {item.category?.title}
                     </p>

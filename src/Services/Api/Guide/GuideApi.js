@@ -75,7 +75,8 @@ export const getLiveCreated = async (
   });
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL + `/guides/${id}/live-events/owned?${queryParams}`,
+      process.env.NEXT_PUBLIC_URL +
+        `/guides/${id}/live-events/owned?${queryParams}`,
       requestOptions
     );
     const result = await responseValidator(response);
@@ -84,10 +85,12 @@ export const getLiveCreated = async (
     apiError(error);
   }
 };
-export const getQuickReads = async (id,
+export const getQuickReads = async (
+  id,
   page,
   sortOrder = "desc",
-  search = "") => {
+  search = ""
+) => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + getToken());
 
@@ -105,7 +108,8 @@ export const getQuickReads = async (id,
   });
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL + `/guides/${id}/quick-reads/owned?${queryParams}`,
+      process.env.NEXT_PUBLIC_URL +
+        `/guides/${id}/quick-reads/owned?${queryParams}`,
       requestOptions
     );
     const result = await responseValidator(response);
@@ -115,10 +119,7 @@ export const getQuickReads = async (id,
   }
 };
 
-export const getContent = async (id,
-  page,
-  sortOrder = "desc",
-  search = "") => {
+export const getContent = async (id, page, sortOrder = "desc", search = "") => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + getToken());
 
@@ -147,10 +148,12 @@ export const getContent = async (id,
   }
 };
 
-export const guideSessionBooked = async (id,
+export const guideSessionBooked = async (
+  id,
   page,
   sortOrder = "desc",
-  search = "") => {
+  search = ""
+) => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + getToken());
 
@@ -168,7 +171,8 @@ export const guideSessionBooked = async (id,
   });
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL + `/guides/${id}/guide-session-bookings?${queryParams}`,
+      process.env.NEXT_PUBLIC_URL +
+        `/guides/${id}/guide-session-bookings?${queryParams}`,
       requestOptions
     );
     const result = await responseValidator(response);
@@ -305,6 +309,24 @@ export const getGuideBookingsData = async (
         `/guides/${id}/guide-session-bookings?type=completed&${queryParams}`,
       requestOptions
     );
+
+    const result = await responseValidator(response);
+    return result;
+  } catch (error) {
+    apiError(error);
+  }
+};
+export const getGuideByID = async (id) => {
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
+
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+  try {
+    const response = await fetch(url + `/guides/${id}`, requestOptions);
 
     const result = await responseValidator(response);
     return result;

@@ -24,13 +24,12 @@ function Page({ params }) {
   const handleSearch = (term) => {
     setSearchTerm(term);
 
-   
     setCurrentPage(1);
     // Fetch filtered data based on search term
   };
   const fetchData = async (page) => {
     setLoading(true);
-    setData([])
+    setData([]);
     const result = await getListenedAudio(users, page, sort, searchTerm);
     if (result.status) {
       console.log(result.data.results);
@@ -135,11 +134,13 @@ function Page({ params }) {
               ))}
           </div>
         </div>
-        <RobinPagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
+        {data.length > 0 && (
+          <RobinPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        )}
       </div>
     </div>
   );

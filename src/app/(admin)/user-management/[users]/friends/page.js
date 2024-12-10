@@ -37,6 +37,8 @@ function Page({ params }) {
     if (result.status) {
       console.log(result.data.results);
       setData(result.data.results);
+      setTotalPages(result.data.totalPages);
+
     } else {
       console.error(result.message);
     }
@@ -133,11 +135,14 @@ function Page({ params }) {
               })}
           </div>
         </div>
-        <RobinPagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />{" "}
+        {data.length > 0 && (
+  <RobinPagination
+    currentPage={currentPage}
+    totalPages={totalPages}
+    onPageChange={setCurrentPage}
+  />
+)}
+
       </div>
     </div>
   );
