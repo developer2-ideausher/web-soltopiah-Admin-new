@@ -31,10 +31,12 @@ function Page({ params }) {
   const [posts, setPosts] = useState([]);
   const [repliesMap, setRepliesMap] = useState({});
   const [repliesLoadingMap, setRepliesLoadingMap] = useState({});
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState({});
   const [commentsId, setCommentsId] = useState("");
-  const [currentReplyPage, setCurrentReplyPage] = useState(1);
-  const [totalReplyPages, setTotalReplyPages] = useState(1);
+  const [pagination, setPagination] = useState({
+    comments: {}, // postId: { currentPage, totalPages }
+    replies: {}, // commentId: { currentPage, totalPages }
+  });
   const [currentCommentPage, setCurrentCommentPage] = useState(1);
   const [totalCommentPages, setTotalCommentPages] = useState(1);
   const [repliesContent, setRepliesContent] = useState("");
@@ -81,8 +83,16 @@ function Page({ params }) {
             ? result.data.results
             : [...(prev[id] || []), ...result.data.results],
       }));
-      setCurrentReplyPage(result.data.page);
-      setTotalReplyPages(result.data.totalPages);
+      setPagination((prev) => ({
+        ...prev,
+        replies: {
+          ...prev.replies,
+          [id]: {
+            currentPage: result.data.page,
+            totalPages: result.data.totalPages,
+          },
+        },
+      }));
     } else {
       console.error(result.message);
       toast.error(result.message || "Failed to fetch replies.");
@@ -90,22 +100,29 @@ function Page({ params }) {
 
     setRepliesLoadingMap((prev) => ({ ...prev, [id]: false }));
   };
-  const fetchCommentData = async (chdetailsId, page) => {
+  const fetchCommentData = async (chdetailsId, page = 1) => {
     setCommentLoading(chdetailsId);
     const result = await commentApi(chdetailsId, page);
 
     if (result.status) {
-      console.log(result.data.results);
-      if (page === 1) {
-        setComments(result.data.results); // If it's the first page, reset comments
-      } else {
-        setComments((prevComments) => [
-          ...prevComments,
-          ...result.data.results,
-        ]); // If it's not the first page, append the new comments
-      }
-      setCurrentCommentPage(result.data.page);
-      setTotalCommentPages(result.data.totalPages);
+      setComments((prevComments) => ({
+        ...prevComments,
+        [chdetailsId]:
+          page === 1
+            ? result.data.results
+            : [...(prevComments[chdetailsId] || []), ...result.data.results],
+      }));
+
+      setPagination((prev) => ({
+        ...prev,
+        comments: {
+          ...prev.comments,
+          [chdetailsId]: {
+            currentPage: result.data.page,
+            totalPages: result.data.totalPages,
+          },
+        },
+      }));
     } else {
       console.error(result.message);
       toast.error(result.message || "Failed to fetch comments.");
@@ -120,7 +137,7 @@ function Page({ params }) {
       toast.success("Replied successfully");
       setRepliesContent("");
       fetchReplyData(id, 1);
-      fetchCommentData(showSection);
+      fetchCommentData(showSection, 1);
     } else {
       console.error(result.message);
       toast.error(result.message || "Failed to reply.");
@@ -134,11 +151,12 @@ function Page({ params }) {
     if (result.status) {
       toast.success("Comment created successfully");
       setPostComment("");
-      setCurrentCommentPage(1)
+      setCurrentCommentPage(1);
       fetchData(chdetails, day);
-      fetchCommentData(id,1);
+      fetchCommentData(id, 1);
     } else {
       console.error(result.message);
+      toast.error(result.message || "");
     }
 
     setSmallCommentLoading(false);
@@ -201,21 +219,25 @@ function Page({ params }) {
     //   setLoading(false);
     // }
   };
-  const handleDeleteComment = async (id) => {
+  const handleDeleteComment = async (postId, commentId) => {
     toast.error("Deleting");
 
     // setLoading(true);
 
-    const result = await deleteComment(id);
+    const result = await deleteComment(commentId);
 
     if (result.status) {
       fetchData(chdetails, day);
-      setComments((prevPosts) =>
-        prevPosts.filter((comment) => comment._id !== id)
-      );
+      setComments((prevComments) => ({
+        ...prevComments,
+        [postId]: prevComments[postId]
+          ? prevComments[postId].filter((comment) => comment._id !== commentId)
+          : [],
+      }));
       toast.success("Comment deleted successfully");
     } else {
       console.error(result.message);
+      toast.error(result.message || "");
     }
     // setLoading(false);
   };
@@ -260,9 +282,9 @@ function Page({ params }) {
         </div>
       )}
       {posts &&
-        posts.map((item, index) => (
+        posts.map((post, index) => (
           <div
-            key={item._id || index}
+            key={post._id || index}
             className="flex flex-col gap-3 bg-white p-4 rounded-md"
           >
             <div className="flex flex-row items-center justify-between">
@@ -275,10 +297,10 @@ function Page({ params }) {
                 <button
                   className="cursor-pointer"
                   onClick={() => {
-                    if (showEditSection === item._id) {
+                    if (showEditSection === post._id) {
                       setShowEditSection("");
                     } else {
-                      setShowEditSection(item._id);
+                      setShowEditSection(post._id);
                     }
                   }}
                 >
@@ -287,7 +309,7 @@ function Page({ params }) {
 
                 <button
                   className="cursor-pointer"
-                  onClick={() => handleDeleteForumPost(item._id)}
+                  onClick={() => handleDeleteForumPost(post._id)}
                 >
                   <RedRecycle />
                 </button>
@@ -296,16 +318,16 @@ function Page({ params }) {
             {/* {showEditSection !== item._id && (
               
             )} */}
-            {showEditSection === item._id ? (
+            {showEditSection === post._id ? (
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
-                  handleEditPost(item._id, item.content);
+                  handleEditPost(post._id, post.content);
                 }}
                 className="flex gap-10"
               >
                 <input
-                  value={item.content}
+                  value={post.content}
                   // onChange={(e) =>
                   //   setPosts((prevPosts) =>
                   //     prevPosts.map((post) =>
@@ -328,18 +350,18 @@ function Page({ params }) {
               </form>
             ) : (
               <p className="text-base font-sans font-semibold text-userblack w-[94%]">
-                {item.content}
+                {post.content}
               </p>
             )}
 
             <div className="flex flex-row items-center gap-3">
               <button
                 onClick={() => {
-                  if (showSection === item._id) {
+                  if (showSection === post._id) {
                     setShowSection("");
                   } else {
-                    setShowSection(item._id);
-                    fetchCommentData(item._id);
+                    setShowSection(post._id);
+                    fetchCommentData(post._id, 1);
                   }
                 }}
                 className="text-[#3090E9] text-sm font-sans font-semibold uppercase"
@@ -349,33 +371,35 @@ function Page({ params }) {
 
               <button
                 onClick={() => {
-                  if (showSection === item._id) {
+                  if (showSection === post._id) {
                     setShowSection("");
+                    setCurrentCommentPage(1);
+                    setTotalCommentPages(1);
                   } else {
-                    setShowSection(item._id);
-                    fetchCommentData(item._id);
+                    setShowSection(post._id);
+                    fetchCommentData(post._id);
                   }
                 }}
                 className="flex flex-row items-center gap-1"
               >
                 <p className="text-sm font-sans font-semibold text-[#AE445A]">
-                  {item.commentsCount} comments
+                  {post.commentsCount} comments
                 </p>
 
                 <RedDown />
               </button>
               <div className="flex flex-row items-center gap-1">
                 <p className="text-xs font-sans font-normal text-[#08A03C]">
-                  {item.likesCount + " "}likes
+                  {post.likesCount + " "}likes
                 </p>
                 <GreenThumbsUp />
               </div>
             </div>
-            {item._id === showSection && (
+            {post._id === showSection && (
               <form
                 onSubmit={(e) => {
                   e.preventDefault(); // Prevent default form submission
-                  handleCommentPost(item._id); // Call the API with the specific comment ID
+                  handleCommentPost(post._id); // Call the API with the specific comment ID
                 }}
                 className="flex items-center justify-center gap-10 mb-5"
               >
@@ -395,52 +419,58 @@ function Page({ params }) {
               </form>
             )}
             {/* Loader for specific post */}
-            {item._id === commentLoading && (
+            {post._id === commentLoading && (
               <div className="flex justify-center items-center p-10 w-full">
                 <LoaderLarge />
               </div>
             )}
-            {item._id === showSection && (
+            {post._id === showSection && (
               <div className="flex flex-col border-t ml-20 mt-4 max-h-96 overflow-y-scroll mr-4">
-                {comments.length > 0 ? (
-                  comments.map((item) => (
-                    <div key={item._id} className="flex flex-col gap-3 mb-4">
+                {comments[post._id] && comments[post._id].length > 0 ? (
+                  comments[post._id].map((comment) => (
+                    <div key={comment._id} className="flex flex-col gap-3 mb-4">
                       <div className="flex items-center justify-between">
                         <div className="flex items-end gap-3">
                           <p className="text-2xl font-sans font-semibold text-[#414554]">
-                            {item.author?.__t === "Admin"
+                            {comment.author?.__t === "Admin"
                               ? "Soltopiah"
-                              : item.author?.firstName +
+                              : comment.author?.firstName +
                                   " " +
-                                  item.author?.lastName || "--"}
+                                  comment.author?.lastName || "--"}
                           </p>
                           <p className="text-[#888A94] font-sans font-xs font-semibold">
-                            {dayjs(item.createdAt).format("DD/MM/YYYY, HH:mm")}
+                            {dayjs(comment.createdAt).format(
+                              "DD/MM/YYYY, HH:mm"
+                            )}
                           </p>
                         </div>
 
-                        <button onClick={() => handleDeleteComment(item._id)}>
+                        <button
+                          onClick={() =>
+                            handleDeleteComment(post._id, comment._id)
+                          }
+                        >
                           <MaroonDustbin />{" "}
                         </button>
                       </div>
                       <p className="text-base font-semibold text-[#414554] font-sans">
-                        {item.content}
+                        {comment.content}
                       </p>
                       <button
                         onClick={() => {
                           if (commentsId) {
                             setCommentsId("");
                           } else {
-                            setCommentsId(item._id);
-                            console.log(item._id);
-                            fetchReplyData(item._id);
+                            setCommentsId(comment._id);
+                            console.log(comment._id);
+                            fetchReplyData(comment._id,1);
                           }
                         }}
                         className="flex justify-start text-[#3090E9] font-sans font-semibold text-base"
                       >
-                        {item.repliesCount} Replies
+                        {comment.repliesCount} Replies
                       </button>
-                      {commentsId === item._id && (
+                      {commentsId === comment._id && (
                         <>
                           <form
                             onSubmit={(e) => {
@@ -465,18 +495,18 @@ function Page({ params }) {
                               {smallReplyLoading ? <LoaderSmall /> : "Save"}
                             </button>
                           </form>
-                          {repliesLoadingMap[item._id] && (
+                          {repliesLoadingMap[comment._id] && (
                             <div className="flex justify-center items-center p-10 w-full">
                               <LoaderLarge />
                             </div>
                           )}
                           <div className="max-h-64 overflow-y-scroll">
-                            {repliesMap[item._id]?.length === 0 ? (
+                            {repliesMap[comment._id]?.length === 0 ? (
                               <p className="text-sm text-[#888A94]">
                                 No replies yet.
                               </p>
                             ) : (
-                              repliesMap[item._id]?.map((replyItem) => (
+                              repliesMap[comment._id]?.map((replyItem) => (
                                 <div
                                   key={replyItem._id}
                                   className="flex mb-3 gap-3"
@@ -504,15 +534,20 @@ function Page({ params }) {
                                 </div>
                               ))
                             )}
-                            {currentReplyPage < totalReplyPages && (
+                            {pagination.replies[comment._id]?.currentPage <
+                              pagination.replies[comment._id]?.totalPages && (
                               <button
                                 onClick={() =>
-                                  fetchReplyData(item._id, currentReplyPage + 1)
+                                  fetchReplyData(
+                                    comment._id,
+                                    pagination.replies[comment._id]
+                                      .currentPage + 1
+                                  )
                                 }
                                 className="mt-4 p-2 bg-gray-200 text-center w-1/12 rounded-md"
-                                disabled={repliesLoadingMap[item._id]}
+                                disabled={repliesLoadingMap[comment._id]}
                               >
-                                {repliesLoadingMap[item._id]
+                                {repliesLoadingMap[comment._id]
                                   ? "Loading..."
                                   : "Load More"}
                               </button>
@@ -525,10 +560,14 @@ function Page({ params }) {
                 ) : (
                   <p className="text-sm text-[#888A94]">No comments yet.</p>
                 )}
-                {currentCommentPage < totalCommentPages && (
+                {pagination.comments[post._id]?.currentPage <
+                  pagination.comments[post._id]?.totalPages && (
                   <button
                     onClick={() =>
-                      fetchCommentData(item._id, currentCommentPage + 1)
+                      fetchCommentData(
+                        post._id,
+                        pagination.comments[post._id].currentPage + 1
+                      )
                     }
                     className="mt-4 p-2 bg-gray-200 text-center w-1/12 rounded-md"
                     disabled={commentLoading}
