@@ -154,7 +154,7 @@ function Page() {
         <div className="flex flex-col">
           <SearchBar
            filterArray={[
-            { value: "All", label: "All" },
+            { value: "", label: "All" },
             { value: "Guide", label: "Guide" },
             { value: "NormalUser", label: "Users" },
           ]}
@@ -186,16 +186,21 @@ function Page() {
                 <LoaderLarge />
               </div>
             )}
-            {!loading &&
-              notifcationData &&
-              notifcationData.length === 0 &&
-              searchTerm && (
-                <div className="flex justify-center items-center bg-white p-10 w-full">
+            {!loading && notifcationData && notifcationData.length === 0 && (
+              <div className="flex justify-center items-center bg-white p-10 w-full">
+                {searchTerm || filter ? (
                   <p className="text-gray-500 text-sm">
-                    No data found for {searchTerm}.
+                    No data found
+                    {searchTerm && ` for "${searchTerm}"`}
+                    {filter && ` with filter "${filter}"`}.
                   </p>
-                </div>
-              )}
+                ) : (
+                  <p className="text-gray-500 text-sm">
+                    No data found.
+                  </p>
+                )}
+              </div>
+            )}
             <div className="flex flex-col bg-white min-w-fit w-full ">
               {notifcationData &&
                 notifcationData.map((item, index) => (
@@ -226,11 +231,13 @@ function Page() {
                 ))}
             </div>
           </div>
-          <RobinPagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />{" "}
+          {notifcationData && notifcationData.length > 0 && (
+            <RobinPagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          )}
         </div>
       </div>
     </>

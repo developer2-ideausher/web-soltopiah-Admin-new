@@ -31,8 +31,8 @@ function Page({ params }) {
   };
   const fetchData = async (page) => {
     setLoading(true);
-    setData([])
-    const result = await guideSessionBooked(info,page, sort, searchTerm);
+    setData([]);
+    const result = await guideSessionBooked(info, page, sort, searchTerm);
     if (result.status) {
       console.log(result.data.results);
       setData(result.data.results);
@@ -71,13 +71,15 @@ function Page({ params }) {
         </p>
       </div>
       <div className="flex flex-col">
-        <SearchBar  name={"Type"}
+        <SearchBar
+          name={"Type"}
           handleSort={sort}
           setHandleSort={setSort}
           setHandleFilter={""}
           handleSearch={handleSearch}
           showAddButton={false}
-          showFilters={false} />
+          showFilters={false}
+        />
         <div className="w-full overflow-x-scroll booking-table-wrapper">
           <div className="bg-[#F0F2F5] min-w-fit w-full ">
             <div className="items-center grid grid-cols-sessionTable p-4 justify-between">
@@ -111,12 +113,12 @@ function Page({ params }) {
             </div>
           </div>
           {loading && (
-              <div className="flex justify-center items-center bg-white">
-                <LoaderLarge />
-              </div>
-            )}
+            <div className="flex justify-center items-center bg-white">
+              <LoaderLarge />
+            </div>
+          )}
 
-{!loading &&
+          {!loading &&
             data.length === 0 &&
             (searchTerm ? (
               <div className="flex justify-center items-center bg-white p-10 w-full">
@@ -132,32 +134,38 @@ function Page({ params }) {
           <div className="flex flex-col bg-white min-w-fit w-full ">
             {data &&
               data.map((item, index) => (
-                <div key={item._id || index} className=" grid grid-cols-sessionTable border-b border-[#E9E9EC] items-center justify-between p-4">
+                <div
+                  key={item._id || index}
+                  className=" grid grid-cols-sessionTable border-b border-[#E9E9EC] items-center justify-between p-4"
+                >
                   <span className="text-userblack text-base font-semibold font-sans">
                     32861
                   </span>
-                  <span title={item._id} className="text-userblack text-base font-semibold font-sans">
+                  <span
+                    title={item._id}
+                    className="text-userblack text-base font-semibold font-sans"
+                  >
                     {item._id.slice(-8)}
                   </span>
 
                   <span className="text-base font-sans font-semibold text-userblack">
-                    {item.user?.firstName}  {item.user.lastName?item.user.lastName:""}
+                    {item.user?.firstName}{" "}
+                    {item.user.lastName ? item.user.lastName : ""}
                   </span>
                   <span className="text-base font-sans font-semibold text-userblack">
                     {dayjs(item.bookingDate).format("DD/MM/YYYY")}
                   </span>
                   <span className="text-base font-sans font-semibold text-userblack">
-                    {(item.startTime)}
+                    {item.startTime}
                   </span>
                   <span className="text-base font-sans font-semibold text-userblack">
-                   {item.cost == 0 ? "Free" : "Paid"}
+                    {item.cost == 0 ? "Free" : "Paid"}
                   </span>
                   <span className="text-base font-sans font-semibold text-userblack">
-                  {"$"} {item.cost == 0 ? "--" : item.cost}
-
+                    {"$"} {item.cost == 0 ? "--" : item.cost}
                   </span>
                   <span className="text-base font-sans font-semibold text-userblack">
-                  {getSessionStatus(
+                    {getSessionStatus(
                       item.bookingDate,
                       item.startTime,
                       item.endTime
@@ -170,15 +178,14 @@ function Page({ params }) {
               ))}
           </div>
         </div>
-        {data.length <= 0 ? (
-          ""
-        ) : (
+        {data && data.length > 0 && (
           <RobinPagination
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={setCurrentPage}
           />
-        )}{" "}      </div>
+        )}{" "}
+      </div>
     </div>
   );
 }

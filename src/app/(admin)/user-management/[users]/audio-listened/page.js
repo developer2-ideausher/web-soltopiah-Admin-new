@@ -134,7 +134,7 @@ function Page({ params }) {
               ))}
           </div>
         </div>
-        {data.length > 0 && (
+        {data && data.length > 0 && (
           <RobinPagination
             currentPage={currentPage}
             totalPages={totalPages}

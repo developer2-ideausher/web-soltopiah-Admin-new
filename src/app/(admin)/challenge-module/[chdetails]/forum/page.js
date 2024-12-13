@@ -29,15 +29,19 @@ import { truncateDescription } from "@/Utilities/helper";
 function Page({ params }) {
   const router = useRouter();
   const [posts, setPosts] = useState([]);
-  const [replies, setReplies] = useState([]);
+  const [repliesMap, setRepliesMap] = useState({});
+  const [repliesLoadingMap, setRepliesLoadingMap] = useState({});
   const [comments, setComments] = useState([]);
   const [commentsId, setCommentsId] = useState("");
-  const [repliesId, setRepliesId] = useState("");
+  const [currentReplyPage, setCurrentReplyPage] = useState(1);
+  const [totalReplyPages, setTotalReplyPages] = useState(1);
+  const [currentCommentPage, setCurrentCommentPage] = useState(1);
+  const [totalCommentPages, setTotalCommentPages] = useState(1);
   const [repliesContent, setRepliesContent] = useState("");
   const [showSection, setShowSection] = useState(false);
   const [showEditSection, setShowEditSection] = useState(null);
   const [showReply, setShowReply] = useState(false);
-  const [postComment, setPostComment] = useState([]);
+  const [postComment, setPostComment] = useState("");
   const [postContent, setPostContent] = useState("");
   const [loading, setLoading] = useState(false);
   const [commentLoading, setCommentLoading] = useState(null);
@@ -64,29 +68,47 @@ function Page({ params }) {
     setLoading(false);
   };
 
-  const fetchReplyData = async (id) => {
-    setRepliesLoading(true);
-    setReplies([]);
-    const result = await getReplies(id);
+  const fetchReplyData = async (id, page) => {
+    setRepliesLoadingMap((prev) => ({ ...prev, [id]: true }));
+    const result = await getReplies(id, page);
 
     if (result.status) {
       console.log(result.data.results);
-      setReplies(result.data.results);
+      setRepliesMap((prev) => ({
+        ...prev,
+        [id]:
+          page === 1
+            ? result.data.results
+            : [...(prev[id] || []), ...result.data.results],
+      }));
+      setCurrentReplyPage(result.data.page);
+      setTotalReplyPages(result.data.totalPages);
     } else {
       console.error(result.message);
+      toast.error(result.message || "Failed to fetch replies.");
     }
 
-    setRepliesLoading(false);
+    setRepliesLoadingMap((prev) => ({ ...prev, [id]: false }));
   };
-  const fetchCommentData = async (chdetailsId) => {
+  const fetchCommentData = async (chdetailsId, page) => {
     setCommentLoading(chdetailsId);
-    const result = await commentApi(chdetailsId);
+    const result = await commentApi(chdetailsId, page);
 
     if (result.status) {
       console.log(result.data.results);
-      setComments(result.data.results);
+      if (page === 1) {
+        setComments(result.data.results); // If it's the first page, reset comments
+      } else {
+        setComments((prevComments) => [
+          ...prevComments,
+          ...result.data.results,
+        ]); // If it's not the first page, append the new comments
+      }
+      setCurrentCommentPage(result.data.page);
+      setTotalCommentPages(result.data.totalPages);
     } else {
       console.error(result.message);
+      toast.error(result.message || "Failed to fetch comments.");
     }
 
     setCommentLoading(null);
@@ -97,10 +119,11 @@ function Page({ params }) {
     if (result.status) {
       toast.success("Replied successfully");
       setRepliesContent("");
-      fetchReplyData(id);
+      fetchReplyData(id, 1);
       fetchCommentData(showSection);
     } else {
       console.error(result.message);
+      toast.error(result.message || "Failed to reply.");
     }
 
     SetSmallReplyLoading(false);
@@ -111,7 +134,9 @@ function Page({ params }) {
     if (result.status) {
       toast.success("Comment created successfully");
       setPostComment("");
+      setCurrentCommentPage(1)
       fetchData(chdetails, day);
+      fetchCommentData(id,1);
     } else {
       console.error(result.message);
     }
@@ -121,7 +146,7 @@ function Page({ params }) {
 
   const handleCreatePost = async (chdetails, numberDay) => {
     setSmallLoading(true);
-    setPosts([]);
+    // setPosts([]);
     const result = await createPost(chdetails, numberDay, postContent);
     if (result.status) {
       fetchData(chdetails, day);
@@ -129,6 +154,7 @@ function Page({ params }) {
       setPostContent("");
     } else {
       console.error(result.message);
+      toast.error(result.message);
     }
 
     setSmallLoading(false);
@@ -155,8 +181,7 @@ function Page({ params }) {
   // };
   const handleDeleteForumPost = async (postId) => {
     toast.error("Deleting");
-
-    setLoading(true);
+    // setLoading(true);
 
     const result = await deleteForumPost(postId);
 
@@ -165,8 +190,9 @@ function Page({ params }) {
       toast.success("Post deleted successfully");
     } else {
       console.error(result.message);
+      toast.error(result.message);
     }
-    setLoading(false);
+    // setLoading(false);
 
     // catch (error) {
     //   console.error("Error deleting post:", error);
@@ -183,6 +209,7 @@ function Page({ params }) {
     const result = await deleteComment(id);
 
     if (result.status) {
+      fetchData(chdetails, day);
       setComments((prevPosts) =>
         prevPosts.filter((comment) => comment._id !== id)
       );
@@ -374,7 +401,7 @@ function Page({ params }) {
               </div>
             )}
             {item._id === showSection && (
-              <div className="flex flex-col border-t ml-20 mt-4">
+              <div className="flex flex-col border-t ml-20 mt-4 max-h-96 overflow-y-scroll mr-4">
                 {comments.length > 0 ? (
                   comments.map((item) => (
                     <div key={item._id} className="flex flex-col gap-3 mb-4">
@@ -438,44 +465,76 @@ function Page({ params }) {
                               {smallReplyLoading ? <LoaderSmall /> : "Save"}
                             </button>
                           </form>
-                          {repliesLoading && (
-                            <div className="flex justify-center  items-center p-10 w-full ">
+                          {repliesLoadingMap[item._id] && (
+                            <div className="flex justify-center items-center p-10 w-full">
                               <LoaderLarge />
                             </div>
                           )}
-                          {replies &&
-                            replies.map((item, index) => (
-                              <div
-                                key={item._id || index}
-                                className="flex  gap-3"
-                              >
-                                <p className="ml-8 font-sans font-semibold text-userblack text-base ">
-                                  {item.author?.__t === "Admin"
-                                    ? "Soltopiah"
-                                    : item.author?.firstName || "--"}{" "}
-                                  Replied :
-                                </p>
-                                <div className="flex items-center gap-4">
-                                  <p
-                                    title={item.content}
-                                    className=" font-sans font-normal text-userblack text-base break-all"
-                                  >
-                                    {truncateDescription(item.content)}
+                          <div className="max-h-64 overflow-y-scroll">
+                            {repliesMap[item._id]?.length === 0 ? (
+                              <p className="text-sm text-[#888A94]">
+                                No replies yet.
+                              </p>
+                            ) : (
+                              repliesMap[item._id]?.map((replyItem) => (
+                                <div
+                                  key={replyItem._id}
+                                  className="flex mb-3 gap-3"
+                                >
+                                  <p className="ml-8 font-sans font-semibold text-userblack text-base">
+                                    {replyItem.author?.__t === "Admin"
+                                      ? "Soltopiah"
+                                      : replyItem.author?.firstName ||
+                                        "--"}{" "}
+                                    Replied :
                                   </p>
-                                  <p className="font-sans font-semibold text-gray-500 text-xs ">
-                                    {dayjs(item.createdAt).format(
-                                      "DD/MM/YYYY , HH:mm"
-                                    )}
-                                  </p>
+                                  <div className="flex items-center gap-4">
+                                    <p
+                                      title={replyItem.content}
+                                      className=" font-sans font-normal text-userblack text-base break-all"
+                                    >
+                                      {truncateDescription(replyItem.content)}
+                                    </p>
+                                    <p className="font-sans font-semibold text-gray-500 text-xs">
+                                      {dayjs(replyItem.createdAt).format(
+                                        "DD/MM/YYYY , HH:mm"
+                                      )}
+                                    </p>
+                                  </div>
                                 </div>
-                              </div>
-                            ))}
+                              ))
+                            )}
+                            {currentReplyPage < totalReplyPages && (
+                              <button
+                                onClick={() =>
+                                  fetchReplyData(item._id, currentReplyPage + 1)
+                                }
+                                className="mt-4 p-2 bg-gray-200 text-center w-1/12 rounded-md"
+                                disabled={repliesLoadingMap[item._id]}
+                              >
+                                {repliesLoadingMap[item._id]
+                                  ? "Loading..."
+                                  : "Load More"}
+                              </button>
+                            )}
+                          </div>
                         </>
                       )}
                     </div>
                   ))
                 ) : (
                   <p className="text-sm text-[#888A94]">No comments yet.</p>
+                )}
+                {currentCommentPage < totalCommentPages && (
+                  <button
+                    onClick={() =>
+                      fetchCommentData(item._id, currentCommentPage + 1)
+                    }
+                    className="mt-4 p-2 bg-gray-200 text-center w-1/12 rounded-md"
+                    disabled={commentLoading}
+                  >
+                    {commentLoading ? "Loading..." : "Load More"}
+                  </button>
                 )}
               </div>
             )}

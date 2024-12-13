@@ -2,7 +2,7 @@
 import FilterBar from "@/components/FilterBar";
 import SingleCM from "@/components/SingleCM";
 import SingleEM from "@/components/SingleEM";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import Export from "../../../../icons/Export";
 import EarningsChart from "@/components/DashBoardNew/EarrningsChart";
 import Star from "../../../../icons/Star";
@@ -20,9 +20,11 @@ import RevenueChart from "@/components/RevenueChart";
 import { truncateDescription, truncateName } from "@/Utilities/helper";
 import SearchBar from "@/components/AddSearchBar";
 import html2canvas from "html2canvas";
+import BarChart from "@/components/DashBoardNew/BarChart";
 
 export default function Page() {
   const [loading, setLoading] = useState(false);
+  const [guideLoading, setGuideLoading] = useState(false);
   const [table, setTable] = useState("a");
   const [data, setData] = useState([]);
   const [statsData, setStatsData] = useState([]);
@@ -38,17 +40,17 @@ export default function Page() {
   const handleExport = async () => {
     const element = document.getElementById("right-side"); // or any other element you want to capture
     const titleElement = document.getElementById("titleName");
-  const titleText = titleElement ? titleElement.textContent.trim() : "Record";
+    const titleText = titleElement ? titleElement.textContent.trim() : "Record";
     html2canvas(element, {
       useCORS: true,
       logging: true,
       renderer: {
-        type: 'canvas',
+        type: "canvas",
         quality: 1,
       },
-    }).then(canvas => {
-      const imageDataURL = canvas.toDataURL('image/png');
-      const link = document.createElement('a');
+    }).then((canvas) => {
+      const imageDataURL = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
       link.download = `${titleText}-${dayjs().format("DD-MM-YYYY")}.png`;
       link.href = imageDataURL;
       link.click();
@@ -63,12 +65,16 @@ export default function Page() {
       console.error(result.message);
     }
   };
+  const mapRevenueData = (chartData, id) => {
+    return (
+      chartData.earningsByRevenueSource?.find((item) => item._id === id)
+        ?.platformEarnings || 0
+    );
+  };
   const handleSearch = (term) => {
     setSearchTerm(term);
 
-    
     setCurrentPage(1);
-    
   };
   const fetchData = async (tableData, page) => {
     setLoading(true);
@@ -84,7 +90,7 @@ export default function Page() {
     setLoading(false);
   };
   const fetchGuideData = async () => {
-    setLoading(true);
+    setGuideLoading(true);
     setGuideData([]);
 
     const result = await getTopGuides();
@@ -94,7 +100,7 @@ export default function Page() {
     } else {
       console.error(result.message);
     }
-    setLoading(false);
+    setGuideLoading(false);
   };
   const fetchStatsData = async () => {
     setLoading(true);
@@ -117,17 +123,24 @@ export default function Page() {
         : "DonationRevenue";
     setCurrentPage(1);
     fetchData(tableData, currentPage);
+  }, [table, currentPage, sort, searchTerm, filter]);
+  useEffect(() => {
     fetchGuideData();
-    fetchChartData(timePeriod);
     fetchStatsData();
-  }, [table, currentPage, timePeriod, sort, searchTerm,filter]);
+  }, []);
+  useEffect(() => {
+    fetchChartData(timePeriod);
+  }, [timePeriod]);
   return (
     <div className="w-full flex flex-col font-sans">
       <div className="w-full flex justify-between items-center">
         <h2 id="titleName" className="text-xl2 font-semibold text-[#17161D]">
           Earning Management
         </h2>
-        <button onClick={handleExport} className="bg-white border border-[#DCDBE1] py-[10px] px-3 rounded-lg flex flex-row items-center gap-2">
+        <button
+          onClick={handleExport}
+          className="bg-white border border-[#DCDBE1] py-[10px] px-3 rounded-lg flex flex-row items-center gap-2"
+        >
           <Export />
           <p className="text-sm font-sans font-normal text-userblack">Export</p>
         </button>
@@ -136,7 +149,7 @@ export default function Page() {
         <div className="bg-white rounded-xl px-5 py-4">
           <h6 className="font-normal text-[#606B6C] text-xs">Total Revenue</h6>
           <h4 className="text-xl text-[#121616] font-bold mt-3">
-            {"$" + " " + statsData?.totalPlatformEarnings || "Na"}
+            {"$" + " " + (statsData?.totalPlatformEarnings || 0)}
           </h4>
         </div>
         {/* <div className="bg-white rounded-xl px-5 py-4">
@@ -170,7 +183,7 @@ export default function Page() {
         </div>
       </div>
       <div className="flex  justify-between gap-10 mt-6">
-        {/* <div className="lg:w-full xl:w-1/2 2xl:w-1/2 bg-white rounded-xl p-5 flex flex-col  gap-4">
+        <div className="lg:w-full xl:w-1/2 2xl:w-1/2 bg-white rounded-xl p-5 flex flex-col  gap-4">
           <div className="flex flex-row justify-between items-center ">
             <p className="text-base font-sans font-bold text-[#2A2D3E]">
               Earning Trends
@@ -187,37 +200,27 @@ export default function Page() {
           </div>
 
           <div className="w-full h-auto">
-            <RevenueChart
-              userData={chartData.SubscriptionRevenue || []}
-              guideData={chartData.GuideSessionBookingRevenue || []}
-              timePeriod={timePeriod}
+            <BarChart
+              guide={
+                mapRevenueData(chartData, "GuideSessionBookingRevenue") || 0
+              }
+              revenue={mapRevenueData(chartData, "DonationRevenue") || 0}
+              subscription={
+                mapRevenueData(chartData, "SubscriptionRevenue") || 0
+              }
             />
           </div>
-          <div className="flex flex-row justify-center gap-10">
-            <div className="gap-2 flex flex-row items-center">
-              <p className="border w-8 border-[#0F75BC] border-dashed"></p>
-              <p className="text-sm font-inter font-light text-[#121616]">
-                Subscriptions
-              </p>
-            </div>
-            <div className="gap-2 flex flex-row items-center">
-              <p className="border w-8 border-[#0F75BC] "></p>
-              <p className="text-sm font-inter font-light text-[#121616]">
-                Bookings
-              </p>
-            </div>
-          </div>
-        </div> */}
+        </div>
         <div className="lg:w-full xl:w-1/2 2xl:w-1/2 bg-white p-5 rounded-xl flex flex-col gap-6">
           <p className="text-deepBlue  text-base font-sans font-bold">
             Top 5 Guides
           </p>
-          {loading && (
+          {guideLoading && (
             <div className="flex justify-center items-center bg-white">
               <LoaderLarge />
             </div>
           )}
-          {!loading && guideData.length === 0 && (
+          {!guideLoading && guideData.length === 0 && (
             <div className="flex flex-col items-center justify-center mt-10 gap-4">
               <NoDataIcon />
               <p className="text-[#AE445A] text-base font-sans font-semibold">
@@ -276,7 +279,6 @@ export default function Page() {
       <div className="flex flex-col mt-5">
         {/* <SearchBar /> */}
         <SearchBar
-         
           name={"Type"}
           handleSort={sort}
           showFilters={false}
@@ -486,12 +488,13 @@ export default function Page() {
             </div>
           </div>
         )}
-        <RobinPagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-          disabled={loading}
-        />
+        {data && data.length > 0 && (
+          <RobinPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        )}
       </div>
     </div>
   );

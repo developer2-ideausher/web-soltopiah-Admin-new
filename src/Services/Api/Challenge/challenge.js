@@ -49,7 +49,7 @@ export const getChallengeForumPosts = async (id, day) => {
     return apiError(error);
   }
 };
-export const getReplies = async (id) => {
+export const getReplies = async (id,page=1) => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
@@ -58,9 +58,10 @@ export const getReplies = async (id) => {
     headers: myHeaders,
     redirect: "follow",
   };
+  console.log(page)
   try {
     const response = await fetch(
-      url + `/comments/${id}/replies`,
+      url + `/comments/${id}/replies?page=${page}&limit=10`,
       requestOptions
     );
 
@@ -113,7 +114,7 @@ export const deleteForumPost = async (id) => {
     return apiError(error);
   }
 };
-export const commentApi = async (id) => {
+export const commentApi = async (id,page=1) => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
@@ -126,7 +127,7 @@ export const commentApi = async (id) => {
     redirect: "follow",
   };
   try {
-    const response = await fetch(url + `/posts/${id}/comments`, requestOptions);
+    const response = await fetch(url + `/posts/${id}/comments?page=${page}&limit=10`, requestOptions);
 
     const result = await responseValidator(response);
     return result;

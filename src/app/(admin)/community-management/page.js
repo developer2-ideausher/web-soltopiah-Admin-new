@@ -27,10 +27,7 @@ function Page() {
   const handleSearch = (term) => {
     setSearchTerm(term);
 
-   
     setCurrentPage(1);
-   
-   
   };
   const fetchData = async (page) => {
     setLoading(true);
@@ -102,16 +99,19 @@ function Page() {
               <LoaderLarge />
             </div>
           )}
-          {!loading &&
-            communities &&
-            communities.length === 0 &&
-            searchTerm && (
-              <div className="flex justify-center items-center bg-white p-10 w-full">
+          {!loading && communities && communities.length === 0 && (
+            <div className="flex justify-center items-center bg-white p-10 w-full">
+              {searchTerm || filter ? (
                 <p className="text-gray-500 text-sm">
-                  No data found for {searchTerm}.
+                  No data found
+                  {searchTerm && ` for "${searchTerm}"`}
+                  {filter && ` with filter "${filter}"`}.
                 </p>
-              </div>
-            )}
+              ) : (
+                <p className="text-gray-500 text-sm">No data found.</p>
+              )}
+            </div>
+          )}
           <div className="flex flex-col bg-white min-w-fit w-full ">
             {communities &&
               communities.map((item, index) => (
@@ -160,11 +160,13 @@ function Page() {
               ))}
           </div>
         </div>
-        <RobinPagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
+        {communities && communities.length > 0 && (
+          <RobinPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        )}
       </div>
     </div>
   );

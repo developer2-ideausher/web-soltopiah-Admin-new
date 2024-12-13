@@ -43,7 +43,8 @@ export default function OTP({handler}) {
           value={input}
           onChange={(e) => handleInputChange(index, e.target.value)}
           ref={inputRefs.current[index]}
-          min="0" max="9"
+          min="0" max="1"
+          maxLength={1}
           className="rounded-lg w-full text-center outline bg-[#EEEEF6] outline-[#EDEDED] py-4 focus:outline-[#232946] outline-1"
         />
       ))} 

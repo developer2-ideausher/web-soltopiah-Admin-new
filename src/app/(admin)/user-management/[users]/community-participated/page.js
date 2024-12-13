@@ -25,9 +25,7 @@ function Page({ params }) {
   const handleSearch = (term) => {
     setSearchTerm(term);
 
-   
     setCurrentPage(1);
-    
   };
   const fetchData = async (page) => {
     setLoading(true);
@@ -153,14 +151,13 @@ function Page({ params }) {
               ))}
           </div>
         </div>
-        {data.length > 0 && (
-  <RobinPagination
-    currentPage={currentPage}
-    totalPages={totalPages}
-    onPageChange={setCurrentPage}
-  />
-)}
-
+        {data && data.length > 0 && (
+          <RobinPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        )}
       </div>
     </div>
   );

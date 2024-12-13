@@ -1,9 +1,14 @@
 import { getToken } from "@/Services/Cookie/userCookie";
-import { apiError, responseValidator, tokenValidator, url } from "@/Utilities/helper";
+import {
+  apiError,
+  responseValidator,
+  tokenValidator,
+  url,
+} from "@/Utilities/helper";
 
 export const getSubscriptionData = async () => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
   const requestOptions = {
     method: "GET",
@@ -25,7 +30,7 @@ export const createSubs = async (
   thumbnail
 ) => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
   const formdata = new FormData();
   formdata.append("displayName", displayName);
@@ -52,10 +57,10 @@ export const createSubs = async (
   }
 };
 
-export const patchSwitch = async (id,isActive) => {
+export const patchSwitch = async (id, isActive) => {
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
-  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
   const raw = JSON.stringify({
     isActive: isActive,
@@ -81,7 +86,7 @@ export const patchSwitch = async (id,isActive) => {
 
 export const getOneSubs = async (id) => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
   const requestOptions = {
     method: "GET",
@@ -98,7 +103,7 @@ export const getOneSubs = async (id) => {
 
 export const updateSubs = async (id, formData) => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
   // const formdata = new FormData();
   // formdata.append("thumbnail", fileInput.files[0], "[PROXY]");
@@ -108,12 +113,33 @@ export const updateSubs = async (id, formData) => {
 
   const requestOptions = {
     method: "PATCH",
-    headers: myHeaders, 
+    headers: myHeaders,
     body: formData,
     redirect: "follow",
   };
   try {
     const response = await fetch(url + `/subscriptions/${id}`, requestOptions);
+
+    return responseValidator(response);
+  } catch (error) {
+    apiError(error);
+  }
+};
+export const subsChartApi = async (type) => {
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
+
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+  try {
+    const response = await fetch(
+      url +
+        `/revenues/monthly-vs-yearly-subscription-revenue-chart?type=${type}`,
+      requestOptions
+    );
 
     return responseValidator(response);
   } catch (error) {

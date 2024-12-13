@@ -30,7 +30,7 @@ function Page({ params }) {
   };
   const fetchData = async (page) => {
     setLoading(true);
-    setData([])
+    setData([]);
     const result = await guideVideos(info, page, sort, searchTerm);
     if (result.status) {
       console.log(result.data.results);
@@ -122,10 +122,7 @@ function Page({ params }) {
                     {truncateName(item?.title)}
                   </span>
                   <div className="text-userblack font-sans w-[350px]  gap-2 font-normal text-base">
-                    <p>
-                      {truncateDescription(item?.description) ||
-                        "--Na--"}
-                    </p>
+                    <p>{truncateDescription(item?.description) || "--Na--"}</p>
                   </div>
                   <span className="text-userblack font-sans font-normal  text-base">
                     {item.category?.title}
@@ -134,7 +131,9 @@ function Page({ params }) {
                     {dayjs(item.createdAt).format("DD/MMYYYY")}
                   </span>
                   <span className="text-userblack font-sans font-normal  text-base">
-                    {truncateName(item.creator?.firstName+" "+item.creator?.lastName) || "NA"}
+                    {truncateName(
+                      item.creator?.firstName + " " + item.creator?.lastName
+                    ) || "NA"}
                   </span>
 
                   <div className="font-sans font-normal text-userblack text-base capitalize">
@@ -144,9 +143,7 @@ function Page({ params }) {
               ))}
           </div>
         </div>
-        {data.length <= 0 ? (
-          ""
-        ) : (
+        {data && data.length > 0 && (
           <RobinPagination
             currentPage={currentPage}
             totalPages={totalPages}

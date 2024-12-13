@@ -50,7 +50,7 @@ function Page({ params }) {
   const router = useRouter();
   const fetchData = async (page) => {
     setLoading(true);
-    setData([])
+    setData([]);
     const result = await getQuickReads(info, page, sort, searchTerm);
     if (result.status) {
       console.log(result.data.results);
@@ -73,14 +73,20 @@ function Page({ params }) {
           </div>
           <p className="text-xl2 font-semibold text-userblack font-sans">
             Guide Management -
-            <span id="titleName" className="text-[#AE445A]"> Quick reads</span>
+            <span id="titleName" className="text-[#AE445A]">
+              {" "}
+              Quick reads
+            </span>
           </p>
         </div>
         <div className="flex flex-row items-center gap-5">
           {/* <select className="py-[10px] px-3 border border-[#DCDBE1] rounded-lg text-sm font-sans font-normal text-userblack focus:outline-none">
             <option value="1">Feb 10 - Feb 16, 22</option>
           </select> */}
-          <button onClick={handleExport} className="bg-white border border-[#DCDBE1] py-[10px] px-3 rounded-lg flex flex-row items-center gap-2">
+          <button
+            onClick={handleExport}
+            className="bg-white border border-[#DCDBE1] py-[10px] px-3 rounded-lg flex flex-row items-center gap-2"
+          >
             <Export />
             <p className="text-sm font-sans font-normal text-userblack">
               Export
@@ -170,15 +176,13 @@ function Page({ params }) {
               </div>
             ))}
         </div>
-        {data.length <= 0 ? (
-          ""
-        ) : (
+        {data && data.length > 0 && (
           <RobinPagination
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={setCurrentPage}
           />
-        )}{" "}
+        )}
       </div>
     </div>
   );

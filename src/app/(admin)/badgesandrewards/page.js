@@ -26,8 +26,8 @@ function Page() {
 
   const handleSearch = (term) => {
     setSearchTerm(term);
-  
-   setCurrentPage(1)
+
+    setCurrentPage(1);
   };
   const fetchData = async (page) => {
     setLoading(true);
@@ -74,15 +74,14 @@ function Page() {
         Badges and Rewards
       </p>
       <div className="flex flex-col">
-        
-          <SearchBar
-            handleSort={sort}
-            setHandleSort={setSort}
-            handleSearch={handleSearch}
-            showAddButton={false}
-            showFilters={false}
-          />
-        
+        <SearchBar
+          handleSort={sort}
+          setHandleSort={setSort}
+          handleSearch={handleSearch}
+          showAddButton={false}
+          showFilters={false}
+        />
+
         <div className="w-full  booking-table-wrapper">
           <div className="bg-[#F0F2F5] min-w-fit w-full">
             <div className="items-center grid grid-cols-badgeTable justify-between p-4">
@@ -108,16 +107,15 @@ function Page() {
               <LoaderLarge />
             </div>
           )}
-          {!loading &&
-              badges &&
-              badges.length === 0 &&
-              searchTerm && (
-                <div className="flex justify-center items-center bg-white p-10 w-full">
-                  <p className="text-gray-500 text-sm">
-                    No data found for {searchTerm}.
-                  </p>
-                </div>
-              )}
+          {!loading && badges && badges.length === 0 && (
+            <div className="flex justify-center items-center bg-white p-10 w-full">
+              <p className="text-gray-500 text-sm">
+                {searchTerm
+                  ? `No data found for "${searchTerm}".`
+                  : "No data yet."}
+              </p>
+            </div>
+          )}
           <div>
             {badges &&
               badges.map((item, index) => (
@@ -169,11 +167,13 @@ function Page() {
               ))}
           </div>
         </div>
-        <RobinPagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
+        {badges && badges.length > 0 && (
+          <RobinPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        )}
       </div>
     </div>
   );

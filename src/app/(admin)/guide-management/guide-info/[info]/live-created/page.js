@@ -24,17 +24,17 @@ function Page({ params }) {
   const handleExport = async () => {
     const element = document.getElementById("right-side"); // or any other element you want to capture
     const titleElement = document.getElementById("titleName");
-  const titleText = titleElement ? titleElement.textContent.trim() : "Record";
+    const titleText = titleElement ? titleElement.textContent.trim() : "Record";
     html2canvas(element, {
       useCORS: true,
       logging: true,
       renderer: {
-        type: 'canvas',
+        type: "canvas",
         quality: 1,
       },
-    }).then(canvas => {
-      const imageDataURL = canvas.toDataURL('image/png');
-      const link = document.createElement('a');
+    }).then((canvas) => {
+      const imageDataURL = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
       link.download = `${titleText}-${dayjs().format("DD-MM-YYYY")}.png`;
       link.href = imageDataURL;
       link.click();
@@ -49,7 +49,7 @@ function Page({ params }) {
 
   const fetchData = async (info, page) => {
     setLoading(true);
-    setData([])
+    setData([]);
     console.log("key", info);
     const result = await getLiveCreated(info, page, sort, searchTerm);
     if (result.status) {
@@ -74,14 +74,19 @@ function Page({ params }) {
           </div>
           <p className="text-xl2 font-semibold text-userblack font-sans">
             Guide Management -
-            <span id="titleName" className="text-[#AE445A]">Live created</span>
+            <span id="titleName" className="text-[#AE445A]">
+              Live created
+            </span>
           </p>
         </div>
         <div className="flex flex-row items-center gap-5">
           {/* <select className="py-[10px] px-3 border border-[#DCDBE1] rounded-lg text-sm font-sans font-normal text-userblack focus:outline-none">
             <option value="1">Feb 10 - Feb 16, 22</option>
           </select> */}
-          <button onClick={handleExport} className="bg-white border border-[#DCDBE1] py-[10px] px-3 rounded-lg flex flex-row items-center gap-2">
+          <button
+            onClick={handleExport}
+            className="bg-white border border-[#DCDBE1] py-[10px] px-3 rounded-lg flex flex-row items-center gap-2"
+          >
             <Export />
             <p className="text-sm font-sans font-normal text-userblack">
               Export
@@ -153,10 +158,16 @@ function Page({ params }) {
                   <span className="text-userblack font-sans font-semibold text-sm">
                     {dayjs(item.startDate).format("hh:mm A")}
                   </span>
-                  <span title={item.title} className="text-userblack font-sans font-semibold text-sm capitalize">
+                  <span
+                    title={item.title}
+                    className="text-userblack font-sans font-semibold text-sm capitalize"
+                  >
                     {truncateName(item.title)}
                   </span>
-                  <span title={item.description} className="text-userblack font-sans font-semibold text-sm break-all">
+                  <span
+                    title={item.description}
+                    className="text-userblack font-sans font-semibold text-sm break-all"
+                  >
                     {truncateDescription(item.description)}
                   </span>
                   <span className="text-userblack font-sans  font-semibold text-sm capitalize">
@@ -166,15 +177,13 @@ function Page({ params }) {
               </div>
             ))}
         </div>
-        {data.length <= 0 ? (
-          ""
-        ) : (
+        {data && data.length > 0 && (
           <RobinPagination
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={setCurrentPage}
           />
-        )}{" "}
+        )}
       </div>
     </div>
   );

@@ -24,13 +24,11 @@ function Page({ params }) {
   const handleSearch = (term) => {
     setSearchTerm(term);
 
-    
     setCurrentPage(1);
-   
   };
   const fetchData = async (page) => {
     setLoading(true);
-    setData([])
+    setData([]);
     const result = await getCommunitiesCreated(users, page, sort, searchTerm);
     if (result.status) {
       console.log(result.data.results);
@@ -125,14 +123,13 @@ function Page({ params }) {
               ))}
           </div>
         </div>
-        {data.length > 0 && (
-  <RobinPagination
-    currentPage={currentPage}
-    totalPages={totalPages}
-    onPageChange={setCurrentPage}
-  />
-)}
-
+        {data && data.length > 0 && (
+          <RobinPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        )}
       </div>
     </div>
   );

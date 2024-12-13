@@ -36,7 +36,7 @@ export const getAllUsersApi = async (
     sortOrder,
     search: search.trim(),
     hasPremiumPlan: checkFilter(type),
-    isBlocked: type === "yes" ? true : undefined, // Only include `type` if it's truthy
+    isBlocked: type === "yes" ? true : type === "no" ? false : undefined,
   });
   try {
     const response = await fetch(url + `/users?${queryParams}`, requestOptions);

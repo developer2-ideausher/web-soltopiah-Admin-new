@@ -7,7 +7,11 @@ import Filter from "../../../../icons/Filter";
 import SearchIcon from "../../../../icons/SearchIcon";
 import EarningsChart from "@/components/DashBoardNew/EarrningsChart";
 import Link from "next/link";
-import { getSubscriptionData, patchSwitch } from "@/Services/Api/Subscriptions/Subs";
+import {
+  getSubscriptionData,
+  patchSwitch,
+  subsChartApi,
+} from "@/Services/Api/Subscriptions/Subs";
 import dayjs from "dayjs";
 import { Switch } from "@mui/material";
 import LoaderLarge from "@/components/LoaderLarge";
@@ -15,26 +19,30 @@ import { getImageCacheRemover } from "@/Services/Api/Badges/BadgesApi";
 import RobinPagination from "@/components/Pagination";
 import SearchBar from "@/components/AddSearchBar";
 import html2canvas from "html2canvas";
+import SubsBarChart from "./subscriptionChart";
+import SubsLineChart from "./subscriptionChart";
 
 function Page() {
   const [data, setData] = useState([]);
+  const [chartData, setChartData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState("monthly");
   // const [totalPages, setTotalPages] = useState(1);
   // const [currentPage, setCurrentPage] = useState(1);
   const handleExport = async () => {
     const element = document.getElementById("right-side"); // or any other element you want to capture
     const titleElement = document.getElementById("titleName");
-  const titleText = titleElement ? titleElement.textContent.trim() : "Record";
+    const titleText = titleElement ? titleElement.textContent.trim() : "Record";
     html2canvas(element, {
       useCORS: true,
       logging: true,
       renderer: {
-        type: 'canvas',
+        type: "canvas",
         quality: 1,
       },
-    }).then(canvas => {
-      const imageDataURL = canvas.toDataURL('image/png');
-      const link = document.createElement('a');
+    }).then((canvas) => {
+      const imageDataURL = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
       link.download = `${titleText}-${dayjs().format("DD-MM-YYYY")}.png`;
       link.href = imageDataURL;
       link.click();
@@ -42,27 +50,41 @@ function Page() {
   };
   const fetchData = async (page) => {
     setLoading(true);
-
+    setData([]);
     const result = await getSubscriptionData(page);
     if (result.status) {
       console.log(result.data);
       setData(result.data);
       // setTotalPages(result.data.totalPages);
-
     } else {
       console.error(result.message);
     }
     setLoading(false);
   };
+  const fetchChartData = async (filter) => {
+   
+
+    const result = await subsChartApi(filter);
+    if (result.status) {
+      console.log("chartData", result.data);
+      setChartData(result.data);
+      // setTotalPages(result.data.totalPages);
+    } else {
+      console.error(result.message);
+    }
+    
+  };
 
   useEffect(() => {
     fetchData();
   }, []);
-  
+  useEffect(() => {
+    fetchChartData(filter);
+  }, [filter]);
+
   const handleToggle = async (index) => {
     const user = data[index];
     const newStatus = !user.isActive;
-    
 
     setData((prevUsers) => {
       const updatedUsers = [...prevUsers];
@@ -79,8 +101,6 @@ function Page() {
       });
     }
   };
-  
- 
 
   const truncateDescription = (desc, maxLength) => {
     if (desc.length > maxLength) {
@@ -92,14 +112,20 @@ function Page() {
   return (
     <div className="flex flex-col gap-7">
       <div className="flex flex-row justify-between items-center">
-        <p id="titleName" className="text-xl2 font-semibold text-userblack font-sans">
+        <p
+          id="titleName"
+          className="text-xl2 font-semibold text-userblack font-sans"
+        >
           Subscription
         </p>
         <div className="flex flex-row items-center gap-5">
           {/* <select className="py-[10px] px-3 border border-[#DCDBE1] rounded-lg text-sm font-sans font-normal text-userblack focus:outline-none">
             <option value="1">Feb 10 - Feb 16, 22</option>
           </select> */}
-          <button onClick={handleExport} className="bg-white border border-[#DCDBE1] py-[10px] px-3 rounded-lg flex flex-row items-center gap-2">
+          <button
+            onClick={handleExport}
+            className="bg-white border border-[#DCDBE1] py-[10px] px-3 rounded-lg flex flex-row items-center gap-2"
+          >
             <Export />
             <p className="text-sm font-sans font-normal text-userblack">
               Export
@@ -107,68 +133,32 @@ function Page() {
           </button>
         </div>
       </div>
-      {/* <div className="flex flex-col gap-4 bg-white midxl:w-3/5  xl:w-3/5 2xl:w-2/5 rounded-xl p-8">
+      <div className="flex flex-col gap-4 bg-white midxl:w-3/5  xl:w-3/5 2xl:w-2/5 rounded-xl p-8">
         <div className="flex flex-row items-center justify-between">
           <p className="text-base font-sans font-bold text-userblack">
             Subscription
           </p>
-          <select className="py-2 px-3 rounded-lg border border-[#DCDBE1]">
-            <option value="1">Weekly</option>
-            <option value="1">Monthly</option>
+          <select
+            onChange={(e) => setFilter(e.target.value)}
+            value={filter}
+            className="py-2 px-3 rounded-lg border border-[#DCDBE1]"
+          >
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
           </select>
         </div>
-        <EarningsChart />
-        <div className="flex flex-row justify-center items-center gap-10">
-          <div className=" flex flex-row items-center gap-2">
-            <p className="border border-dashed border-[#0F75BC] w-8"></p>
-            <p className="font-sans text-base font-normal text-userblack">
-              Anually
-            </p>
-          </div>
-          <div className=" flex flex-row items-center gap-2">
-            <p className="border border-[#0F75BC] w-8"></p>
-            <p className="font-sans text-base font-normal text-userblack">
-              Monthly
-            </p>
-          </div>
-        </div>
-      </div> */}
+        {console.log("chartData in page",chartData)}
+        <SubsLineChart chartData={chartData} />
+  
+      </div>
       <div className="flex flex-col">
-        {/* <div className="bg-white py-3 px-5 rounded-t-lg w-full flex flex-row items-center justify-between">
-          <div className="flex flex-row gap-4 items-center">
-            <div className="border py-2 px-4 rounded-md border-[#DCDBE1] w-[340px] flex flex-row items-center gap-2">
-              <SearchIcon />
-              <input type="text" placeholder="Search in users" />
-            </div>
-            <div className="bg-white border border-[#DCDBE1] py-2 px-3 rounded-lg flex flex-row items-center gap-2">
-              <Filter />
-              <p className="text-sm font-sans font-normal text-userblack">
-                Filters
-              </p>
-            </div>
-            <div className="bg-white border border-[#DCDBE1] py-2 px-3 rounded-lg flex flex-row items-center gap-2">
-              <Sort />
-              <p className="text-sm font-sans font-normal text-userblack">
-                Sort
-              </p>
-            </div>
-            <div className="bg-white border border-[#DCDBE1] py-2 px-3 rounded-lg flex flex-row items-center gap-2">
-              <Export />
-              <p className="text-sm font-sans font-normal text-userblack">
-                Export
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-row items-center gap-3">
-            <Link href="/subscriptions/add-subscription">
-              <button className="rounded-lg py-2 px-3 flex flex-row items-center gap-3 border border-[#DCDBE1]">
-                <p>Add</p>
-                <Plus />
-              </button>
-            </Link>
-          </div>
-        </div> */}
-        <SearchBar showFilters={false} sort={false} showSearch={false} route="/subscriptions/add-subscription" />
+       
+        <SearchBar
+          showFilters={false}
+          sort={false}
+          showSearch={false}
+          route="/subscriptions/add-subscription"
+        />
         <div className="w-full overflow-x-scroll booking-table-wrapper">
           <div className="bg-[#F0F2F5] min-w-fit w-full">
             <div className="items-center grid grid-cols-subscriptionTable justify-between p-4">
@@ -234,7 +224,7 @@ function Page() {
                       {truncateDescription(item.description, 40)}
                     </span>
                     <span className="text-userblack font-sans font-semibold text-sm capitalize">
-                      {item.recurringInterval ==="year" ? "Annual":"Monthly"}
+                      {item.recurringInterval === "year" ? "Annual" : "Monthly"}
                     </span>
                     <span className="text-userblack font-sans font-semibold text-sm">
                       {dayjs(item.createdAt).format("DD/MM/YYYY")}
@@ -282,11 +272,7 @@ function Page() {
               ))}
           </div>
         </div>
-        {/* <RobinPagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          /> */}
+        
       </div>
     </div>
   );

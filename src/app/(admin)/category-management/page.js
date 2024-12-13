@@ -37,14 +37,13 @@ function Page() {
   const handleSearch = (term) => {
     setSearchTerm(term);
 
-    
     setCurrentPage(1);
   };
   const fetchData = async (page) => {
     setLoading(true);
     setCategoryData([]);
 
-    const result = await getCategoryData(page, sort, searchTerm,filter);
+    const result = await getCategoryData(page, sort, searchTerm, filter);
     if (result.status) {
       console.log(result.data.results);
       console.log("Total pages:", result.data.totalPages);
@@ -138,7 +137,7 @@ function Page() {
   };
   useEffect(() => {
     fetchData(currentPage);
-  }, [refresh, currentPage, sort, searchTerm,filter]);
+  }, [refresh, currentPage, sort, searchTerm, filter]);
   return (
     <>
       {showModal && (
@@ -154,7 +153,7 @@ function Page() {
         </p>
         <div className="flex flex-col">
           <AddSearchBar
-             filterArray={[
+            filterArray={[
               { value: "homescreen", label: "Homescreen" },
               { value: "sleep", label: "Sleep" },
               { value: "none", label: "None" },
@@ -196,16 +195,20 @@ function Page() {
                 <LoaderLarge />
               </div>
             )}
-            {!loading &&
-              categoryData &&
-              categoryData.length === 0 &&
-              searchTerm && (
-                <div className="flex justify-center items-center bg-white p-10 w-full">
+            {!loading && categoryData && categoryData.length === 0 && (
+              <div className="flex justify-center items-center bg-white p-10 w-full">
+                {searchTerm || filter ? (
                   <p className="text-gray-500 text-sm">
-                    No data found for {searchTerm}.
+                    No data found
+                    {searchTerm && ` for "${searchTerm}"`}
+                    {filter && ` with filter "${filter}"`}.
                   </p>
-                </div>
-              )}
+                ) : (
+                  <p className="text-gray-500 text-sm">No data found.</p>
+                )}
+              </div>
+            )}
+
             <div className="flex flex-col bg-white min-w-fit w-full ">
               {categoryData &&
                 categoryData.map((item, index) => (
@@ -225,16 +228,22 @@ function Page() {
                         )}
                         alt=""
                       />
-                      <p title={item.title} className="text-sm font-sans font-semibold text-[#252322] break-all ">
+                      <p
+                        title={item.title}
+                        className="text-sm font-sans font-semibold text-[#252322] break-all "
+                      >
                         {truncateName(item.title)}
                       </p>
                     </div>
                     <p className="text-sm font-sans font-semibold capitalize text-[#252322]">
                       {item.pageType}
                     </p>
-                    <p title={item.description}  className="text-sm font-sans font-semibold text-[#252322] break-all  ">
-                        {truncateDescription(item.description) || "--"}
-                      </p>
+                    <p
+                      title={item.description}
+                      className="text-sm font-sans font-semibold text-[#252322] break-all  "
+                    >
+                      {truncateDescription(item.description) || "--"}
+                    </p>
 
                     <span className="text-userblack font-sans font-semibold text-sm">
                       {dayjs(item.createdAt).format("MMM DD YYYY")}
@@ -249,11 +258,13 @@ function Page() {
                 ))}
             </div>
           </div>
-          <RobinPagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />{" "}
+          {categoryData && categoryData.length > 0 && (
+            <RobinPagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          )}
         </div>
       </div>
     </>

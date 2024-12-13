@@ -30,21 +30,13 @@ function Page() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [sort, setSort] = useState("desc");
-  const [filter, setFilter] = useState("")
+  const [filter, setFilter] = useState("");
   const handleSearch = (term) => {
     setSearchTerm(term);
 
-    if (term.trim() === "") {
-      // If search is empty, reset to default data
-      fetchData(1);
-      // Fetch default data
-      return;
-    }
     setCurrentPage(1);
-    // Fetch filtered data based on search term
-    fetchData(currentPage, sort, term);
   };
- 
+
   const handleDelete = (id) => {
     const myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer " + token);
@@ -160,7 +152,7 @@ function Page() {
             filterArray={[
               { value: "free", label: "Free" },
               { value: "premium", label: "Premium" },
-              { value: "all", label: "All" },
+              { value: "", label: "All" },
             ]}
             name={"Type"}
             handleSort={sort}
@@ -198,108 +190,114 @@ function Page() {
                 <LoaderLarge />
               </div>
             )}
-             {!loading &&
-            guideData &&
-            guideData.length === 0 &&
-            searchTerm && (
+            {!loading && guideData && guideData.length === 0 && (
               <div className="flex justify-center items-center bg-white p-10 w-full">
-                <p className="text-gray-500 text-sm">
-                  No data found for {searchTerm}.
-                </p>
+                {searchTerm || filter ? (
+                  <p className="text-gray-500 text-sm">
+                    No data found
+                    {searchTerm && ` for "${searchTerm}"`}
+                  </p>
+                ) : (
+                  <p className="text-gray-500 text-sm">No data found.</p>
+                )}
               </div>
             )}
             <div className="flex flex-col bg-white min-w-fit w-full ">
               <>
-              {guideData &&
-                guideData.map((item, index) => {
-                  return (
-                    <div
-                      key={item._id || index}
-                      className=" grid grid-cols-guideTable border-b border-[#E9E9EC] items-center justify-between p-4 relative"
-                    >
-                      <span className="text-userblack text-base font-semibold font-sans">
-                        {item._id}
-                      </span>
-                      <div className="flex flex-row items-center gap-2">
-                        <img
-                          className="w-8 h-8 object-cover rounded-full"
-                          src={
-                            item.profilePic ? item.profilePic.url : Frame1.src
-                          }
-                          alt=""
-                        />
-                        <div className="flex flex-col">
-                          <p className="text-base font-semibold font-sans text-userblack">
-                            {truncateName(item.firstName + " " + item.lastName)}
-                          </p>
-                          <p className="text-base font-sans font-normal text-[#666576]">
-                            {item.phone}
-                          </p>
-                        </div>
-                      </div>
-                      <span className="text-base font-sans font-semibold text-userblack">
-                        {dayjs(item.createdAt).format("MMM DD YYYY")}
-                      </span>
-                      <span className="text-base font-sans font-semibold text-userblack text-center">
-                        {item.hasPremiumPlan ? "Premium" : "Free"}
-                      </span>
-                      <span className="text-base font-sans font-semibold text-userblack text-center">
-                        NA
-                      </span>
-                      <span className="text-base font-sans font-semibold text-userblack text-center">
-                        {item.bookingsCount}
-                      </span>
-                      <button
-                        onClick={() =>
-                          setPopupIndex(popupIndex === index ? null : index)
-                        }
-                        className="text-base font-sans font-semibold text-userblack"
+                {guideData &&
+                  guideData.map((item, index) => {
+                    return (
+                      <div
+                        key={item._id || index}
+                        className=" grid grid-cols-guideTable border-b border-[#E9E9EC] items-center justify-between p-4 relative"
                       >
-                        <MenuDots />
-                      </button>
-                      {popupIndex === index && (
-                        <div className="bg-[#FDF8F9] border-[#D7A1AC] border p-3 rounded-xl myPopup shadow-lg w-[166px]  absolute right-12 top-8 flex flex-col gap-3  z-50">
-                          <div className="flex flex-row items-center justify-between">
-                            <p className="text-sm font-sans font-normal text-userblack">
-                              Action
+                        <span className="text-userblack text-base font-semibold font-sans">
+                          {item._id}
+                        </span>
+                        <div className="flex flex-row items-center gap-2">
+                          <img
+                            className="w-8 h-8 object-cover rounded-full"
+                            src={
+                              item.profilePic ? item.profilePic.url : Frame1.src
+                            }
+                            alt=""
+                          />
+                          <div className="flex flex-col">
+                            <p className="text-base font-semibold font-sans text-userblack">
+                              {truncateName(
+                                item.firstName + " " + item.lastName
+                              )}
                             </p>
-                            <button onClick={() => setPopupIndex(null)}>
-                              <GreyCross />
-                            </button>
+                            <p className="text-base font-sans font-normal text-[#666576]">
+                              {item.phone}
+                            </p>
                           </div>
-                          <Link
-                            href={`/guide-management/guide-info/${item._id}`}
-                          >
-                            <div className="flex flex-row items-center gap-3">
-                              <TopRightArrow />
-                              <p className="text-sm font-sans font-normal text-[#753B5B]">
-                                Open full view
+                        </div>
+                        <span className="text-base font-sans font-semibold text-userblack">
+                          {dayjs(item.createdAt).format("MMM DD YYYY")}
+                        </span>
+                        <span className="text-base font-sans font-semibold text-userblack text-center">
+                          {item.hasPremiumPlan ? "Premium" : "Free"}
+                        </span>
+                        <span className="text-base font-sans font-semibold text-userblack text-center">
+                          NA
+                        </span>
+                        <span className="text-base font-sans font-semibold text-userblack text-center">
+                          {item.bookingsCount}
+                        </span>
+                        <button
+                          onClick={() =>
+                            setPopupIndex(popupIndex === index ? null : index)
+                          }
+                          className="text-base font-sans font-semibold text-userblack"
+                        >
+                          <MenuDots />
+                        </button>
+                        {popupIndex === index && (
+                          <div className="bg-[#FDF8F9] border-[#D7A1AC] border p-3 rounded-xl myPopup shadow-lg w-[166px]  absolute right-12 top-8 flex flex-col gap-3  z-50">
+                            <div className="flex flex-row items-center justify-between">
+                              <p className="text-sm font-sans font-normal text-userblack">
+                                Action
+                              </p>
+                              <button onClick={() => setPopupIndex(null)}>
+                                <GreyCross />
+                              </button>
+                            </div>
+                            <Link
+                              href={`/guide-management/guide-info/${item._id}`}
+                            >
+                              <div className="flex flex-row items-center gap-3">
+                                <TopRightArrow />
+                                <p className="text-sm font-sans font-normal text-[#753B5B]">
+                                  Open full view
+                                </p>
+                              </div>
+                            </Link>
+
+                            <div
+                              onClick={() => confirmDelete(item._id)}
+                              className="flex flex-row items-center gap-3"
+                            >
+                              <Backspace />
+                              <p className="text-sm font-sans font-normal text-[#EE3E3E] cursor-pointer">
+                                Remove
                               </p>
                             </div>
-                          </Link>
-
-                          <div
-                            onClick={() => confirmDelete(item._id)}
-                            className="flex flex-row items-center gap-3"
-                          >
-                            <Backspace />
-                            <p className="text-sm font-sans font-normal text-[#EE3E3E] cursor-pointer">
-                              Remove
-                            </p>
                           </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-                </>
+                        )}
+                      </div>
+                    );
+                  })}
+              </>
             </div>
           </div>
-          <RobinPagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />
+          {guideData && guideData.length > 0 && (
+            <RobinPagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          )}
         </div>
       </div>
     </>

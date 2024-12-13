@@ -1,9 +1,20 @@
 import { getToken } from "@/Services/Cookie/userCookie";
-import { apiError, buildQueryParams, responseValidator, url } from "@/Utilities/helper";
+import {
+  apiError,
+  buildQueryParams,
+  responseValidator,
+  tokenValidator,
+  url,
+} from "@/Utilities/helper";
 
-export const getlive = async (page, sortOrder = "desc", search = "",type="") => {
+export const getlive = async (
+  page,
+  sortOrder = "desc",
+  search = "",
+  type = ""
+) => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + getToken());
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
   const requestOptions = {
     method: "GET",
@@ -21,8 +32,7 @@ export const getlive = async (page, sortOrder = "desc", search = "",type="") => 
   });
   try {
     const response = await fetch(
-      url +
-        `/live-events?${queryParams}`,
+      url + `/live-events?${queryParams}`,
       requestOptions
     );
     // const alok ={data:response}
@@ -31,9 +41,13 @@ export const getlive = async (page, sortOrder = "desc", search = "",type="") => 
     apiError(error);
   }
 };
-export const getPendingCount = async (page,sortOrder = "desc", search = "") => {
+export const getPendingCount = async (
+  page,
+  sortOrder = "desc",
+  search = ""
+) => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + getToken());
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
   const requestOptions = {
     method: "GET",
@@ -60,7 +74,7 @@ export const getPendingCount = async (page,sortOrder = "desc", search = "") => {
 };
 export const getOnelive = async (id) => {
   const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + getToken());
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
   const requestOptions = {
     method: "GET",
     headers: myHeaders,

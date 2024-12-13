@@ -29,7 +29,6 @@ function Page() {
   const [sort, setSort] = useState("desc");
   const [filter, setFilter] = useState("");
 
-
   const router = useRouter();
 
   // useEffect(() => {
@@ -83,14 +82,13 @@ function Page() {
   const handleSearch = (term) => {
     setSearchTerm(term);
 
-   
     setCurrentPage(1);
   };
   const fetchData = async (page) => {
     setLoading(true);
     setLiveManagementData([]);
 
-    const result = await getlive(page, sort, searchTerm,filter);
+    const result = await getlive(page, sort, searchTerm, filter);
     if (result.status) {
       console.log(result.data.results);
       console.log("Total pages:", result.data.totalPages);
@@ -117,7 +115,7 @@ function Page() {
   useEffect(() => {
     fetchData(currentPage);
     fetchPendingCount(currentPage);
-  }, [currentPage, sort, searchTerm,filter]);
+  }, [currentPage, sort, searchTerm, filter]);
 
   return (
     <>
@@ -141,8 +139,7 @@ function Page() {
               { value: "pending", label: "Pending" },
               { value: "approved", label: "Approved" },
               { value: "declined", label: "Declined" },
-              { value: "", label: "All" }
-              
+              { value: "", label: "All" },
             ]}
             name={"Status"}
             handleSort={sort}
@@ -180,12 +177,17 @@ function Page() {
             )}
             {!loading &&
               liveManagementData &&
-              liveManagementData.length === 0 &&
-              searchTerm && (
+              liveManagementData.length === 0 && (
                 <div className="flex justify-center items-center bg-white p-10 w-full">
-                  <p className="text-gray-500 text-sm">
-                    No data found for {searchTerm}.
-                  </p>
+                  {searchTerm || filter ? (
+                    <p className="text-gray-500 text-sm">
+                      No data found
+                      {searchTerm && ` for "${searchTerm}"`}
+                      {filter && ` with filter "${filter}"`}.
+                    </p>
+                  ) : (
+                    <p className="text-gray-500 text-sm">No data found.</p>
+                  )}
                 </div>
               )}
             <div className="flex flex-col bg-white min-w-fit w-full">
@@ -247,11 +249,13 @@ function Page() {
                 ))}
             </div>
           </div>
-          <RobinPagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />
+          {liveManagementData && liveManagementData.length > 0 && (
+            <RobinPagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          )}
         </div>
       </div>
     </>

@@ -34,20 +34,24 @@ function Page() {
   useEffect(() => {
     fetchPendingData();
     fetchData(currentPage);
-  }, [currentPage, sort, searchTerm,filter]);
+  }, [currentPage, sort, searchTerm, filter]);
 
   const token = getToken();
   const handleSearch = (term) => {
     setSearchTerm(term);
 
-   
     setCurrentPage(1);
   };
   const fetchData = async (page) => {
     setLoading(true);
     setQuickReadData([]);
 
-    const result = await getAllQuickreadsDataApi(page, sort, searchTerm,filter);
+    const result = await getAllQuickreadsDataApi(
+      page,
+      sort,
+      searchTerm,
+      filter
+    );
     if (result.status) {
       console.log(result.data.results);
       console.log("Total pages:", result.data.totalPages);
@@ -138,7 +142,7 @@ function Page() {
             setHandleSort={setSort}
             setHandleFilter={setFilter}
             handleSearch={handleSearch}
-            showAddButton={false}
+            showAddButton={true}
             title="Add new"
             route="/quickreads/add-new-quickread"
           />
@@ -168,16 +172,19 @@ function Page() {
                 <LoaderLarge />
               </div>
             )}
-            {!loading &&
-              quickReadData &&
-              quickReadData.length === 0 &&
-              searchTerm && (
-                <div className="flex justify-center items-center bg-white p-10 w-full">
+            {!loading && quickReadData && quickReadData.length === 0 && (
+              <div className="flex justify-center items-center bg-white p-10 w-full">
+                {searchTerm || filter ? (
                   <p className="text-gray-500 text-sm">
-                    No data found for {searchTerm}.
+                    No data found
+                    {searchTerm && ` for "${searchTerm}"`}
+                    {filter && ` with filter "${filter}"`}.
                   </p>
-                </div>
-              )}
+                ) : (
+                  <p className="text-gray-500 text-sm">No data found.</p>
+                )}
+              </div>
+            )}
             <div className="flex flex-col bg-white min-w-fit w-full ">
               {quickReadData &&
                 quickReadData.map((item, index) => (
@@ -233,11 +240,13 @@ function Page() {
                 ))}
             </div>
           </div>
-          <RobinPagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />{" "}
+          {quickReadData && quickReadData.length > 0 && (
+            <RobinPagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          )}
         </div>
       </div>
     </>

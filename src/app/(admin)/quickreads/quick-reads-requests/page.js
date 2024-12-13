@@ -24,7 +24,6 @@ function Page() {
   const handleSearch = (term) => {
     setSearchTerm(term);
 
-    
     setCurrentPage(1);
   };
   // const token = getToken();
@@ -124,16 +123,18 @@ function Page() {
                 <LoaderLarge />
               </div>
             )}
-             {!loading &&
-            QuickRequestsData &&
-            QuickRequestsData.length === 0 &&
-            searchTerm && (
-              <div className="flex justify-center items-center bg-white p-10 w-full">
-                <p className="text-gray-500 text-sm">
-                  No data found for {searchTerm}.
-                </p>
-              </div>
-            )}
+            {!loading &&
+              QuickRequestsData &&
+              QuickRequestsData.length === 0 && (
+                <div className="flex justify-center items-center bg-white p-10 w-full">
+                  <p className="text-gray-500 text-sm">
+                    {searchTerm
+                      ? `No data found for "${searchTerm}".`
+                      : "No data yet."}
+                  </p>
+                </div>
+              )}
+
             <div className="flex flex-col bg-white min-w-fit w-full">
               {QuickRequestsData &&
                 QuickRequestsData.map((item, index) => (
@@ -180,11 +181,13 @@ function Page() {
                 ))}
             </div>
           </div>
-          <RobinPagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />{" "}
+          {QuickRequestsData.length > 0 && (
+            <RobinPagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          )}
         </div>
       </div>
     </>

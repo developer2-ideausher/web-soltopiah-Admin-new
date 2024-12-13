@@ -28,7 +28,7 @@ function Page({ params }) {
   };
   const fetchData = async (page) => {
     setLoading(true);
-    setData([])
+    setData([]);
     const result = await getCreatedChallenges(info, page, sort, searchTerm);
     if (result.status) {
       console.log(result.data.results);
@@ -143,9 +143,7 @@ function Page({ params }) {
               ))}
           </div>
         </div>
-        {data.length <= 0 ? (
-          ""
-        ) : (
+        {data && data.length > 0 && (
           <RobinPagination
             currentPage={currentPage}
             totalPages={totalPages}

@@ -23,7 +23,7 @@ function Page({ params }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [sort, setSort] = useState("desc");
- 
+
   const handleSearch = (term) => {
     setSearchTerm(term);
 
@@ -51,8 +51,8 @@ function Page({ params }) {
   };
   const fetchData = async (page) => {
     setLoading(true);
-    setData([])
-    const result = await getContent(info,page, sort, searchTerm);
+    setData([]);
+    const result = await getContent(info, page, sort, searchTerm);
     if (result.status) {
       console.log(result.data.results);
       setData(result.data.results);
@@ -76,14 +76,20 @@ function Page({ params }) {
           </div>
           <p className="text-xl2 font-semibold text-userblack font-sans">
             Guide Management -
-            <span id="titleName" className="text-[#AE445A]"> Content uploaded</span>
+            <span id="titleName" className="text-[#AE445A]">
+              {" "}
+              Content uploaded
+            </span>
           </p>
         </div>
         <div className="flex flex-row items-center gap-5">
           {/* <select className="py-[10px] px-3 border border-[#DCDBE1] rounded-lg text-sm font-sans font-normal text-userblack focus:outline-none">
             <option value="1">Feb 10 - Feb 16, 22</option>
           </select> */}
-          <button onClick={handleExport} className="bg-white border border-[#DCDBE1] py-[10px] px-3 rounded-lg flex flex-row items-center gap-2">
+          <button
+            onClick={handleExport}
+            className="bg-white border border-[#DCDBE1] py-[10px] px-3 rounded-lg flex flex-row items-center gap-2"
+          >
             <Export />
             <p className="text-sm font-sans font-normal text-userblack">
               Export
@@ -92,13 +98,15 @@ function Page({ params }) {
         </div>
       </div>
       <div className="flex flex-col">
-        <SearchBar  name={"Type"}
+        <SearchBar
+          name={"Type"}
           handleSort={sort}
           setHandleSort={setSort}
           setHandleFilter={""}
           handleSearch={handleSearch}
           showAddButton={false}
-          showFilters={false} />
+          showFilters={false}
+        />
         <div className="w-full overflow-x-scroll booking-table-wrapper">
           <div className="bg-[#F0F2F5] min-w-fit w-full">
             <div className="items-center grid grid-cols-contentUploadedTable justify-between p-4">
@@ -127,7 +135,7 @@ function Page({ params }) {
             </div>
           )}
 
-{!loading &&
+          {!loading &&
             data.length === 0 &&
             (searchTerm ? (
               <div className="flex justify-center items-center bg-white p-10 w-full">
@@ -154,11 +162,17 @@ function Page({ params }) {
                       alt="thumbnail"
                       className="w-11 h-11 rounded-md "
                     />
-                    <p title={item.title} className="text-sm font-sans font-semibold text-[#252322]">
+                    <p
+                      title={item.title}
+                      className="text-sm font-sans font-semibold text-[#252322]"
+                    >
                       {truncateName(item.title)}
                     </p>
                   </div>
-                  <span title={item.description} className="text-userblack w-[300px] font-sans font-semibold text-sm">
+                  <span
+                    title={item.description}
+                    className="text-userblack w-[300px] font-sans font-semibold text-sm"
+                  >
                     {truncateDescription(item.description) || "NA"}
                   </span>
                   <span className="text-userblack font-sans font-semibold text-sm capitalize">
@@ -177,15 +191,13 @@ function Page({ params }) {
               </div>
             ))}
         </div>
-        {data.length <= 0 ? (
-          ""
-        ) : (
+        {data && data.length > 0 && (
           <RobinPagination
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={setCurrentPage}
           />
-        )}{" "}
+        )}
       </div>
     </div>
   );

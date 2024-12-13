@@ -23,9 +23,7 @@ function Page() {
   const handleSearch = (term) => {
     setSearchTerm(term);
 
-   
     setCurrentPage(1);
-    
   };
   const theme = createTheme({
     palette: {
@@ -84,9 +82,9 @@ function Page() {
               filterArray={[
                 { value: "free", label: "Free" },
                 { value: "premium", label: "Premium" },
-                { value: "all", label: "All" },
+                { value: "", label: "All" },
                 { value: "yes", label: "Blocked" },
-                
+                { value: "no", label: "Active" },
               ]}
               name={"Type"}
               handleSort={sort}
@@ -124,11 +122,16 @@ function Page() {
                   <LoaderLarge />
                 </div>
               )}
-              {!loading && data && data.length === 0 && searchTerm && (
+              {!loading && data && data.length === 0 && (
                 <div className="flex justify-center items-center bg-white p-10 w-full">
-                  <p className="text-gray-500 text-sm">
-                    No data found for {searchTerm}.
-                  </p>
+                  {searchTerm || filter ? (
+                    <p className="text-gray-500 text-sm">
+                      No data found
+                      {searchTerm && ` for "${searchTerm}"`}
+                    </p>
+                  ) : (
+                    <p className="text-gray-500 text-sm">No data found.</p>
+                  )}
                 </div>
               )}
               <div className="flex flex-col bg-white min-w-fit w-full ">
@@ -205,11 +208,13 @@ function Page() {
                   ))}
               </div>
             </div>
-            <RobinPagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-            />
+            {data && data.length > 0 && (
+              <RobinPagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+              />
+            )}
           </div>
         </div>
       </ThemeProvider>

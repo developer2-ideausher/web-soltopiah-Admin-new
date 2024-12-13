@@ -35,22 +35,22 @@ function Page() {
   const router = useRouter();
   useEffect(() => {
     fetchData(currentPage);
-  }, [currentPage, refresh,sort, searchTerm,filter]);
+  }, [currentPage, refresh, sort, searchTerm, filter]);
 
   const handleExport = async () => {
     const element = document.getElementById("right-side"); // or any other element you want to capture
     const titleElement = document.getElementById("titleName");
-  const titleText = titleElement ? titleElement.textContent.trim() : "Record";
+    const titleText = titleElement ? titleElement.textContent.trim() : "Record";
     html2canvas(element, {
       useCORS: true,
       logging: true,
       renderer: {
-        type: 'canvas',
+        type: "canvas",
         quality: 1,
       },
-    }).then(canvas => {
-      const imageDataURL = canvas.toDataURL('image/png');
-      const link = document.createElement('a');
+    }).then((canvas) => {
+      const imageDataURL = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
       link.download = `${titleText}-${dayjs().format("DD-MM-YYYY")}.png`;
       link.href = imageDataURL;
       link.click();
@@ -59,14 +59,12 @@ function Page() {
   const handleSearch = (term) => {
     setSearchTerm(term);
 
-  
-    setCurrentPage(1)
-  
+    setCurrentPage(1);
   };
   const fetchData = async (page) => {
     setLoading(true);
     setChallengeData([]);
-    const result = await getAllChallengeApi(page, sort, searchTerm,filter);
+    const result = await getAllChallengeApi(page, sort, searchTerm, filter);
     if (result.status) {
       console.log(result.data.results);
       setChallengeData(result.data.results);
@@ -162,14 +160,20 @@ function Page() {
       )}
       <div className="flex flex-col gap-7 ">
         <div className="flex flex-row justify-between items-center">
-          <p id="titleName" className="text-xl2 font-semibold text-userblack font-sans">
+          <p
+            id="titleName"
+            className="text-xl2 font-semibold text-userblack font-sans"
+          >
             All challenge programs
           </p>
           <div className="flex flex-row items-center gap-5">
             {/* <select className="py-[10px] px-3 border border-[#DCDBE1] rounded-lg text-sm font-sans font-normal text-userblack focus:outline-none">
               <option value="1">Feb 10 - Feb 16, 22</option>
             </select> */}
-            <button onClick={handleExport} className="bg-white border border-[#DCDBE1] py-[10px] px-3 rounded-lg flex flex-row items-center gap-2">
+            <button
+              onClick={handleExport}
+              className="bg-white border border-[#DCDBE1] py-[10px] px-3 rounded-lg flex flex-row items-center gap-2"
+            >
               <Export />
               <p className="text-sm font-sans font-normal text-userblack">
                 Export
@@ -179,17 +183,17 @@ function Page() {
         </div>
         <div className="flex flex-col">
           <SearchBar
-           filterArray={[
-            { value: "free", label: "Free" },
-            { value: "premium", label: "Premium" },
-            { value: "", label: "All" },
-          ]}
-          name={"Type"}
-          handleSort={sort}
-          setHandleSort={setSort}
-          setHandleFilter={setFilter}
-          handleSearch={handleSearch}
-          showAddButton={false}
+            filterArray={[
+              { value: "free", label: "Free" },
+              { value: "premium", label: "Premium" },
+              { value: "", label: "All" },
+            ]}
+            name={"Type"}
+            handleSort={sort}
+            setHandleSort={setSort}
+            setHandleFilter={setFilter}
+            handleSearch={handleSearch}
+            showAddButton={true}
             title="Create Challenge"
             route="/challenge-module/create-challenge"
           />
@@ -227,19 +231,17 @@ function Page() {
                 <LoaderLarge />
               </div>
             )}
-            {!loading &&
-            challengeData &&
-            challengeData.length === 0 &&
-            searchTerm && (
+            {!loading && challengeData && challengeData.length === 0 && (
               <div className="flex justify-center items-center bg-white p-10 w-full">
-                <p className="text-gray-500 text-sm">
-                  No data found for {searchTerm}.
-                </p>
-              </div>
-            )}
-            {!loading && challengeData.length === 0 &&  searchTerm.trim() === ""  && (
-              <div className="text-center text-md font-semibold min-w-fit w-full text-gray-600 bg-white p-4">
-                No data yet.
+                {searchTerm || filter ? (
+                  <p className="text-gray-500 text-sm">
+                    No data found
+                    {searchTerm && ` for "${searchTerm}"`}
+                    {filter && ` with filter "${filter}"`}.
+                  </p>
+                ) : (
+                  <p className="text-gray-500 text-sm">No data found.</p>
+                )}
               </div>
             )}
             <div className="flex flex-col bg-white min-w-fit w-full ">
@@ -296,11 +298,13 @@ function Page() {
                 ))}
             </div>
           </div>
-          <RobinPagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />{" "}
+          {challengeData && challengeData.length > 0 && (
+            <RobinPagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          )}
         </div>
       </div>
     </>

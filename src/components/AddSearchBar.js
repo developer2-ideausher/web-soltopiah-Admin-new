@@ -88,6 +88,7 @@ function SearchBar({
               onChange={handleInputChange}
               type="text"
               placeholder="Search "
+              className="w-full"
             />
           </div>
         )}
