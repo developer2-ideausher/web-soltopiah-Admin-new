@@ -161,7 +161,7 @@ function Page() {
                           {item._id}
                         </span>
                         <span className="text-userblack font-sans font-semibold text-sm">
-                          {dayjs(item.createdAt).format("MM/DD/YYYY")}
+                          {dayjs(item.createdAt).format("DD/MM/YYYY")}
                         </span>
                         <span className="text-userblack font-sans font-semibold text-sm">
                           {item.__t}

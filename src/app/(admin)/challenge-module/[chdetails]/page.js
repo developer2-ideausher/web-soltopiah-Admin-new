@@ -7,12 +7,12 @@ import Girl from "../../../../../public/Girl.png";
 import RedEdit from "../../../../../icons/RedEdit";
 import RedRecycle from "../../../../../icons/RedRecycle";
 import RedDown from "../../../../../icons/RedDown";
-import GreenThumbsUp from "../../../../../icons/GreenThumbsUp"; 
+import GreenThumbsUp from "../../../../../icons/GreenThumbsUp";
 import { getToken } from "@/Services/Cookie/userCookie";
 import dayjs from "dayjs";
 import RightBlackArrow from "../../../../../icons/RightBlackArrow";
-import { getChallengeForumPosts } from "@/Services/Api/Challenge/challenge";
-import { useRouter } from "next/navigation";
+import { getChallengeForumPosts, getOnceChallengeApi } from "@/Services/Api/Challenge/challenge";
+import { useRouter, useSearchParams } from "next/navigation";
 
 function Page({ params }) {
   const [challengeData, setChallengeData] = useState(null);
@@ -22,11 +22,10 @@ function Page({ params }) {
   // const [repliesVisibility, setRepliesVisibility] = useState({});
   // const reqId = searchParams.get("requestID");
   const [setVideos, setShowVideos] = useState(false);
-  const handleClick = () => {
-    setShowVideos(!setVideos);
-  };
+
   const router = useRouter();
   const { chdetails } = params;
+  const searchParams = useSearchParams();
   const token = getToken();
 
   // const createChallengePost = (content) => {
@@ -83,45 +82,45 @@ function Page({ params }) {
   //     .catch((error) => console.error(error));
   // };
 
-  const getOnceChallengeApi = () => {
-    const myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + token);
-    const requestOptions = {
-      method: "GET",
-      headers: myHeaders,
+ const fetchData = async () => {
+     const result = await getOnceChallengeApi(chdetails);
+     if (result.status) {
+       console.log(result.data);
+       setChallengeData(result.data);
+     } else {
+       console.log(result.message);
+     }
+   };
+  // const getOnceChallengeApi = () => {
+  //   const myHeaders = new Headers();
+  //   myHeaders.append("Authorization", "Bearer " + token);
+  //   const requestOptions = {
+  //     method: "GET",
+  //     headers: myHeaders,
 
-      redirect: "follow",
-    };
+  //     redirect: "follow",
+  //   };
 
-    fetch(
-      process.env.NEXT_PUBLIC_URL + "/challenges/" + chdetails,
-      requestOptions
-    )
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result.data);
-        setChallengeData(result.data);
-      })
-      .catch((error) => console.error(error));
-  };
+  //   fetch(
+  //     process.env.NEXT_PUBLIC_URL + "/challenges/" + chdetails,
+  //     requestOptions
+  //   )
+  //     .then((response) => response.json())
+  //     .then((result) => {
+  //       console.log(result.data);
+  //       setChallengeData(result.data);
+  //     })
+  //     .catch((error) => console.error(error));
+  // };
   useEffect(() => {
-    getOnceChallengeApi();
-    // getChallengesPost();
-  }, []);
-
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   createChallengePost(postContent);
-  // };
-  // const getCurrentDayThread = () => {
-  //   return postData.length + 1;
-  // };
-  // const toggleRepliesVisibility = (postId) => {
-  //   setRepliesVisibility((prevState) => ({
-  //     ...prevState,
-  //     [postId]: !prevState[postId],
-  //   }));
-  // };
+    fetchData();
+    const tab = searchParams.get("tab");
+    if (tab === "forum") {
+      setShowVideos(true); // Show forum by default
+    } else {
+      setShowVideos(false); // Default to videos or as per your logic
+    }
+  }, [chdetails, searchParams]);
 
   return (
     <div className="flex flex-col gap-7">
@@ -172,7 +171,7 @@ function Page({ params }) {
           <div className="flex flex-col gap-10">
             <div className="bg-[#DADDF1] p-1 rounded-full w-1/5 flex flex-row justify-between items-center gap-3">
               <button
-                onClick={handleClick}
+                onClick={() => setShowVideos(false)}
                 className={` ${
                   setVideos ? "bg-[#DADDF1]" : "bg-white"
                 } rounded-full p-2 w-full`}
@@ -180,7 +179,7 @@ function Page({ params }) {
                 Videos
               </button>
               <button
-                onClick={handleClick}
+                onClick={() => setShowVideos(true)}
                 className={` ${
                   setVideos ? "bg-white" : ""
                 } rounded-full p-2 w-full`}
@@ -227,135 +226,7 @@ function Page({ params }) {
                 ))}
               </div>
             )}
-            {/* {setVideos && (
-              <div className="flex flex-col gap-3">
-                <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-                  <p className="text-sm font-sans font-semibold text-[#71737F]">
-                    Add Day {getCurrentDayThread()} Thread
-                  </p>
-                  <textarea
-                    value={postContent}
-                    onChange={(e) => setPostContent(e.target.value)}
-                    className="py-3 px-4 border border-[#E7E5E4] rounded-xl text-sm font-sans font-normal text-black"
-                    placeholder="Ex . 12 sessions completed"
-                  ></textarea>
-                  <button className="p-4 rounded-lg bg-[#AE445A] w-2/12  text-base font-sans font-black text-white">
-                    Save
-                  </button>
-                </form>
-                {postData &&
-                  postData.map((item, index) => (
-                    <>
-                      <div
-                        key={item._id}
-                        className="py-3 px-4 rounded-xl border border-[#E7E5E4] bg-white flex flex-col gap-2"
-                      >
-                        <div className="flex flex-row items-center justify-between">
-                          <div className="flex flex-row items-center gap-2">
-                            <p className="text-xl2 font-sans font-semibold text-userblack">
-                              Soltopiah
-                            </p>
-                            <p className="text-xs font-sans font-semibold text-[#888A94]">
-                              Day {index + 1}
-                            </p>
-                          </div>
-                          <div className="flex flex-row items-center gap-3">
-                            <RedEdit />
-                            <RedRecycle />
-                          </div>
-                        </div>
-                        <p className="text-base font-sans font-semibold text-userblack w-[94%]">
-                          {item.content}
-                        </p>
-                        <div className="flex flex-row items-center gap-3">
-                          <p className="text-[#3090E9] text-sm font-sans font-semibold uppercase">
-                            Reply
-                          </p>
-                          <button
-                            onClick={() => toggleRepliesVisibility(item._id)}
-                            className="flex flex-row items-center gap-1"
-                          >
-                            <p className="text-sm font-sans font-semibold text-[#AE445A]">
-                              {item.commentsCount} replies
-                            </p>
-                            <RedDown />
-                          </button>
-                          <div className="flex flex-row items-center gap-1">
-                            <p className="text-xs font-sans font-normal text-[#08A03C]">
-                              {item.likesCount} likes
-                            </p>
-                            <GreenThumbsUp />
-                          </div>
-                        </div>
-                        {repliesVisibility[item._id] && (
-                          <div className="border-t flex flex-col mt-1  gap-4">
-                            <div className="ml-12">
-                              <div className="flex items-center gap-2 mt-3">
-                                <p className="text-[#414554] font-sans text-xl2 font-semibold">
-                                  Mehan Rai
-                                </p>
-                                <p className="text-xs font-sans font-semibold text-[#888A94]">
-                                  .1 min ago
-                                </p>
-                              </div>
-                              <div className="text-[#414554] font-sans font-semibold text-base">
-                                <p>yup 🤩🤩🤩</p>
-                              </div>
-                              <div className="flex items-center gap-6 mt-2">
-                                <p className="uppercase text-[#3090E9] font-sans font-semibold text-sm">
-                                  reply
-                                </p>
-                                <div className="flex items-center gap-1">
-                                  <p className="text-sm font-sans font-semibold text-[#AE445A]">
-                                    0 replies
-                                  </p>
-                                  <RedDown />
-                                </div>
-                                <div className="flex items-center gap-1">
-                                  <p className="text-xs font-sans font-normal text-[#08A03C]">
-                                    Liked by admin
-                                  </p>
-                                  <GreenThumbsUp />
-                                </div>
-                              </div>
-                            </div>
-                            <div className="ml-12">
-                              <div className="flex items-center gap-2 mt-3">
-                                <p className="text-[#414554] font-sans text-xl2 font-semibold">
-                                  Mehan Rai
-                                </p>
-                                <p className="text-xs font-sans font-semibold text-[#888A94]">
-                                  .1 min ago
-                                </p>
-                              </div>
-                              <div className="text-[#414554] font-sans font-semibold text-base">
-                                <p>WOW 🤩🤩🤩</p>
-                              </div>
-                              <div className="flex items-center gap-6 mt-2">
-                                <p className="uppercase text-[#3090E9] font-sans font-semibold text-sm">
-                                  reply
-                                </p>
-                                <div className="flex items-center gap-1">
-                                  <p className="text-sm font-sans font-semibold text-[#AE445A]">
-                                    0 replies
-                                  </p>
-                                  <RedDown />
-                                </div>
-                                <div className="flex items-center gap-1">
-                                  <p className="text-xs font-sans font-normal text-[#08A03C]">
-                                    Liked by admin
-                                  </p>
-                                  <GreenThumbsUp />
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </>
-                  ))}
-              </div>
-            )} */}
+
             {setVideos && (
               <div className="flex flex-col gap-3">
                 {Array.from(

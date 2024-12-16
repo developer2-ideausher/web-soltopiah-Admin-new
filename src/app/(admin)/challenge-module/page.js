@@ -76,31 +76,7 @@ function Page() {
   };
 
   const token = getToken();
-  // const getAllChallengeApi = (page) => {
-  //   setLoading(true);
-  //   const myHeaders = new Headers();
-  //   myHeaders.append("Authorization", "Bearer " + token);
-  //   const requestOptions = {
-  //     method: "GET",
-  //     headers: myHeaders,
-  //     redirect: "follow",
-  //   };
 
-  //   fetch(
-  //     process.env.NEXT_PUBLIC_URL + `/challenges?page=${page}&limit=10`,
-  //     requestOptions
-  //   )
-  //     .then((response) => response.json())
-  //     .then((result) => {
-  //       console.log(result.data.results);
-  //       setChallengeData(result.data.results);
-  //       setLoading(false);
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //       setLoading(false);
-  //     });
-  // };
   const handleDelete = (challengeId, e) => {
     e.stopPropagation();
     setSelectedChallengeId(challengeId);
@@ -143,6 +119,7 @@ function Page() {
       })
       .catch((error) => console.error(error));
   };
+
   // const truncateDescription = (description) => {
   //   if (description.length > 80) {
   //     return description.substring(0, 80) + "...";
@@ -227,7 +204,7 @@ function Page() {
               </div>
             </div>
             {loading && (
-              <div className="flex justify-center items-center  min-w-fit w-full bg-white">
+              <div className="flex justify-center items-center   w-full bg-white">
                 <LoaderLarge />
               </div>
             )}
@@ -287,7 +264,13 @@ function Page() {
                       {item.isActive === true ? "Ongoing" : "Past/Upcoming"}
                     </span>
 
-                    <button className="text-white p-4 rounded-lg w-[150px] bg-[#AE445A] font-sans font-semibold text-sm">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent triggering the row click
+                        router.push(`/challenge-module/${item._id}?tab=forum`);
+                      }}
+                      className="text-white p-4 rounded-lg w-[150px] bg-[#AE445A] font-sans font-semibold text-sm hover:bg-green-700"
+                    >
                       Forum
                     </button>
                     {/* for testing purpose */}

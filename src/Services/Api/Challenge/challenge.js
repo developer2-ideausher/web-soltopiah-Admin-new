@@ -7,7 +7,7 @@ import {
   url,
 } from "@/Utilities/helper";
 
-export const getAddContentChapters = async (page) => {
+export const getAddContentChapters = async (page, search = "") => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
@@ -18,10 +18,14 @@ export const getAddContentChapters = async (page) => {
   };
 
   try {
-    const response = await fetch(
-      process.env.NEXT_PUBLIC_URL + `/chapters?page=${page}&limit=10`,
-      requestOptions
-    );
+    const url = new URL(`${process.env.NEXT_PUBLIC_URL}/chapters`);
+    url.searchParams.append("page", page);
+    url.searchParams.append("limit", 10);
+    if (search.trim() !== "") {
+      url.searchParams.append("search", search);
+    }
+
+    const response = await fetch(url.toString(), requestOptions);
     const result = await responseValidator(response);
     return result;
   } catch (error) {
@@ -49,7 +53,7 @@ export const getChallengeForumPosts = async (id, day) => {
     return apiError(error);
   }
 };
-export const getReplies = async (id,page=1) => {
+export const getReplies = async (id, page = 1) => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
@@ -58,7 +62,7 @@ export const getReplies = async (id,page=1) => {
     headers: myHeaders,
     redirect: "follow",
   };
-  console.log(page)
+  console.log(page);
   try {
     const response = await fetch(
       url + `/comments/${id}/replies?page=${page}&limit=10`,
@@ -114,7 +118,7 @@ export const deleteForumPost = async (id) => {
     return apiError(error);
   }
 };
-export const commentApi = async (id,page=1) => {
+export const commentApi = async (id, page = 1) => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
@@ -127,7 +131,10 @@ export const commentApi = async (id,page=1) => {
     redirect: "follow",
   };
   try {
-    const response = await fetch(url + `/posts/${id}/comments?page=${page}&limit=10`, requestOptions);
+    const response = await fetch(
+      url + `/posts/${id}/comments?page=${page}&limit=10`,
+      requestOptions
+    );
 
     const result = await responseValidator(response);
     return result;
@@ -239,7 +246,12 @@ export const patchForumPost = async (id, data) => {
   }
 };
 
-export const getAllChallengeApi = async (page,sortOrder = "desc", search = "",type="") => {
+export const getAllChallengeApi = async (
+  page,
+  sortOrder = "desc",
+  search = "",
+  type = ""
+) => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
@@ -259,7 +271,28 @@ export const getAllChallengeApi = async (page,sortOrder = "desc", search = "",ty
   // const searchParam = search.trim() !== "" ? `&search=${search}` : "";
 
   try {
-    const response = await fetch(url + `/challenges?${queryParams}`, requestOptions);
+    const response = await fetch(
+      url + `/challenges?${queryParams}`,
+      requestOptions
+    );
+
+    const result = await responseValidator(response);
+    return result;
+  } catch (error) {
+    return apiError(error);
+  }
+};
+export const getOnceChallengeApi = async (id) => {
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
+
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+  try {
+    const response = await fetch(url + `/challenges/${id}`, requestOptions);
 
     const result = await responseValidator(response);
     return result;

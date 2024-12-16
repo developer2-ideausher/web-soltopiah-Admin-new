@@ -1,4 +1,5 @@
 "use client"
+import { getImageCacheRemover } from '@/Services/Api/Badges/BadgesApi'
 import { deleteSingleCourse, getSingleCourse } from '@/Utilities/Course'
 import DeleteModal from '@/components/DeleteModal'
 import LoaderLarge from '@/components/LoaderLarge'
@@ -63,7 +64,7 @@ export default function ViewPage() {
         </div>
         {data && <div className='w-full'>
           <h6 className='text-sm font-semibold text-[#121616] mt-5 mb-1'>Cover Image</h6>
-          <img src={data?.thumbnail?.url ? data?.thumbnail.url : "/cm.svg"} className='w-2/12 rounded-xl xs:w-full' />
+          <img src={getImageCacheRemover(data?.thumbnail?.url, "/cm.svg")} className='w-2/12 rounded-xl xs:w-full' />
 
           <h6 className='text-sm font-semibold text-[#121616] mt-5'>Title</h6>
           <h5 className='text-[#414554] font-normal text-lg'>{data?.title}</h5>

@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 
 import RedRecycle from "../../../../../icons/RedRecycle";
 import RobinPagination from "@/components/Pagination";
+import ReactPlayer from "react-player";
 
 function Page() {
   const [showModal, setShowModal] = useState(false);
@@ -58,7 +59,7 @@ function Page() {
             <BackButton />
           </Link>
           <p className="text-xl2 font-sans font-semibold text-userblack">
-            Create challenge
+            Create challeng
           </p>
         </div>
         <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-1/3">
@@ -73,11 +74,26 @@ function Page() {
               <div className="bg-white p-4 rounded-xl flex flex-col justify-center items-center gap-5 relative">
                 {selectedContent[i] ? (
                   <>
-                    <img
-                      src={selectedContent[i].thumbnail.url}
-                      alt="selected content"
-                      className=" object-cover rounded-lg"
-                    />
+                    {/* Conditional Rendering of Media Player */}
+                    {selectedContent[i]?.type === "video" ? (
+                      <ReactPlayer
+                        url={selectedContent[i]?.media?.url}
+                        controls
+                        width="100%"
+                        height="auto"
+                        className="rounded-lg"
+                      />
+                    ) : selectedContent[i]?.type === "audio" ? (
+                      <ReactPlayer
+                        url={selectedContent[i]?.media?.url}
+                        controls
+                        height="50px"
+                        width="100%"
+                        className="rounded-lg"
+                      />
+                    ) : (
+                      <p className="text-red-500">Unsupported media type.</p>
+                    )}
                     <button
                       onClick={() => handleRemoveContent(i + 1)}
                       className="flex flex-row justify-center items-center text-[#000000] gap-2 bg-[#EE3E3E1A] py-2 px-3 w-full  rounded-full "

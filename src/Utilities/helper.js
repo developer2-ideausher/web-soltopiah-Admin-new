@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
 export async function tokenValidator() {
-  const token = getToken()
+  const token = getToken();
   if (!token) {
     return null;
   }
@@ -162,6 +162,9 @@ export const truncateName = (Name) => {
 export function buildQueryParams(params) {
   return Object.entries(params)
     .filter(([_, value]) => value !== undefined && value !== "") // Include only present params
-    .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`) // Encode key and value
+    .map(
+      ([key, value]) =>
+        `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
+    ) // Encode key and value
     .join("&"); // Join with `&`
 }

@@ -14,7 +14,13 @@ import { getToken } from "@/Services/Cookie/userCookie";
 import dayjs from "dayjs";
 import { toast } from "react-toastify";
 import LoaderSmall from "@/components/LoaderSmall";
-import { truncateName } from "@/Utilities/helper";
+import {
+  apiError,
+  responseValidator,
+  tokenValidator,
+  truncateName,
+} from "@/Utilities/helper";
+import ReactPlayer from "react-player";
 
 function Page() {
   const router = useRouter();
@@ -31,10 +37,11 @@ function Page() {
   const [isFormValid1, setIsFormValid1] = useState(false);
   const [showPage, setShowPage] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [selectedContent, setSelectedContent] = useState(Array(7).fill(null));
+  const [selectedContent, setSelectedContent] = useState([]);
   const [currentDay, setCurrentDay] = useState(null);
   const [dataIds, setDataIds] = useState([]);
-  const [loading,setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [isFormValid2, setIsFormValid2] = useState(false);
 
   const handleModal = (day) => {
     setCurrentDay(day);
@@ -63,13 +70,15 @@ function Page() {
     updatedDataIds[day - 1] = null;
     setDataIds(updatedDataIds);
   };
+
   console.log(dataIds);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     createChallengeApi();
-    // setShowPage(true);
+    // Reset selectedContent and dataIds based on days after submission
     setSelectedContent(Array(days).fill(null));
+    setDataIds(Array(days).fill(null));
   };
 
   useEffect(() => {
@@ -77,7 +86,7 @@ function Page() {
       const calculatedDays = dayjs(endDate).diff(dayjs(startDate), "day");
       setDays(calculatedDays);
     } else {
-      setDays(""); 
+      setDays("");
     }
   }, [startDate, endDate]);
 
@@ -106,11 +115,11 @@ function Page() {
     description,
     imageSrc1,
   ]);
-  const getCategoryApi = () => {
+  const getCategoryApi = async () => {
     const token = getToken();
 
     const myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + token);
+    myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
     const requestOptions = {
       method: "GET",
       headers: myHeaders,
@@ -127,43 +136,71 @@ function Page() {
       .catch((error) => console.error(error));
   };
 
-  const createChallengeApi = () => {
-    setLoading(true)
-    const token = getToken();
+  const createChallengeApi = async () => {
+    setLoading(true);
 
-    const myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + token);
-    const formdata = new FormData();
-    formdata.append("thumbnail", newFile);
-    formdata.append("title", title);
-    formdata.append("category", category);
-    formdata.append("accessibility", access);
-    formdata.append("description", description);
-    formdata.append("durationInDays", days);
-    formdata.append("type", "public");
-    formdata.append("startDate", startDate);
-    formdata.append("chapters", JSON.stringify(dataIds));
+    try {
+      // Prepare headers
+      const myHeaders = new Headers();
+      const token = await tokenValidator();
+      myHeaders.append("Authorization", `Bearer ${token}`);
 
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
+      // Prepare form data
+      const formData = new FormData();
+      formData.append("thumbnail", newFile);
+      formData.append("title", title);
+      formData.append("category", category);
+      formData.append("accessibility", access);
+      formData.append("description", description);
+      formData.append("durationInDays", days);
+      formData.append("type", "public");
+      formData.append("startDate", startDate);
+      formData.append("chapters", JSON.stringify(dataIds));
 
-      body: formdata,
-      redirect: "follow",
-    };
+      // Define request options
+      const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: formData,
+        redirect: "follow",
+      };
 
-    fetch(process.env.NEXT_PUBLIC_URL + "/challenges", requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result);
-        setLoading(false)
-        toast.success("Challenge Created")
+      // Make the API call
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_URL}/challenges`,
+        requestOptions
+      );
+
+      // Validate the response
+      const validatedResponse = await responseValidator(
+        response,
+        true,
+        "Challenge Created Successfully"
+      );
+
+      if (validatedResponse.status) {
+        // If the response is successful
+        console.log(validatedResponse.data);
+        // toast.success("Challenge Created Successfully");
         router.push("/challenge-module");
-      })
-      .catch((error) => {console.error(error)
-        setLoading(false)
-      });
+      } else {
+        // Handle specific error codes if needed
+        if (validatedResponse.code === 401) {
+          // For example, redirect to login if session expired
+          router.push("/login");
+        }
+        // Additional error handling can be done here based on `validatedResponse.code` or `validatedResponse.message`
+      }
+    } catch (error) {
+      // Handle network or unexpected errors
+      const errorResponse = apiError(error);
+      console.error(errorResponse.message);
+      // Optionally, you can perform additional actions based on the error
+    } finally {
+      setLoading(false);
+    }
   };
+
   console.log(selectedContent);
   const handleSubmit1 = (e) => {
     e.preventDefault();
@@ -178,7 +215,8 @@ function Page() {
         description,
         imageSrc1,
       };
-      console.log("Form Data:", formData);
+      setSelectedContent(Array(days).fill(null));
+      setDataIds(Array(days).fill(null));
       setShowPage(true);
     }
   };
@@ -189,9 +227,9 @@ function Page() {
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        setImageSrc1(reader.result); 
+        setImageSrc1(reader.result);
       };
-      reader.readAsDataURL(file); 
+      reader.readAsDataURL(file);
     }
   };
   const tomorrow = dayjs().add(1, "day").format("YYYY-MM-DD");
@@ -205,8 +243,15 @@ function Page() {
 
   const handleStartDateChange = (e) => {
     setStartDate(e.target.value);
-    setEndDate(""); 
+    setEndDate("");
   };
+  useEffect(() => {
+    // Check if all days have content
+    const allContentAdded =
+      selectedContent.length === days &&
+      selectedContent.every((content) => content !== null);
+    setIsFormValid2(allContentAdded);
+  }, [selectedContent, days]);
 
   return (
     <div className="flex flex-col gap-7 ">
@@ -268,7 +313,7 @@ function Page() {
                 type="file"
                 accept="image/png, image/jpeg, image/jpg"
                 className="absolute inset-0 opacity-0 cursor-pointer "
-                onChange={handleImageChange1} 
+                onChange={handleImageChange1}
               />
             </div>
           </div>
@@ -366,12 +411,11 @@ function Page() {
               No. of Days
             </p>
             <input
-              
               className="bg-white py-3 px-4 rounded-xl border border-[#E7E5E4]"
               placeholder="Enter No. of Days"
               value={days}
               onChange={(e) => setDays(e.target.value)}
-              disabled 
+              disabled
             />
           </div>
           <div className="flex flex-col gap-1">
@@ -411,14 +455,30 @@ function Page() {
               <div className="bg-white p-4 rounded-xl flex flex-col justify-center items-center gap-5 relative">
                 {selectedContent[i] ? (
                   <>
-                    <img
-                      src={selectedContent[i].thumbnail.url}
-                      alt="selected content"
-                      className=" object-cover rounded-lg"
-                    />
+                    {/* Conditional Rendering of Media Player */}
+                    {selectedContent[i].type === "video" ? (
+                      <ReactPlayer
+                        url={selectedContent[i].media.url}
+                        controls
+                        width="100%"
+                        height="auto"
+                        className="rounded-lg"
+                      />
+                    ) : selectedContent[i].type === "audio" ? (
+                      <ReactPlayer
+                        url={selectedContent[i].media.url}
+                        controls
+                        height="50px"
+                        width="100%"
+                        className="rounded-lg"
+                      />
+                    ) : (
+                      <p className="text-red-500">Unsupported media type.</p>
+                    )}
+
                     <button
                       onClick={() => handleRemoveContent(i + 1)}
-                      className="flex flex-row justify-center items-center text-[#000000] gap-2 bg-[#EE3E3E1A] py-2 px-3 w-full  rounded-full "
+                      className="flex flex-row justify-center items-center text-[#000000] gap-2 bg-[#EE3E3E1A] py-2 px-3 w-full rounded-full"
                     >
                       <RedRecycle />
                       <p className="text-sm font-sans font-semibold">
@@ -429,7 +489,7 @@ function Page() {
                 ) : (
                   <div
                     onClick={() => handleModal(i + 1)}
-                    className="flex flex-col gap-2 items-center text-center"
+                    className="flex flex-col gap-2 items-center text-center cursor-pointer"
                   >
                     <p className="text-2xl font-sans font-semibold text-userblack">
                       No content
@@ -450,9 +510,14 @@ function Page() {
           ))}
           <button
             type="submit"
-            className="p-4 w-2/5 mt-5 bg-[#AE445A] text-white rounded-lg font-sans text-base font-black flex justify-center items-center"
+            className={`p-4 w-2/5 mt-5 rounded-lg font-sans text-base font-black flex justify-center items-center ${
+              isFormValid2
+                ? "bg-[#AE445A] text-white cursor-pointer"
+                : "bg-[#AE445A] text-white opacity-50 cursor-not-allowed"
+            }`}
+            disabled={!isFormValid2 || loading}
           >
-            {!loading?"Save & Finish":<LoaderSmall/>}
+            {!loading ? "Save & Finish" : <LoaderSmall />}
           </button>
         </form>
       )}
