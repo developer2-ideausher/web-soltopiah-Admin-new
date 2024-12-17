@@ -11,8 +11,12 @@ import GreenThumbsUp from "../../../../../icons/GreenThumbsUp";
 import { getToken } from "@/Services/Cookie/userCookie";
 import dayjs from "dayjs";
 import RightBlackArrow from "../../../../../icons/RightBlackArrow";
-import { getChallengeForumPosts, getOnceChallengeApi } from "@/Services/Api/Challenge/challenge";
+import {
+  getChallengeForumPosts,
+  getOnceChallengeApi,
+} from "@/Services/Api/Challenge/challenge";
 import { useRouter, useSearchParams } from "next/navigation";
+import { truncateDescription, truncateName } from "@/Utilities/helper";
 
 function Page({ params }) {
   const [challengeData, setChallengeData] = useState(null);
@@ -82,15 +86,15 @@ function Page({ params }) {
   //     .catch((error) => console.error(error));
   // };
 
- const fetchData = async () => {
-     const result = await getOnceChallengeApi(chdetails);
-     if (result.status) {
-       console.log(result.data);
-       setChallengeData(result.data);
-     } else {
-       console.log(result.message);
-     }
-   };
+  const fetchData = async () => {
+    const result = await getOnceChallengeApi(chdetails);
+    if (result.status) {
+      console.log(result.data);
+      setChallengeData(result.data);
+    } else {
+      console.log(result.message);
+    }
+  };
   // const getOnceChallengeApi = () => {
   //   const myHeaders = new Headers();
   //   myHeaders.append("Authorization", "Bearer " + token);
@@ -145,31 +149,34 @@ function Page({ params }) {
             />
             <div className="flex flex-col gap-2 w-full">
               <div className="flex flex-row items-center justify-between">
-                <p className="text-sm font-sans font-normal text-[#71737F]">
+                {/* <p className="text-sm font-sans font-normal text-[#71737F]">
                   Challenge Detail
-                </p>
+                </p> */}
+                <div>
+                  {" "}
+                  <p className="text-3xl font-sans font-semibold text-black">
+                    {truncateName(challengeData.title)}
+                  </p>
+                  <div>
+                    <p className="text-sm font-sans font-semibold text-black">
+                      {dayjs(challengeData.startDate).format("MMM DD,YYYY")}
+                      {/* + { Meditation }+ {Type} */}
+                    </p>
+                  </div>
+                  <p className="text-[#4F546B] font-sans text-sm font-normal w-[95%]">
+                    {truncateDescription(challengeData.description)}
+                  </p>
+                </div>
                 <p className="py-1 px-4 bg-[#08A03C1A] border border-[#08A03C33] rounded-full text-sm font-semibold font-sans text-[#08A03C]">
                   {challengeData.accessibility === "free"
                     ? "Free"
                     : "Subscription Only"}
                 </p>
               </div>
-              <p className="text-3xl font-sans font-semibold text-black">
-                {challengeData.title}
-              </p>
-              <div>
-                <p className="text-sm font-sans font-semibold text-black">
-                  {dayjs(challengeData.startDate).format("MMM DD,YYYY")}
-                  {/* + { Meditation }+ {Type} */}
-                </p>
-              </div>
-              <p className="text-[#4F546B] font-sans text-sm font-normal w-[95%]">
-                {challengeData.description}
-              </p>
             </div>
           </div>
           <div className="flex flex-col gap-10">
-            <div className="bg-[#DADDF1] p-1 rounded-full w-1/5 flex flex-row justify-between items-center gap-3">
+            <div className="bg-[#DADDF1] p-2 rounded-full w-1/5 flex flex-row justify-between items-center gap-3">
               <button
                 onClick={() => setShowVideos(false)}
                 className={` ${
@@ -188,7 +195,7 @@ function Page({ params }) {
               </button>
             </div>
             {!setVideos && (
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-3 max-h-96 overflow-y-scroll">
                 {challengeData.chapters.map((chapter, index) => (
                   <div
                     key={chapter._id}
@@ -197,7 +204,7 @@ function Page({ params }) {
                     <div className="flex flex-row items-start gap-3 w-[90%] ">
                       <img
                         className="w-20 h-20 object-cover rounded-lg"
-                        src={chapter.thumbnail.url}
+                        src={chapter.thumbnail?.url}
                         alt=""
                       />
                       <div className="flex flex-col gap-1">
@@ -205,7 +212,7 @@ function Page({ params }) {
                           Chapter {index + 1}
                         </p>
                         <p className="text-base font-sans font-semibold text-userblack ">
-                          {chapter.title}
+                          {truncateName(chapter.title)}
                         </p>
                         <p className="gap-1 flex flex-row items-center text-xs font-sans font-medium text-[#3090E9]">
                           {chapter.type.charAt(0).toUpperCase() +
@@ -214,7 +221,8 @@ function Page({ params }) {
                           <span>{chapter.durationInMinutes} min </span>
                         </p>
                         <p className="text-[#6D6D6D] text-sm font-sans font-normal">
-                          {chapter.description || "No description provided."}
+                          {truncateDescription(chapter.description) ||
+                            "No description provided."}
                         </p>
                       </div>
                     </div>

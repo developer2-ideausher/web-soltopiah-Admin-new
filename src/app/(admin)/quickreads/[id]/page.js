@@ -131,12 +131,13 @@ function Page({ params }) {
                 <p className="text-sm font-sans font-semibold text-black">
                   Title
                 </p>
-                <input
+                <p>{requestData.title}</p>
+                {/* <input
                   type="text"
                   value={requestData.title}
                   className="py-3 px-4 rounded-xl border border-[#E7E5E4] bg-white text-sm font-sans font-normal text-userblack"
                   placeholder="An emotional trigger is"
-                />
+                /> */}
               </div>
               <div className="flex flex-col gap-2 ">
                 <p className="text-sm font-sans font-semibold text-black">
