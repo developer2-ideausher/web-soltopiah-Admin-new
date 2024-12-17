@@ -7,64 +7,30 @@ import { getToken } from "@/Services/Cookie/userCookie";
 import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import LoaderSmall from "@/components/LoaderSmall";
+import { tokenValidator } from "@/Utilities/helper";
+import { createQuickReads } from "@/Services/Api/quickReads/quickReads";
 
 function Page() {
   const [formData, setFormData] = useState({
     title: "",
     pictures: [],
   });
-  const [images, setImages] = useState([]);
   const [title, setTitle] = useState("");
-  const router = useRouter();
+  const [images, setImages] = useState([]);
   const [isFormValid, setIsFormValid] = useState(false);
   const [loading, setLoading] = useState(false);
-
+const router = useRouter()
   useEffect(() => {
-    // const {title , pictures} = formData
-    setIsFormValid(title && images.length > 0);
-  }, [formData, images]);
+    setIsFormValid(title.trim().length > 0 && images.length > 0);
+  }, [title, images]);
+
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
   };
 
-  const token = getToken();
-
-  const postNewQuickReadApi = (e) => {
-    e.preventDefault();
-    setLoading(true);
-    const myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + token);
-    const formdata = new FormData();
-
-    for (let i = 0; i < images.length; i++) {
-      formdata.append("pictures", images[i].file);
-    }
-
-    formdata.append("title", title);
-
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: formdata,
-      redirect: "follow",
-    };
-
-    fetch(process.env.NEXT_PUBLIC_URL + "/quick-reads", requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result.data);
-        setLoading(false);
-        toast.success("Quick read added");
-        router.push("/quickreads");
-      })
-      .catch((error) => {
-        console.error(error);
-        toast.error("Error Occured");
-      });
-  };
-
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
+
     if (images.length + files.length > 12) {
       toast.error("You can only upload up to 12 images");
       return;
@@ -77,11 +43,29 @@ function Page() {
 
     setImages((prevImages) => [...prevImages, ...newImages].slice(0, 12));
   };
-  console.log(images);
+
   const handleImageRemove = (index) => {
     setImages((prevImages) => prevImages.filter((_, i) => i !== index));
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const result = await createQuickReads(title, images);
+    // The responseValidator should return an object with a 
+    // "status" (boolean) and "message" (string), similar to createSubs.
+
+    if (result?.status) {
+      toast.success("Quick read added");
+      router.push("/quickreads");
+    } else {
+      toast.error(result?.message || "Error occurred while creating quick read");
+    }
+
+    setLoading(false);
+  };
+  
   return (
     <div className="flex flex-col gap-7">
       <div className="flex flex-row gap-5 items-center">
@@ -93,7 +77,7 @@ function Page() {
         </p>
       </div>
       <form
-        onSubmit={postNewQuickReadApi}
+        onSubmit={handleSubmit}
         className="flex flex-col gap-5 w-1/3"
       >
         <div className="flex flex-col gap-2 ">

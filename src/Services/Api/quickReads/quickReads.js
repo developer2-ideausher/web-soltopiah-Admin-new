@@ -67,3 +67,33 @@ export const getPendingQuickReadsCount = async (page,sortOrder = "desc", search 
     apiError(error);
   }
 };
+export const createQuickReads = async (title, images) => {
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
+
+  const formdata = new FormData();
+  formdata.append("title", title);
+
+  // Append each image file
+  images.forEach(({ file }) => {
+    formdata.append("pictures", file);
+  });
+
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: formdata,
+    redirect: "follow",
+  };
+
+  try {
+    const response = await fetch(
+      url + "/quick-reads",
+      requestOptions
+    );
+    return responseValidator(response); 
+    // This should parse or handle the response object and return a uniform result
+  } catch (error) {
+    apiError(error);
+  }
+};

@@ -270,6 +270,8 @@ function Page() {
   const [otpNumber, setOtpNumber] = useState("");
   const [widgetId, setWidgetId] = useState("");
   const [startTimer, setStartTimer] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
+  
   const timerHandler = () => {
     setStartTimer(!startTimer);
   };
@@ -301,6 +303,7 @@ function Page() {
     try {
       const res = await confirmCode(otpNumber);
       if (res.status) {
+        setIsVerified(true);
         loginHandler(res.token)
 
       }
@@ -325,6 +328,7 @@ function Page() {
             toastId: "1234567890",
           });
           console.error(response?.message);
+          setIsVerified(false)
         }
       };
       
@@ -406,8 +410,11 @@ function Page() {
               </p>
               <OTP handler={otpCallback} />
               <button
+              disabled={isVerified}
                 onClick={otpSubmitHandler}
-                className="bg-primary flex justify-center py-4 px-4 rounded-lg text-base font-semibold font-sans text-white w-full  "
+                className={`bg-primary flex justify-center py-4 px-4 rounded-lg text-base font-semibold font-sans text-white w-full ${
+                  isVerified ? "opacity-50 cursor-not-allowed" : ""
+                }`}
               >
                 {!loading ? "Verify" : <LoaderSmall />}
               </button>

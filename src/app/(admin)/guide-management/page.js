@@ -240,7 +240,7 @@ function Page() {
                           {item.hasPremiumPlan ? "Premium" : "Free"}
                         </span>
                         <span className="text-base font-sans font-semibold text-userblack text-center">
-                          NA
+                          0
                         </span>
                         <span className="text-base font-sans font-semibold text-userblack text-center">
                           {item.bookingsCount}
