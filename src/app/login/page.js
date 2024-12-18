@@ -373,7 +373,7 @@ function Page() {
             <p className="text-primary text-[32px] font-semibold font-sans">
               Login
             </p>
-            <p className="text-sm font-semibold text-[#2E2E37] mt-6">
+            <p className="text-sm font-semibold text-[#2E2E37] mt-6 font-sans">
               Mobile number
             </p>
             <PhoneInput
@@ -404,9 +404,9 @@ function Page() {
               Verification
             </p>
             <div className="flex flex-col gap-4">
-              <p className="text-base font-semibold text-[#2E2E37]">
+              <p className="text-base font-semibold text-[#2E2E37] font-sans">
                 Please enter the 6-digit code sent to <br />{" "}
-                <span className="font-bold">+{phone}</span>{" "}
+                <span className="font-bold font-sans">+{phone}</span>{" "}
               </p>
               <OTP handler={otpCallback} />
               <button
@@ -421,13 +421,13 @@ function Page() {
               {!startTimer && (
                 <button
                   onClick={OTPResendHandler}
-                  className="bg-transparent py-4 px-4 rounded-lg text-base border-2 border-[#d2d2d2] font-semibold text-[#82829b] w-full  "
+                  className="bg-transparent py-4 px-4 rounded-lg text-base border-2 border-[#d2d2d2] font-semibold text-[#82829b] w-full font-sans  "
                 >
                   Resend OTP
                 </button>
               )}
               {startTimer && (
-                <h5 className="flex items-center font-normal text-grey text-sm justify-center mt-2 w-full">
+                <h5 className="flex items-center font-normal text-grey text-sm justify-center mt-2 w-full font-sans">
                   Didn&apos;t receive the OTP?
                   <CountdownTimer interval={60} handler={timerHandler} />
                 </h5>

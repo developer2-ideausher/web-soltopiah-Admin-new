@@ -81,9 +81,9 @@ export default function Page() {
     setData([]);
     const result = await tableApi(tableData, page, sort, searchTerm, filter);
     if (result.status) {
-      console.log(result.data.results);
-      setData(result.data.results);
-      setTotalPages(result.data.totalPages);
+      console.log(result.data?.results);
+      setData(result.data?.results);
+      setTotalPages(result.data?.totalPages);
     } else {
       console.error(result.message);
     }
