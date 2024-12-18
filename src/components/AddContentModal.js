@@ -139,14 +139,15 @@ function AddContentModal({ onclose, onSave }) {
             </div>
           </div>
         ))}
+        {content && content.length > 0 && (
+          <RobinPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        )}
       </div>
-      {content && content.length > 0 && (
-        <RobinPagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
-      )}
+
       <div className="flex flex-row justify-between items-center gap-3">
         <button
           onClick={handleReset}
@@ -155,8 +156,13 @@ function AddContentModal({ onclose, onSave }) {
           Reset
         </button>
         <button
+          disabled={!selectedFile}
           onClick={handleSave}
-          className="bg-[#AE445A] text-white p-3 rounded-lg w-full text-base font-sans font-normal"
+          className={` ${
+            selectedFile
+              ? "bg-[#AE445A] text-white cursor-pointer"
+              : "bg-[#AE445A] text-white opacity-50 cursor-not-allowed"
+          } p-3 rounded-lg w-full text-base font-sans font-normal`}
         >
           Save
         </button>

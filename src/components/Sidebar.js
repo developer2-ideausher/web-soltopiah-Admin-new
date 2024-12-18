@@ -19,8 +19,8 @@ import DashboardIco from "../../icons/DashboardIco";
 export default function Sidebar() {
   const pathName = usePathname();
   return (
-    <div className="flex flex-col lg:p-3 xl:p-2 2xl:p-2 bg-primary  justify-start h-screen ">
-      <div className="flex flex-col p-3 justify-center h-full w-full gap-1 font-sans ">
+    <div className="flex flex-col lg:p-3 xl:p-2 2xl:p-2 bg-primary justify-start h-screen ">
+      <div className="flex flex-col p-3 justify-start h-full w-full gap-1 font-sans ">
         <div className="flex justify-center" >
         <Image src="/logo.svg" layout="responsive" width="300" height="200" alt="Logo" />
         </div>

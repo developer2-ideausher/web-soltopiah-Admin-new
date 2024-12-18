@@ -21,6 +21,7 @@ import LoaderLarge from "@/components/LoaderLarge";
 import NoData from "../../../../icons/NoData";
 import NoDataIcon from "../../../../icons/NoDataIcon";
 import BarChart from "@/components/DashBoardNew/BarChart";
+import Trending from "../../../../icons/Trending";
 export default function Page() {
   const [guideData, setGuideData] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
@@ -336,11 +337,13 @@ export default function Page() {
                       {item.category?.title}
                     </p>
                   </div>
-                  <div className="flex items-center justify-center gap-1 bg-[#F9882433] py-1 px-2 rounded-full border border-[#F9882436]">
-                    <Star />
-                    <p className="text-[#B35605] font-sans font-normal text-sm">
-                      {item.count}
-                    </p>
+                  <div className="flex gap-4 items-center">
+                    {index == 0 && <Trending />}
+                    <div className="flex items-center justify-center gap-1 bg-[#F9882433] py-1 px-2 rounded-full border border-[#F9882436]">
+                      <p className="text-[#B35605] font-sans font-normal text-sm">
+                        {item.count}
+                      </p>
+                    </div>
                   </div>
                 </div>
               ))}

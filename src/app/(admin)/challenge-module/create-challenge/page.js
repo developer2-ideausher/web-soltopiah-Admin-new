@@ -443,7 +443,7 @@ function Page() {
           </button>
         </form>
       ) : (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-1/3">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5 md:w-2/5 xl:w-2/5 2xl:w-1/3">
           <p className="text-userblack text-3xl font-semibold font-sans">
             2. Add Content
           </p>
@@ -510,7 +510,7 @@ function Page() {
           ))}
           <button
             type="submit"
-            className={`p-4 w-2/5 mt-5 rounded-lg font-sans text-base font-black flex justify-center items-center ${
+            className={`p-4 md:w-3/5 lg:w-3/5 2xl:w-2/5 mt-5 rounded-lg font-sans text-base font-black flex justify-center items-center ${
               isFormValid2
                 ? "bg-[#AE445A] text-white cursor-pointer"
                 : "bg-[#AE445A] text-white opacity-50 cursor-not-allowed"
