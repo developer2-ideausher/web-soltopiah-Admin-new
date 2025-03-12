@@ -51,6 +51,7 @@ function Page({ params }) {
   const [smallCommentLoading, setSmallCommentLoading] = useState(false);
   const [smallLoading, setSmallLoading] = useState(false);
   const [repliesLoading, setRepliesLoading] = useState(false);
+  const [editedPostContent, setEditedPostContent] = useState("");
   const searchParams = useSearchParams();
   const { chdetails } = params;
   const day = searchParams.get("day");
@@ -177,26 +178,7 @@ function Page({ params }) {
 
     setSmallLoading(false);
   };
-  // const handleEditPost = async (postId, updatedContent) => {
-  //   setSmallLoading(true);
-  //   try {
-  //     const data = { content: updatedContent }; // Pass the updated content
-  //     const result = await patchForumPost(postId, data);
 
-  //     // Update the UI with the edited post
-  //     setPosts((prevPosts) =>
-  //       prevPosts.map((post) =>
-  //         post._id === postId ? { ...post, content: result.content } : post
-  //       )
-  //     );
-  //     toast.success("Post updated successfully");
-  //     setShowEditSection(false); // Close the edit section
-  //   } catch (error) {
-  //     toast.error("Error updating post");
-  //   } finally {
-  //     setSmallLoading(false); // Hide the loader
-  //   }
-  // };
   const handleDeleteForumPost = async (postId) => {
     toast.error("Deleting");
     // setLoading(true);
@@ -241,7 +223,27 @@ function Page({ params }) {
     }
     // setLoading(false);
   };
-
+  const handleEditPost = async (postId, newContent) => {
+    setSmallCommentLoading(true);
+    const result = await patchForumPost(postId, { content: newContent });
+    if (result.status) {
+      toast.success("Post updated successfully");
+      // Update the post in state
+      setPosts((prevPosts) =>
+        prevPosts.map((post) => {
+          if (post._id === postId) {
+            return { ...post, content: newContent };
+          }
+          return post;
+        })
+      );
+      setShowEditSection(null);
+    } else {
+      console.error(result.message);
+      toast.error(result.message);
+    }
+    setSmallCommentLoading(false);
+  };
   useEffect(() => {
     fetchData(chdetails, day);
   }, [chdetails, day]);
@@ -298,9 +300,11 @@ function Page({ params }) {
                   className="cursor-pointer"
                   onClick={() => {
                     if (showEditSection === post._id) {
-                      setShowEditSection("");
+                      setShowEditSection(null);
+                      setEditedPostContent("");
                     } else {
                       setShowEditSection(post._id);
+                      setEditedPostContent(post.content);
                     }
                   }}
                 >
@@ -320,29 +324,21 @@ function Page({ params }) {
             )} */}
             {showEditSection === post._id ? (
               <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handleEditPost(post._id, post.content);
-                }}
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleEditPost(post._id, editedPostContent);
+              }}
                 className="flex gap-10"
               >
                 <input
-                  value={post.content}
-                  // onChange={(e) =>
-                  //   setPosts((prevPosts) =>
-                  //     prevPosts.map((post) =>
-                  //       post._id === item._id
-                  //         ? { ...post, content: e.target.value }
-                  //         : post
-                  //     )
-                  //   )
-                  // }
+                   value={editedPostContent}
+                   onChange={(e) => setEditedPostContent(e.target.value)}
                   className="border font-sans text-sm font-medium shadow-md border-[#E7E5E4] py-3 px-4 rounded-xl w-full flex justify-start"
                   placeholder="Edit Post"
                 />
                 <button
                   type="submit"
-                  disabled
+                  
                   className="py-4 px-8 bg-[#AE445A] font-sans border-[#B7B7B7] rounded-lg  text-white font-bold text-base flex justify-center items-center"
                 >
                   {smallCommentLoading ? <LoaderSmall /> : "Save"}
@@ -463,7 +459,7 @@ function Page({ params }) {
                           } else {
                             setCommentsId(comment._id);
                             console.log(comment._id);
-                            fetchReplyData(comment._id,1);
+                            fetchReplyData(comment._id, 1);
                           }
                         }}
                         className="flex justify-start text-[#3090E9] font-sans font-semibold text-base"

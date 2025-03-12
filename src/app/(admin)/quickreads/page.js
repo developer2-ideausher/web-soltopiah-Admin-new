@@ -30,11 +30,13 @@ function Page() {
   const [sort, setSort] = useState("desc");
   const [filter, setFilter] = useState("");
 
+
+  const handleFilterChange = (value) => {
+    setFilter(value);
+    setCurrentPage(1); // Reset page to 1 whenever filter changes
+  };
   const router = useRouter();
-  useEffect(() => {
-    fetchPendingData();
-    fetchData(currentPage);
-  }, [currentPage, sort, searchTerm, filter]);
+
 
   const token = getToken();
   const handleSearch = (term) => {
@@ -73,6 +75,10 @@ function Page() {
       console.error(result.message);
     }
   };
+  useEffect(() => {
+    fetchPendingData();
+    fetchData(currentPage);
+  }, [currentPage, sort, searchTerm, filter]);
   // const getAllQuickreadsDataApi = (page) => {
   //   const myHeaders = new Headers();
   //   myHeaders.append("Authorization", "Bearer " + token);
@@ -136,11 +142,13 @@ function Page() {
               { value: "Admin", label: "Admin" },
               { value: "Guide", label: "Guide" },
               { value: "", label: "All" },
+              { value: "approved", label: "Approved" },
+              { value: "declined", label: "Declined" },
             ]}
             name={"Created By"}
             handleSort={sort}
             setHandleSort={setSort}
-            setHandleFilter={setFilter}
+            setHandleFilter={handleFilterChange}
             handleSearch={handleSearch}
             showAddButton={true}
             title="Add new"

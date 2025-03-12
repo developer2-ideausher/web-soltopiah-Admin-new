@@ -106,10 +106,27 @@ import {
         }
     }
   
+    // const forgotPassword = async (email) => {
+    //     await sendPasswordResetEmail(auth, email);
+    //     toast.success("Reset password email has been sent successfully")
+    // }
     const forgotPassword = async (email) => {
-        await sendPasswordResetEmail(auth, email);
-        toast.success("Reset password email has been sent successfully")
-    }
+        try {
+            await sendPasswordResetEmail(auth, email);
+            toast.success("Reset password email has been sent successfully", {
+                toastId: "firebase-reset-password-sent-message",
+            });
+        } catch (e) {
+            const errorMessage = firebaseErrorFinder[e.code] 
+                ? firebaseErrorFinder[e.code] 
+                : "Something went wrong during authentication. Please refresh and retry.";
+            
+            toast.error(errorMessage, {
+                toastId: "firebase-error",
+            });
+        }
+    };
+    
   
     const signInWithGoogle = async () => {
         try{

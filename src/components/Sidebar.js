@@ -16,13 +16,21 @@ import PlatformEarnings from "../../icons/PlatformEarnings";
 import NotificationManagement from "../../icons/NotificationManagement";
 import BadgesandRewards from "../../icons/BadgesandRewards";
 import DashboardIco from "../../icons/DashboardIco";
+import Policy from "../../icons/Policy";
+import EarningIcon from "../../icons/EarningIcon";
 export default function Sidebar() {
   const pathName = usePathname();
   return (
     <div className="flex flex-col lg:p-3 xl:p-2 2xl:p-2 bg-primary justify-start h-screen ">
       <div className="flex flex-col p-3 justify-start h-full w-full gap-1 font-sans ">
-        <div className="flex justify-center" >
-        <Image src="/logo.svg" layout="responsive" width="300" height="200" alt="Logo" />
+        <div className="flex justify-center">
+          <Image
+            src="/logo.svg"
+            layout="responsive"
+            width="300"
+            height="200"
+            alt="Logo"
+          />
         </div>
 
         <div className="flex  flex-col gap-1  overflow-y-scroll sidebar-wrapper">
@@ -32,8 +40,8 @@ export default function Sidebar() {
               pathName == "/dashboard" && "bg-pink on"
             }`}
           >
-            <DashboardIco/>
-           
+            <DashboardIco />
+
             <h6 className="lg:text-xs xl:text-sm 2xl:text-base font-sans text-white font-normal group-hover:text-primary">
               Dashboard
             </h6>
@@ -41,7 +49,7 @@ export default function Sidebar() {
           <Link
             href="/user-management"
             className={`flex items-center gap-2 lg:p-2 xl:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
-              pathName.startsWith("/user-management")  && "bg-pink on"
+              pathName.startsWith("/user-management") && "bg-pink on"
             }`}
           >
             <UserIcon />
@@ -52,7 +60,7 @@ export default function Sidebar() {
           <Link
             href="/guide-management"
             className={`flex items-center gap-2 lg:p-2 xl:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
-              pathName.startsWith('/guide-management') && "bg-pink on"
+              pathName.startsWith("/guide-management") && "bg-pink on"
             }`}
           >
             <GuideIcon />
@@ -63,7 +71,7 @@ export default function Sidebar() {
           <Link
             href="/content-management"
             className={`flex items-center gap-2 lg:p-2 xl:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
-              pathName.startsWith("/content-management")   && "bg-pink on"
+              pathName.startsWith("/content-management") && "bg-pink on"
             }`}
           >
             <ContentManage />
@@ -72,20 +80,9 @@ export default function Sidebar() {
             </h6>
           </Link>
           <Link
-            href="/category-management"
-            className={`flex items-center gap-2 lg:p-2 xl:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
-              pathName.startsWith("/category-management")  && "bg-pink on"
-            }`}
-          >
-            <Category />
-            <h6 className="lg:text-xs xl:text-sm 2xl:text-base text-white font-normal font-sans group-hover:text-primary whitespace-nowrap">
-              Category Management
-            </h6>
-          </Link>
-          <Link
             href="/quickreads"
             className={`flex items-center gap-2 lg:p-2 xl:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
-              pathName.startsWith("/quickreads")  && "bg-pink on"
+              pathName.startsWith("/quickreads") && "bg-pink on"
             }`}
           >
             <Quickreads />
@@ -94,9 +91,21 @@ export default function Sidebar() {
             </h6>
           </Link>
           <Link
+            href="/category-management"
+            className={`flex items-center gap-2 lg:p-2 xl:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
+              pathName.startsWith("/category-management") && "bg-pink on"
+            }`}
+          >
+            <Category />
+            <h6 className="lg:text-xs xl:text-sm 2xl:text-base text-white font-normal font-sans group-hover:text-primary whitespace-nowrap">
+              Category Management
+            </h6>
+          </Link>
+          
+          <Link
             href="/live-manage"
             className={`flex items-center gap-2 lg:p-2 xl:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
-              pathName.startsWith("/live-manage" ) && "bg-pink on"
+              pathName.startsWith("/live-manage") && "bg-pink on"
             }`}
           >
             <Quickreads />
@@ -107,7 +116,7 @@ export default function Sidebar() {
           <Link
             href="/challenge-module"
             className={`flex items-center gap-2 lg:p-2 xl:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
-              pathName.startsWith("/challenge-module" )  && "bg-pink on"
+              pathName.startsWith("/challenge-module") && "bg-pink on"
             }`}
           >
             <Challenge />
@@ -118,7 +127,7 @@ export default function Sidebar() {
           <Link
             href="/calmness-feedback"
             className={`flex items-center gap-2 lg:p-2 xl:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
-              pathName.startsWith("/calmness-feedback")  && "bg-pink on"
+              pathName.startsWith("/calmness-feedback") && "bg-pink on"
             }`}
           >
             <Calmess />
@@ -140,7 +149,7 @@ export default function Sidebar() {
           <Link
             href="/community-management"
             className={`flex items-center gap-2 lg:p-2 xl:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
-              pathName.startsWith("/community-management")   && "bg-pink on"
+              pathName.startsWith("/community-management") && "bg-pink on"
             }`}
           >
             <Community />
@@ -165,7 +174,7 @@ export default function Sidebar() {
               pathName.startsWith("/earning-management") && "bg-pink on"
             }`}
           >
-            <NotificationManagement />
+            <EarningIcon />
             <h6 className="lg:text-xs xl:text-sm 2xl:text-base text-white font-normal whitespace-nowrap group-hover:text-primary">
               Earning Management
             </h6>
@@ -190,6 +199,17 @@ export default function Sidebar() {
             <BadgesandRewards />
             <h6 className="lg:text-xs xl:text-sm 2xl:text-base text-white font-normal group-hover:text-primary">
               Badges and Rewards
+            </h6>
+          </Link>
+          <Link
+            href="/policies"
+            className={`flex items-center gap-2 lg:p-2 xl:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
+              pathName == "/policies" && "bg-pink on"
+            }`}
+          >
+            <Policy />
+            <h6 className="lg:text-xs xl:text-sm 2xl:text-base text-white font-normal group-hover:text-primary">
+              Policies
             </h6>
           </Link>
         </div>

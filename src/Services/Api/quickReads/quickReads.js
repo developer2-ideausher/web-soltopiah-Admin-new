@@ -20,6 +20,20 @@ export const getAllQuickreadsDataApi = async (
     headers: myHeaders,
     redirect: "follow",
   };
+  let creatorRole;
+  let status;
+
+  if (type === "Admin" || type === "Guide") {
+    creatorRole = type;
+    status = undefined;
+  } else if (type === "approved" || type === "declined") {
+    creatorRole = undefined;
+    status = type;
+  } else {
+    // If type is "" or "All" or something else not in the above conditions
+    creatorRole = undefined;
+    status = undefined;
+  }
   // const searchParam = search.trim() !== "" ? `&search=${search}` : "";
   const queryParams = buildQueryParams({
     page,
@@ -27,7 +41,8 @@ export const getAllQuickreadsDataApi = async (
     sortBy: "createdAt",
     sortOrder,
     search: search.trim(),
-    creatorRole: type || undefined, // Only include `type` if it's truthy
+    creatorRole,
+    status
   });
   try {
     const response = await fetch(
@@ -40,7 +55,11 @@ export const getAllQuickreadsDataApi = async (
     apiError(error);
   }
 };
-export const getPendingQuickReadsCount = async (page,sortOrder = "desc", search = "") => {
+export const getPendingQuickReadsCount = async (
+  page,
+  sortOrder = "desc",
+  search = ""
+) => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
 
@@ -87,11 +106,8 @@ export const createQuickReads = async (title, images) => {
   };
 
   try {
-    const response = await fetch(
-      url + "/quick-reads",
-      requestOptions
-    );
-    return responseValidator(response); 
+    const response = await fetch(url + "/quick-reads", requestOptions);
+    return responseValidator(response);
     // This should parse or handle the response object and return a uniform result
   } catch (error) {
     apiError(error);
