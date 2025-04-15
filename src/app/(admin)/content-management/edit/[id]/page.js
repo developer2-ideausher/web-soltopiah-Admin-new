@@ -1,5 +1,5 @@
 "use client"
-import { addChapterInCourse, deleteMediaFromCourse, getAllCategories, getSingleChapter, getSingleCourse, updateChapterAccessibility, updateChapterInCourse, updateCourse } from '@/Utilities/Course'
+import { addChapterInCourse, addChapterInCourseTwo, deleteMediaFromCourse, getAllCategories, getSingleChapter, getSingleCourse, updateChapterAccessibility, updateChapterInCourse, updateChapterInCourseTwo, updateCourse, updateCourseTwo } from '@/Utilities/Course'
 import AudioVideoUploader from '@/components/AUdioVideoUploader'
 import AddContentToCourseModal from '@/components/AddContentToCourseModal'
 import Dropdown from '@/components/Dropdown'
@@ -58,8 +58,11 @@ export default function Add() {
     const accessibilityContentTabHandler = (e) => {
         setContentAccessType(e.target.value)
     }
-    const conteFileHandler = (val,duration,type) => {
-        setContentFile(val)
+    const conteFileHandler = (url,key,duration,type) => {
+        setContentFile({
+            key:key,
+            url:url
+        })
         setContentFileDuration(duration)
         setType(type)
         if(contentArray.length == 0){
@@ -118,9 +121,9 @@ export default function Add() {
             const obj =  contentDataPrepareHandler()
             if(edited){
                 updateMediaInCourseHandler(obj)
-                toast.info("Updating content, It'll take some time",{
-                    toastId:"sjdjdj"
-                })
+                // toast.info("Updating content, It'll take some time",{
+                //     toastId:"sjdjdj"
+                // })
                 setEdited(false)
             }else{
                 addMediaInCourseHandler(obj)
@@ -154,7 +157,7 @@ export default function Add() {
 
     const [categoryData,setCategoryData] = useState([])
     const dropdownHandler = (val) => {
-        setCategory(val._id)
+        setCategory(val)
         setSaveEdit(true)
     }
 
@@ -256,25 +259,37 @@ export default function Add() {
         }
     }
     // files related data
-    const audioHandler = (val,duration,type) => {
-        setFile(val)
+    const audioHandler = (url,key,duration,type) => {
+        setFile({
+            key:key,
+            url:url
+        })
         setDuration(duration)
+        // setCourseContentType(type)
     }
     const submitHanlder = async (e) => {
         e.preventDefault()
         const result = validator()
         if(result){
-            const formdata = new FormData();
-            if(thumbnail != data?.thumbnail?.url){
-                formdata.append("thumbnail", thumbnail);
-            }
-            formdata.append("courseType",courseType)
-            formdata.append("category", category);
-            formdata.append("accessibility", accessibilityTab);
-            formdata.append("description", description);
-            formdata.append("title", title);
+            // const formdata = new FormData();
+            // if(thumbnail != data?.thumbnail?.url){
+            //     formdata.append("thumbnail", thumbnail);
+            // }
+            // formdata.append("courseType",courseType)
+            // formdata.append("category", category);
+            // formdata.append("accessibility", accessibilityTab);
+            // formdata.append("description", description);
+            // formdata.append("title", title);
             setLoading(true)
-            const response = await updateCourse(formdata,params.id)
+            const obj = {
+                thumbnail:thumbnail,
+                category:category,
+                accessibility:accessibilityTab,
+                description:description,
+                title:title,
+                courseType:courseType,
+            }
+            const response = await updateCourseTwo(obj,params.id)
             if(response?.status){
                 router.push("/content-management")
             }else{
@@ -285,20 +300,29 @@ export default function Add() {
             }
         }
     }
-    const addMediaInCourseHandler = async (item) => {
-        toast.info("Uploading your content. This may take a moment. Once the upload is complete, your content will appear in the content section.",{
-            toastId:"sjdjdj"
-        })
-        const formdata = new FormData();
-        formdata.append("thumbnail", item.thumbnail);
-        formdata.append("category", category);
-        formdata.append("accessibility", item.accessType);
-        formdata.append("title", item.title);
-        formdata.append("media", item.media);
-        formdata.append("durationInMinutes", item.duration);            
-        const response = await addChapterInCourse(params.id,formdata)
+    const addMediaInCourseHandler = async (obj) => {
+        // toast.info("Uploading your content. This may take a moment. Once the upload is complete, your content will appear in the content section.",{
+        //     toastId:"sjdjdj"
+        // })
+        // const formdata = new FormData();
+        // formdata.append("thumbnail", item.thumbnail);
+        // formdata.append("category", category);
+        // formdata.append("accessibility", item.accessType);
+        // formdata.append("title", item.title);
+        // formdata.append("media", item.media);
+        // formdata.append("durationInMinutes", item.duration);  
+        const apiObj = {
+            thumbnail:obj.thumbnail,
+            category:category,
+            accessibility:contentAccessType,
+            title:obj.title,
+            media:obj.media,
+            durationInMinutes:contentFileDuration,
+            type:courseContentType
+        }          
+        const response = await addChapterInCourseTwo(params.id,apiObj)
         if(response?.status){
-            setContentArray([...contentArray,item])
+            setContentArray([...contentArray,obj])
             fetchDetails()
             toast.success("Content added successfully",{
                 toastId:"mdjd"
@@ -306,18 +330,25 @@ export default function Add() {
         }
     }
     const updateMediaInCourseHandler = async (item) => {
-        const formdata = new FormData();
-        if(typeof(item.thumbnail) != 'string'){
-            formdata.append("thumbnail", item.thumbnail);
-        }
-        formdata.append("category", category);
-        formdata.append("title", item.title);
-        if(typeof(item.media) != 'string'){
-            formdata.append("media", item.media);
-            formdata.append("durationInMinutes", item.duration);   
-        }         
+        // const formdata = new FormData();
+        // if(typeof(item.thumbnail) != 'string'){
+        //     formdata.append("thumbnail", item.thumbnail);
+        // }
+        // formdata.append("category", category);
+        // formdata.append("title", item.title);
+        // if(typeof(item.media) != 'string'){
+        //     formdata.append("media", item.media);
+        //     formdata.append("durationInMinutes", item.duration);   
+        // }         
         updateAccessibility(item._id,item.accessType)
-        const response = await updateChapterInCourse(item._id,formdata)
+        const obj = {
+            category:category,
+            title:item.title,
+            durationInMinutes:item.duration,
+            ...(typeof item.thumbnail !== 'string' && { thumbnail:item.thumbnail}),
+            ...(typeof item.media !== 'string' && { media:item.media}),
+        }
+        const response = await updateChapterInCourseTwo(item._id,obj)
         if(response?.status){
             fetchDetails()
             toast.success("Content updated successfully",{
@@ -334,24 +365,24 @@ export default function Add() {
     const fetchDetails = async () => {
         const response = await getSingleCourse(params.id)
         if(response?.status){
-            setThumbnail(response.data?.thumbnail?.url)
-            setTitle(response.data?.title)
-            setDescription(response.data?.description)
-            setAccessibilityTab(response.data?.accessibility)
-            setCategory(response.data?.category?._id)
-            setCategoryName(response.data?.category?.title)
-            setCourseType(response.data?.courseType)
+            setThumbnail(response.data.thumbnail)
+            setTitle(response.data.title)
+            setDescription(response.data.description)
+            setAccessibilityTab(response.data.accessibility)
+            setCategory(response.data.category?._id)
+            setCategoryName(response.data.category?.title)
+            setCourseType(response.data.courseType)
             setCourseContentType(response?.data?.courseContentType)
             const temp = []
             response.data.chapters.map((item)=>{
                 const obj = {
                     thumbnail:item.thumbnail?.url,
-                    title:item?.title,
-                    accessType:item?.accessibility,
-                    media:item?.media?.url,
-                    duration:item?.durationInMinutes,
-                    type:item?.type,
-                    _id:item?._id
+                    title:item.title,
+                    accessType:item.accessibility,
+                    media:item.media.url,
+                    duration:item.durationInMinutes,
+                    type:item.type,
+                    _id:item._id
                 }
                 temp.push(obj)
             })
@@ -374,12 +405,12 @@ export default function Add() {
         if(response?.status){
             const obj = {
                 thumbnail:response.data?.thumbnail?.url,
-                title:response.data?.title,
-                accessType:response.data?.accessibility,
+                title:response.data.title,
+                accessType:response.data.accessibility,
                 media:response.data?.media?.url,
-                duration:response.data?.durationInMinutes,
-                type:response.data?.type,
-                _id:response.data?._id
+                duration:response.data.durationInMinutes,
+                type:response.data.type,
+                _id:response.data._id
             }
             temp?.map((item,ind)=>{
                 if(item._id == obj._id){
@@ -422,7 +453,7 @@ export default function Add() {
                 <h6  onClick={e=>setContentTab("single")} className={`text-sm p-2 text-center rounded-[80px] cursor-pointer ${contentTab == "single" ? "font-semibold text-[#00] bg-white":"font-normal text-[#818181] bg-transparent "} `}>Single</h6>
             </div> */}
             <h6 className='text-[#252322] font-semibold mt-5 text-sm mb-1'>Thumbnail</h6>
-            <ImageUploader callback={thumbnailHandler} fileAdded={thumbnail} uploaded={true} />
+            <ImageUploader callback={thumbnailHandler} fileAdded={thumbnail?.url} uploaded={true} />
             <h6 className='text-[#252322] font-semibold mt-5 text-sm mb-1'>Title</h6>
             <input type="text" value={title} onChange={e=>{
                 setTitle(e.target.value)
@@ -457,7 +488,7 @@ export default function Add() {
             <textarea rows="4" value={description} onChange={e=>{
                 setDescription(e.target.value)
                 setSaveEdit(true)    
-            }} placeholder='Enter title' className='bg-white border border-solid border-[#E7E5E4] w-full rounded-xl py-3 px-4 resize-none'/>
+            }} placeholder='Enter description' className='bg-white border border-solid border-[#E7E5E4] w-full rounded-xl py-3 px-4 resize-none'/>
             {contentTab == 'course' && contentArray.length > 0 && !edited && <h6 className='text-[#252322] font-semibold mt-5 text-sm mb-1'>Content</h6>}
             {contentTab == 'course' && contentArray.length == 0 &&  !showContent  &&  <div onClick={e=>{
                 setShowContent(true)

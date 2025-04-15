@@ -62,8 +62,6 @@ function Page() {
     setLoading(false);
   };
   const fetchChartData = async (filter) => {
-   
-
     const result = await subsChartApi(filter);
     if (result.status) {
       console.log("chartData", result.data);
@@ -72,7 +70,6 @@ function Page() {
     } else {
       console.error(result.message);
     }
-    
   };
 
   useEffect(() => {
@@ -147,12 +144,10 @@ function Page() {
             <option value="monthly">Monthly</option>
           </select>
         </div>
-        {console.log("chartData in page",chartData)}
+        {console.log("chartData in page", chartData)}
         <SubsLineChart chartData={chartData} />
-  
       </div>
-      <div className="flex flex-col">
-       
+      {/* <div className="flex flex-col">
         <SearchBar
           showFilters={false}
           sort={false}
@@ -272,8 +267,7 @@ function Page() {
               ))}
           </div>
         </div>
-        
-      </div>
+      </div> */}
     </div>
   );
 }

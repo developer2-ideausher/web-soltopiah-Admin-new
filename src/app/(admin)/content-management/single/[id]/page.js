@@ -6,6 +6,7 @@ import LoaderLarge from '@/components/LoaderLarge'
 import Link from 'next/link'
 import { useParams,useRouter } from 'next/navigation'
 import React, { useEffect, useRef, useState } from 'react'
+import ReactAudioPlayer from 'react-audio-player'
 import { toast } from 'react-toastify'
 
 export default function ViewPage() {
@@ -84,11 +85,11 @@ export default function ViewPage() {
           <h5 className='text-[#414554] font-normal text-lg'>{data?.category?.title}</h5>
 
           <h6 className='text-sm font-semibold text-[#121616] mt-5'>Content Added</h6>
-          <h5 className='text-[#414554] font-normal text-lg mb-1'>{data?.chapter?.title}</h5>
-          {data?.chapter.type == 'audio' && file != '' && <audio id="audio" className='w-2/5 xs:w-full' controls>
+          {/* <h5 className='text-[#414554] font-normal text-lg mb-1'>{data?.chapter?.title}</h5> */}
+          {data?.chapter?.type == 'audio' && file != '' && <audio id="audio" className='w-2/5 xs:w-full' controls>
             <source src={file}  />
           </audio>}
-          {data?.chapter?.type == 'video' && file != '' && <video id="video" width="40%" className='rounded-xl xs:w-full w-[600px] h-[400px] ' controls height="200">
+          {data?.chapter?.type == 'video' && file != '' && <video id="video" width="40%" className='rounded-xl xs:w-full' controls height="200">
             <source src={file}  />
           </video>}
         </div>}

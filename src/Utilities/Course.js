@@ -3,9 +3,10 @@ import { apiError, responseValidator, tokenValidator } from "./helper";
 
 // chapters
 export async function createUnitaryCourse(formdata) {
+  const token = await tokenValidator();
   var myHeaders = new Headers();
   // myHeaders.append("Content-Type", "application/json");
-  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
+  myHeaders.append("Authorization", "Bearer " + token);
   var requestOptions = {
     method: "POST",
     headers: myHeaders,
@@ -22,9 +23,31 @@ export async function createUnitaryCourse(formdata) {
     apiError(e);
   }
 }
-export async function getAllUnitaryCourses(query) {
+export async function createUnitaryCourseNew(formdata) {
+  const token = await tokenValidator();
   var myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Authorization", "Bearer " + token);
+  var requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: JSON.stringify(formdata),
+    redirect: "follow",
+  };
+  try {
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_URL + "/courses/unitary2",
+      requestOptions
+    );
+    return responseValidator(response, true, "Created successfully");
+  } catch (e) {
+    apiError(e);
+  }
+}
+export async function getAllUnitaryCourses(query) {
+  const token = await tokenValidator();
+  var myHeaders = new Headers();
+  myHeaders.append("Authorization", "Bearer " + token);
   var requestOptions = {
     method: "GET",
     headers: myHeaders,
@@ -32,7 +55,7 @@ export async function getAllUnitaryCourses(query) {
   };
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL + "/courses/unitary"+query,
+      process.env.NEXT_PUBLIC_URL + "/courses/unitary" + query,
       requestOptions
     );
     return responseValidator(response);
@@ -43,9 +66,10 @@ export async function getAllUnitaryCourses(query) {
 
 // courses
 export async function createCourse(formdata) {
+  const token = await tokenValidator();
   var myHeaders = new Headers();
   // myHeaders.append("Content-Type", "application/json");
-  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
+  myHeaders.append("Authorization", "Bearer " + token);
   var requestOptions = {
     method: "POST",
     headers: myHeaders,
@@ -62,13 +86,36 @@ export async function createCourse(formdata) {
     apiError(e);
   }
 }
-export async function updateCourse(formdata, id) {
+export async function createCourseTwo(formdata) {
+  const token = await tokenValidator();
   var myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Authorization", "Bearer " + token);
+  var requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: JSON.stringify(formdata),
+    redirect: "follow",
+  };
+  try {
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_URL + "/courses/standard2",
+      requestOptions
+    );
+    return responseValidator(response, true, "Course created successfully");
+  } catch (e) {
+    apiError(e);
+  }
+}
+export async function updateCourse(formdata, id) {
+  const token = await tokenValidator();
+  var myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Authorization", "Bearer " + token);
   var requestOptions = {
     method: "PATCH",
     headers: myHeaders,
-    body: formdata,
+    body: JSON.stringify(formdata),
     redirect: "follow",
   };
   try {
@@ -81,9 +128,31 @@ export async function updateCourse(formdata, id) {
     apiError(e);
   }
 }
-export async function addChapterInCourse(id, formdata) {
+export async function updateCourseTwo(formdata, id) {
+  const token = await tokenValidator();
   var myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Authorization", "Bearer " + token);
+  var requestOptions = {
+    method: "PATCH",
+    headers: myHeaders,
+    body: JSON.stringify(formdata),
+    redirect: "follow",
+  };
+  try {
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_URL + "/courses/" + id + "/2",
+      requestOptions
+    );
+    return responseValidator(response, true, "Course updated successfully");
+  } catch (e) {
+    apiError(e);
+  }
+}
+export async function addChapterInCourse(id, formdata) {
+  const token = await tokenValidator();
+  var myHeaders = new Headers();
+  myHeaders.append("Authorization", "Bearer " + token);
   var requestOptions = {
     method: "POST",
     headers: myHeaders,
@@ -100,9 +169,31 @@ export async function addChapterInCourse(id, formdata) {
     apiError(e);
   }
 }
-export async function deleteMediaFromCourse(id, cid) {
+export async function addChapterInCourseTwo(id, formdata) {
+  const token = await tokenValidator();
   var myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Authorization", "Bearer " + token);
+  var requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: JSON.stringify(formdata),
+    redirect: "follow",
+  };
+  try {
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_URL + "/courses/standard/" + id + "/chapters2",
+      requestOptions
+    );
+    return responseValidator(response);
+  } catch (e) {
+    apiError(e);
+  }
+}
+export async function deleteMediaFromCourse(id, cid) {
+  const token = await tokenValidator();
+  var myHeaders = new Headers();
+  myHeaders.append("Authorization", "Bearer " + token);
   var requestOptions = {
     method: "DELETE",
     headers: myHeaders,
@@ -127,8 +218,9 @@ export async function deleteMediaFromCourse(id, cid) {
   }
 }
 export async function updateChapterInCourse(id, formdata) {
+  const token = await tokenValidator();
   var myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
+  myHeaders.append("Authorization", "Bearer " + token);
   var requestOptions = {
     method: "PATCH",
     headers: myHeaders,
@@ -145,10 +237,32 @@ export async function updateChapterInCourse(id, formdata) {
     apiError(e);
   }
 }
-export async function updateChapterAccessibility(id, payload) {
+export async function updateChapterInCourseTwo(id, formdata) {
+  const token = await tokenValidator();
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
-  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
+  myHeaders.append("Authorization", "Bearer " + token);
+  var requestOptions = {
+    method: "PATCH",
+    headers: myHeaders,
+    body: JSON.stringify(formdata),
+    redirect: "follow",
+  };
+  try {
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_URL + "/chapters/" + id + "/2",
+      requestOptions
+    );
+    return responseValidator(response);
+  } catch (e) {
+    apiError(e);
+  }
+}
+export async function updateChapterAccessibility(id, payload) {
+  const token = await tokenValidator();
+  var myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Authorization", "Bearer " + token);
   const raw = JSON.stringify(payload);
   var requestOptions = {
     method: "PATCH",
@@ -168,8 +282,9 @@ export async function updateChapterAccessibility(id, payload) {
 }
 
 export async function getAllCourses(query) {
+  const token = await tokenValidator();
   var myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
+  myHeaders.append("Authorization", "Bearer " + token);
   var requestOptions = {
     method: "GET",
     headers: myHeaders,
@@ -177,7 +292,7 @@ export async function getAllCourses(query) {
   };
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL + "/courses/standard"+query,
+      process.env.NEXT_PUBLIC_URL + "/courses/standard/" + query,
       requestOptions
     );
     return responseValidator(response);
@@ -187,8 +302,9 @@ export async function getAllCourses(query) {
 }
 
 export async function getAllCategories() {
+  const token = await tokenValidator();
   var myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
+  myHeaders.append("Authorization", "Bearer " + token);
   var requestOptions = {
     method: "GET",
     headers: myHeaders,
@@ -196,7 +312,7 @@ export async function getAllCategories() {
   };
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_URL + "/categories",
+      process.env.NEXT_PUBLIC_URL + "/categories?limit=200",
       requestOptions
     );
     return responseValidator(response);
@@ -205,8 +321,9 @@ export async function getAllCategories() {
   }
 }
 export async function getSingleCourse(id) {
+  const token = await tokenValidator();
   var myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
+  myHeaders.append("Authorization", "Bearer " + token);
   var requestOptions = {
     method: "GET",
     headers: myHeaders,
@@ -223,8 +340,9 @@ export async function getSingleCourse(id) {
   }
 }
 export async function deleteSingleCourse(id) {
+  const token = await tokenValidator();
   var myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
+  myHeaders.append("Authorization", "Bearer " + token);
   var requestOptions = {
     method: "DELETE",
     headers: myHeaders,
@@ -240,9 +358,11 @@ export async function deleteSingleCourse(id) {
     apiError(e);
   }
 }
-export const getSingleChapter = async (id) => {
+
+export async function getSingleChapter(id) {
+  const token = await tokenValidator();
   var myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + await tokenValidator());
+  myHeaders.append("Authorization", "Bearer " + token);
   var requestOptions = {
     method: "GET",
     headers: myHeaders,
@@ -257,4 +377,66 @@ export const getSingleChapter = async (id) => {
   } catch (e) {
     apiError(e);
   }
-};
+}
+export async function getUploadLink(file, media) {
+  const token = await tokenValidator();
+  var myHeaders = new Headers();
+  myHeaders.append("Content-Type", file.type);
+  myHeaders.append("Authorization", "Bearer " + token);
+  var requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+  try {
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_URL +
+        `/get-signed-url?type=${media}&fileType=${file.type}`,
+      requestOptions
+    );
+    return responseValidator(response);
+  } catch (e) {
+    apiError(e);
+  }
+}
+export async function uploadToS3(url, file) {
+  const token = await tokenValidator();
+  var myHeaders = new Headers();
+  myHeaders.append("Content-Type", file.type);
+  // myHeaders.append("Authorization", "Bearer "+token);
+  var requestOptions = {
+    method: "PUT",
+    body: file,
+    headers: myHeaders,
+    redirect: "follow",
+  };
+  try {
+    const response = await fetch(url, requestOptions);
+    if (response?.status > 199 && response.status < 300) {
+      return true;
+    }
+  } catch (e) {
+    apiError(e);
+  }
+}
+export async function removeFileFromS3(payload) {
+  const token = await tokenValidator();
+  var myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Authorization", "Bearer " + token);
+  var requestOptions = {
+    method: "POST",
+    body: JSON.stringify(payload),
+    headers: myHeaders,
+    redirect: "follow",
+  };
+  try {
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_URL + `/delete-file`,
+      requestOptions
+    );
+    return responseValidator(response);
+  } catch (e) {
+    apiError(e);
+  }
+}

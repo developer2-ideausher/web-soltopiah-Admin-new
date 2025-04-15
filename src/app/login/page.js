@@ -245,7 +245,6 @@ import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import useFirebaseAuth from "@/Services/Firebase/useFirebaseAuth";
 import { toast } from "react-toastify";
 import { RingLoader } from "react-spinners";
 import Cookies from "js-cookie";
@@ -253,17 +252,19 @@ import { useRouter } from "next/navigation";
 import LoaderSmall from "@/components/LoaderSmall";
 import Image from "next/image";
 import CountdownTimer from "@/components/CountDownTimer";
-import { LoginApi } from "@/Services/Api/Login";
+import { LoginApi, loginNew } from "@/Services/Api/Login";
 import { getToken, setToken } from "@/Services/Cookie/userCookie";
+import useFirebaseAuth from "@/Services/Firebase/useFirebaseAuth";
 
 function Page() {
   const router = useRouter();
   const recaptchaContainer = useRef(null);
 
-  const { initializeRecaptcha, phoneSignIn, confirmCode} =
-    useFirebaseAuth();
+  const { initializeRecaptcha, loginWithEmailAndPassword } = useFirebaseAuth();
 
   const [showLogin, setShowlogin] = useState(0);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
@@ -271,80 +272,108 @@ function Page() {
   const [widgetId, setWidgetId] = useState("");
   const [startTimer, setStartTimer] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
-  
-  const timerHandler = () => {
-    setStartTimer(!startTimer);
-  };
-  const handleClick = async (e) => {
+
+  // const timerHandler = () => {
+  //   setStartTimer(!startTimer);
+  // };
+  // const handleClick = async (e) => {
+  //   e.preventDefault();
+  //   if (phone != "" && phone.length > 5) {
+  //     // setShowlogin(1);
+  //     if (Cookies.get("token")) {
+  //       Cookies.remove("token");
+  //     }
+  //     setLoading(true);
+  //     const res = await phoneSignIn(`+${phone}`);
+  //     if (res.status) {
+  //       setShowlogin(1);
+  //       setLoading(false);
+  //       setStartTimer(true);
+  //     } else {
+  //       setLoading(false);
+  //     }
+  //   } else {
+  //     toast.info("Add mobile number", {
+  //       toastId: "sdkj",
+  //     });
+  //   }
+  // };
+
+  // const otpSubmitHandler = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const res = await confirmCode(otpNumber);
+  //     if (res.status) {
+  //       setIsVerified(true);
+  //       loginHandler(res.token);
+  //     }
+  //   } catch (e) {
+  //     console.error(e);
+  //   }
+  //   setLoading(false);
+  // };
+  // const loginHandler = async (token) => {
+  //   // console.log(authUser.user.multiFactor.user.accessToken);
+  //   const formdata = new FormData();
+  //   // formdata.append("profilePic", fileInput.files[0], "[PROXY]");
+  //   formdata.append("dob", "2004-01-17");
+  //   formdata.append("name", "Amin Painter");
+  //   const response = await LoginApi(formdata, token);
+  //   setLoading(false);
+  //   if (response?.status) {
+  //     setToken(token);
+  //     router.push("/dashboard");
+  //   } else {
+  //     toast.error(response?.message, {
+  //       toastId: "1234567890",
+  //     });
+  //     console.error(response?.message);
+  //     setIsVerified(false);
+  //   }
+  // };
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (phone != "" && phone.length > 5) {
-      // setShowlogin(1);
-      if (Cookies.get("token")) {
-        Cookies.remove("token");
-      }
-      setLoading(true);
-      const res = await phoneSignIn(`+${phone}`);
-      if (res.status) {
-        setShowlogin(1);
-        setLoading(false);
-        setStartTimer(true);
-      } else {
-        setLoading(false);
-      }
-    } else {
-      toast.info("Add mobile number", {
-        toastId: "sdkj",
-      });
-    }
-  };
-
-  const otpSubmitHandler = async () => {
-    setLoading(true);
     try {
-      const res = await confirmCode(otpNumber);
-      if (res.status) {
-        setIsVerified(true);
-        loginHandler(res.token)
+      setLoading(true);
+      const res = await loginWithEmailAndPassword(
+        email,
+        password,
+        "/dashboard"
+      );
+      console.log(res, "hi check");
+      if (res?.status) {
+        console.log(res.token);
+        const firebaseToken = res.token;
 
-      }
-    } catch (e) {
-      console.error(e);
-    }
-    setLoading(false);
-  };
-  const loginHandler = async (token) => {
-        // console.log(authUser.user.multiFactor.user.accessToken);
-        const formdata = new FormData();
-        // formdata.append("profilePic", fileInput.files[0], "[PROXY]");
-        formdata.append("dob", "2004-01-17");
-        formdata.append("name", "Amin Painter");
-        const response = await LoginApi(formdata,token);
-        setLoading(false);
-        if (response?.status) {
-          setToken(token)
+        const creds = { email, password };
+        const result = await LoginApi(firebaseToken);
+        if (result?.status) {
+          console.log(firebaseToken,res,"checking");
+          setToken(firebaseToken);
           router.push("/dashboard");
         } else {
-          toast.error(response?.message, {
-            toastId: "1234567890",
-          });
-          console.error(response?.message);
-          setIsVerified(false)
+          toast.error("Something went wrong while registering with backend");
         }
-      };
-      
-
-  const OTPResendHandler = async (e) => {
-    setLoading(true);
-    const res = await phoneSignIn(`+${phone}`);
-    if (res.status) {
-      setStartTimer(true);
+      }
+    } catch (error) {
+      toast.error(error.message || "Unable to login");
+    } finally {
       setLoading(false);
     }
   };
-  const otpCallback = (val) => {
-    setOtpNumber(val);
-  };
- 
+
+  // const OTPResendHandler = async (e) => {
+  //   setLoading(true);
+  //   const res = await phoneSignIn(`+${phone}`);
+  //   if (res.status) {
+  //     setStartTimer(true);
+  //     setLoading(false);
+  //   }
+  // };
+  // const otpCallback = (val) => {
+  //   setOtpNumber(val);
+  // };
 
   useEffect(() => {
     initializeRecaptcha(recaptchaContainer.current);
@@ -355,49 +384,77 @@ function Page() {
         <img src="LoginImage.png" alt="" />
       </div>
       <div id="recaptcha-container" ref={recaptchaContainer}></div>
-      {showLogin == 0 && (
-        <div className="w-1/2  flex items-center justify-center bg-white">
-          <form
-            onSubmit={handleClick}
-            className="flex flex-col w-4/6 xs:w-5/6 md:w-5/6"
-          >
-            <div className="hidden justify-center xs:flex sm:flex">
-              <Image
-                src="/logo.svg"
-                alt="Logo"
-                width="200"
-                height="100"
-                className=""
-              />
-            </div>
-            <p className="text-primary text-[32px] font-semibold font-sans">
-              Login
-            </p>
+
+      <div className="w-1/2  flex items-center justify-center bg-white">
+        <form
+          onSubmit={handleLogin}
+          className="flex flex-col w-4/6 xs:w-5/6 md:w-5/6"
+        >
+          <div className="hidden justify-center xs:flex sm:flex">
+            <Image
+              src="/logo.svg"
+              alt="Logo"
+              width="200"
+              height="100"
+              className=""
+            />
+          </div>
+          <p className="text-primary text-[32px] font-semibold font-sans">
+            Login
+          </p>
+          <div className="flex flex-col gap-2">
             <p className="text-sm font-semibold text-[#2E2E37] mt-6 font-sans">
-              Mobile number
+              Email
             </p>
-            <PhoneInput
+            <input
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              type="email"
+              className="py-4 px-4 rounded-lg bg-[#EEEEF6] text-[#000] text-base font-normal w-full"
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <p className="text-sm font-semibold text-[#2E2E37] mt-6 font-sans">
+              Password
+            </p>
+            <input
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              type="password"
+              className="py-4 px-4 rounded-lg bg-[#EEEEF6] text-[#000] text-base font-normal w-full"
+            />
+          </div>
+
+          {/* <PhoneInput
               country={"us"}
               value={phone}
               onChange={(phone) => setPhone(phone)}
               style={{ background: "#EEEEF6" }}
               inputClass="control"
-            />
-            {/* <input type="number" value={phone} onChange={e=>setPhone(e.target.value)} placeholder="Enter mobile number" className="py-4 px-4 rounded-lg bg-[#EEEEF6] text-[#000] text-base font-normal w-full"/> */}
-            {/* <h5 className="text-[#232946] text-base font-semibold underline text-right mt-4">Resend OTP</h5> */}
-
-            <button
-              type="submit"
-              className="bg-primary flex justify-center py-4 mt-5 rounded-lg text-base font-semibold font-sans text-white w-full"
+            /> */}
+          {/* <input type="number" value={phone} onChange={e=>setPhone(e.target.value)} placeholder="Enter mobile number" className="py-4 px-4 rounded-lg bg-[#EEEEF6] text-[#000] text-base font-normal w-full"/> */}
+          {/* <h5 className="text-[#232946] text-base font-semibold underline text-right mt-4">Resend OTP</h5> */}
+          <div className="flex justify-end">
+            <a
+              target="_black"
+              href="https://console.firebase.google.com/"
+              className="text-sm font-semibold text-[#2E2E37] mt-1 font-sans hover:underline"
             >
-              {!loading ? "Verify" : <LoaderSmall />}
-            </button>
- 
-          
-          </form>
-        </div>
-      )}
-      {showLogin == 1 && (
+              Forgot Password?
+            </a>
+          </div>
+          <button
+            type="submit"
+            className="bg-primary flex justify-center py-4 mt-5 rounded-lg text-base font-semibold font-sans text-white w-full"
+          >
+            {!loading ? "Login" : <LoaderSmall />}
+          </button>
+        </form>
+      </div>
+
+      {/* {showLogin == 1 && (
         <div className="w-1/2  flex items-center justify-center bg-white">
           <div className="flex flex-col w-4/6 xs:w-5/6 md:w-5/6">
             <p className="text-primary text-[32px] font-semibold font-sans">
@@ -435,7 +492,7 @@ function Page() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
       {/* {showLogin == 2 && <LoginDetails phone={phone} />} */}
     </div>
   );

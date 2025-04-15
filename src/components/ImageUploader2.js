@@ -1,15 +1,11 @@
-import { getUploadLink, removeFileFromS3, uploadToS3 } from '@/Utilities/Course';
 import React,{useState,useRef,useEffect} from 'react'
 import { toast } from 'react-toastify';
-import LoaderLarge from './LoaderLarge';
-export default function ImageUploader(props) {
+export default function ImageUploaderTwo(props) {
     const [file, setFile] = useState(null);
     const [isUploaded, setIsUploaded] = useState(props.uploaded);
     const [url,setUrl] = useState(props.fileAdded);
     const fileRef = useRef(null);
     const [loading,setLoading] = useState(false)
-    const [keyValue,setKeyValue] = useState(props.keyUrl)
-    
     const coverHandler = (e) => {
         if(e.target.files[0]){
             if (
@@ -38,32 +34,9 @@ export default function ImageUploader(props) {
         // setFile(e.target.files[0]);
     }
     const uploadHandler = () => {
-        apiHandler(file)
-    }
-    
-    const apiHandler = async (file) => {
-        setLoading(true)
-        const response = await getUploadLink(file,'thumbnail')
-        if(response.status){
-            uploadS3Handler(response.data?.url,response.data?.key,file)
-        }
-    }
-    const uploadS3Handler = async (url,key,file) => {
-        const response = await uploadToS3(url,file)
-        if(response){
-            const temp = url.split("?")
-            const obj = {
-                key:key,
-                url:temp[0]
-            }
-            props.callback(obj)
-            setKeyValue(key)
-            setUrl(URL.createObjectURL(file))
-            setIsUploaded(true);
-        }else{
-            
-        }
-        setLoading(false)
+        props.callback(file)
+        setUrl(URL.createObjectURL(file))
+        setIsUploaded(true)
     }
     const backImage = {
         backgroundImage: isUploaded?`url("${url}")`:``,
@@ -72,17 +45,7 @@ export default function ImageUploader(props) {
         backgroundRepeat:"no-repeat",
         // borderColor:"transparent"
     }
-    const removeHandler = () => {
-        removeApiHandler()
-        setFile(null);
-        setIsUploaded(false);
-        setUrl('');
-        props.callback('');
-    }
-    const removeApiHandler = async () => {
-        const response = await removeFileFromS3({key:keyValue})
-        setKeyValue('')
-    }
+
     useEffect(()=>{
         if(file){
             setLoading(true)
@@ -92,7 +55,7 @@ export default function ImageUploader(props) {
 
     return (
         <div className='flex items-center cursor-pointer relative group justify-center size-44 rounded-lg bg-[#fff] border border-dashed border-[#D3D6EE]' style={backImage}>
-            {!isUploaded && !loading && <div className='w-full flex flex-wrap justify-center'>
+            {!isUploaded && <div className='w-full flex flex-wrap justify-center'>
                 <div className='size-16 bg-[#DADDF1] rounded-full flex justify-center items-center'>
                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
                         <rect width="24" height="24" transform="translate(0.5)" fill="#DADDF1"/>
@@ -102,8 +65,7 @@ export default function ImageUploader(props) {
                 <h6 className='text-xs font-normal mt-2 text-[#9C9896] w-full text-center'>Drag and drop image(PNG,JPG or JPEG) or</h6>
                 <h6 className='text-xs font-semibold text-[#4655B9] mt-2'>Choose file</h6>
             </div>}
-            {loading && <LoaderLarge/>}
-            {isUploaded && !loading && <h5 className={`text-sm font-normal text-[#AE445A] hidden group-hover:flex`}>Edit Picture</h5>}
+            {isUploaded && <h5 className={`text-sm font-normal text-[#AE445A] hidden group-hover:flex`}>Edit Picture</h5>}
             <input 
                 type='file'
                 ref={fileRef}
@@ -112,12 +74,6 @@ export default function ImageUploader(props) {
                 className={`absolute w-full h-full top-0 left-0 opacity-0 cursor-pointer`} 
                 accept=".jpg,.png,.jpeg"
             />
-            
-            {isUploaded && !loading && (
-                <div onClick={removeHandler} className="flex size-10 cursor-pointer justify-center items-center rounded-full bg-white absolute -top-4 -right-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2-icon lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-                </div>
-            )}
         </div>
     )
 }

@@ -1,6 +1,6 @@
 "use client"
-import {  getAllCategories, getSingleChapter, getSingleCourse, updateChapterInCourse, updateCourse } from '@/Utilities/Course'
-import AudioVideoUploader from '@/components/AUdioVideoUploader'
+import {  getAllCategories, getSingleChapter, getSingleCourse, updateChapterInCourse, updateChapterInCourseTwo, updateCourse, updateCourseTwo } from '@/Utilities/Course'
+import AudioVideoUploader from '@/components/AudiVideoUploader'
 import AddContentToCourseModal from '@/components/AddContentToCourseModal'
 import Dropdown from '@/components/Dropdown'
 import ImageUploader from '@/components/ImageUploader'
@@ -41,7 +41,7 @@ export default function Add() {
 
     const [categoryData,setCategoryData] = useState([])
     const dropdownHandler = (val) => {
-        setCategory(val._id)
+        setCategory(val)
     }
 
     // mutual related data
@@ -113,8 +113,11 @@ export default function Add() {
     }
     
     // files related data
-    const audioHandler = (val,duration) => {
-        setFile(val)
+    const audioHandler = (url,key,duration) => {
+        setFile({
+            key:key,
+            url:url
+        })
         setDuration(duration)
     }
     const submitHanlder = async (e) => {
@@ -125,17 +128,25 @@ export default function Add() {
                 if(file != data.chapter.media.url){
                     updateContent()
                 }
-                const formdata = new FormData();
-                if(thumbnail != data?.thumbnail?.url){
-                    formdata.append("thumbnail", thumbnail);
+                // const formdata = new FormData();
+                // if(thumbnail != data?.thumbnail?.url){
+                //     formdata.append("thumbnail", thumbnail);
+                // }
+                // formdata.append("category", category);
+                // formdata.append("description", description);
+                // formdata.append("title", title);
+                // formdata.append("accessibility", accessibilityTab);
+                // formdata.append("courseType",courseType)
+                const obj = {
+                    thumbnail:thumbnail,
+                    category:category,
+                    description:description,
+                    title:title,
+                    accessibility:accessibilityTab,
+                    courseType:courseType
                 }
-                formdata.append("category", category);
-                formdata.append("description", description);
-                formdata.append("title", title);
-                formdata.append("accessibility", accessibilityTab);
-                formdata.append("courseType",courseType)
                 setLoading(true)
-                const response = await updateCourse(formdata,params.id)
+                const response = await updateCourseTwo(obj,params.id)
                 if(response?.status){
                     router.push("/content-management")
                 }else{
@@ -149,14 +160,17 @@ export default function Add() {
     }
     const updateContent = async () => {
         
-        const formdata = new FormData();
-        // const temp = file.split("?")
-        if(file != data.chapter.media.url){
-            formdata.append("media", file);
+        // const formdata = new FormData();
+        // if(file != data.chapter.media.url){
+        //     formdata.append("media", file);
+        // }
+        // formdata.append("durationInMinutes",duration)
+        const obj = {
+            media:file,
+            durationInMinutes:duration
         }
-        formdata.append("durationInMinutes",duration)
         
-        const response = await updateChapterInCourse(data.chapter._id,formdata)
+        const response = await updateChapterInCourseTwo(data.chapter._id,obj)
         if(response?.status){
 
         }else{
@@ -169,16 +183,16 @@ export default function Add() {
     const fetchDetails = async () => {
         const response = await getSingleCourse(params.id)
         if(response?.status){
-            setThumbnail(response.data?.thumbnail?.url)
-            setTitle(response.data?.title)
-            setDescription(response.data?.description)
-            setAccessibilityTab(response.data?.accessibility)
-            setCategory(response.data?.category?._id)
-            setCategoryName(response.data?.category?.title)
+            setThumbnail(response.data.thumbnail)
+            setTitle(response.data.title)
+            setDescription(response.data.description)
+            setAccessibilityTab(response.data.accessibility)
+            setCategory(response.data.category?._id)
+            setCategoryName(response.data.category?.title)
             setData(response.data)
-            setDuration(response.data?.chapter?.durationInMinutes)
-            setCourseType(response.data?.courseType)
-            singleChapterHandler(response.data?.chapter?._id)
+            setDuration(response.data.chapter.durationInMinutes)
+            setCourseType(response.data.courseType)
+            singleChapterHandler(response.data.chapter._id)
         }else{
          
         }
@@ -186,7 +200,7 @@ export default function Add() {
     const singleChapterHandler = async (id) => {
         const response = await getSingleChapter(id)
         if(response?.status){
-            setFile(response.data?._doc?.media?.url)
+            setFile(response.data?._doc?.media)
         }
     }
     useEffect(()=>{
@@ -215,7 +229,7 @@ export default function Add() {
                 <h6  onClick={e=>setContentTab("single")} className={`text-sm p-2 text-center rounded-[80px] cursor-pointer ${contentTab == "single" ? "font-semibold text-[#00] bg-white":"font-normal text-[#818181] bg-transparent "} `}>Single</h6>
             </div> */}
             <h6 className='text-[#252322] font-semibold mt-5 text-sm mb-1'>Thumbnail</h6>
-            <ImageUploader callback={thumbnailHandler} fileAdded={thumbnail} uploaded={true} />
+            <ImageUploader callback={thumbnailHandler} fileAdded={thumbnail?.url} keyUrl={thumbnail?.key} uploaded={true} />
             <h6 className='text-[#252322] font-semibold mt-5 text-sm mb-1'>Title</h6>
             <input type="text" value={title} onChange={e=>setTitle(e.target.value)} placeholder='Enter title' className='bg-white border border-solid border-[#E7E5E4] w-full rounded-xl py-3 px-4'/>
               
@@ -241,7 +255,7 @@ export default function Add() {
                 </label>
             </div>
             <h6 className='text-[#252322] font-semibold mt-5 text-sm mb-1'>Description</h6>
-            <textarea rows="4" value={description} onChange={e=>setDescription(e.target.value)} placeholder='Enter title' className='bg-white border border-solid border-[#E7E5E4] w-full rounded-xl py-3 px-4 resize-none'/>
+            <textarea rows="4" value={description} onChange={e=>setDescription(e.target.value)} placeholder='Enter description' className='bg-white border border-solid border-[#E7E5E4] w-full rounded-xl py-3 px-4 resize-none'/>
             
             {contentTab == 'single' && <h6 className='text-[#252322] font-semibold mt-5 text-sm mb-1'>Upload content</h6>}
             {/* {data.chapter.type == 'audio' && <ReactAudioPlayer
@@ -256,7 +270,7 @@ export default function Add() {
             {data.chapter.type == 'video' && <video id="video" width="100%" className='rounded-xl' controls height="200">
                 <source src={file}  />
             </video>} */}
-            {file != null && <AudioVideoUploader callback={audioHandler} uploaded={true} type={data.chapter.type} fileAdded={file} />}
+            {file != null && <AudioVideoUploader callback={audioHandler} uploaded={true} keyUrl={file?.key} type={data.chapter.type} fileAdded={file?.url} />}
             <button onClick={submitHanlder} className='p-4 text-white font-black mt-5 bg-[#AE445A] rounded-xl w-3/12 flex justify-center'>
                 {!loading ? "Save":<LoaderSmall color="#fff" size="20" />}
             </button>

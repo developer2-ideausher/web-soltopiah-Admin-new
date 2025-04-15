@@ -1,6 +1,6 @@
 "use client"
-import { addChapterInCourse, createChapter, createCourse, createUnitaryCourse, getAllCategories, getAllChapters } from '@/Utilities/Course'
-import AudioVideoUploader from '@/components/AUdioVideoUploader'
+import { addChapterInCourse, addChapterInCourseTwo, createChapter, createCourse, createCourseTwo, createUnitaryCourse, createUnitaryCourseNew, getAllCategories, getAllChapters } from '@/Utilities/Course'
+import AudioVideoUploader from '@/components/AudiVideoUploader'
 import AddContentToCourseModal from '@/components/AddContentToCourseModal'
 import Dropdown from '@/components/Dropdown'
 import ImageUploader from '@/components/ImageUploader'
@@ -17,6 +17,7 @@ export default function Add() {
     const router = useRouter()
     const [data,setData] = useState(null)
     const [loading,setLoading] = useState(false)
+    const [disableButton,setDisableButton] = useState(true)
 
     // mutual data
     const [thumbnail,setThumbnail] = useState('')
@@ -46,21 +47,34 @@ export default function Add() {
     const [editedId,setEditedId] = useState('')
     const thumbnailContentHandler = (val) => {
         setContentThumbnail(val)
+        if(contentTab == 'single'){
+            if(file){
+                setDisableButton(false)
+            }
+        }else{
+            if(contentFile){
+                setDisableButton(false)
+            }
+        }
     }
 
     const accessibilityContentTabHandler = (e) => {
         setContentAccessType(e.target.value)
     }
-    const conteFileHandler = (val,duration,type) => {
-        setContentFile(val)
+    const conteFileHandler = (url,key,duration,type) => {
+        setContentFile({
+            key:key,
+            url:url
+        })
         setContentFileDuration(duration)
         setType(type)
         if(contentArray.length == 0){
             setCourseContentType(type)
         }
-        console.log("testing",val,duration,type)
+        if(contentThumbnail){
+            setDisableButton(false)
+        }
     }
-    console.log(contentFile)
     const contentValidator = () => {
         let res = true
         if(contentThumbnail == ''){
@@ -111,6 +125,7 @@ export default function Add() {
         clearContentDetails()
         setShowContent(false)
         setEdited(false)
+        setDisableButton(true)
     }
     const contentSaveHandler = () => {
         const result = contentValidator()
@@ -149,6 +164,7 @@ export default function Add() {
     const [categoryData,setCategoryData] = useState([])
     
     const dropdownHandler = (val,duration) => {
+      console.log(val)
         setCategory(val._id)
     }
 
@@ -234,31 +250,48 @@ export default function Add() {
         }
         setContentArray(filter)
     }
-    
     // files related data
-    const audioHandler = (val,duration,type) => {
-        setFile(val)
+    const audioHandler = (url,key,duration,type) => {
+        setFile({
+            key:key,
+            url:url
+        })
         setDuration(duration)
         setCourseContentType(type)
+        if(thumbnail){
+            setDisableButton(false)
+        }
     }
     const submitHanlder = async (e) => {
         e.preventDefault()
         const result = validator()
         if(result){
             if(contentTab == 'single'){
-                const formdata = new FormData();
-                formdata.append("thumbnail", thumbnail);
-                formdata.append("media", file);
-                formdata.append("category", category);
-                formdata.append("description", description);
-                formdata.append("title", title);
-                formdata.append("accessibility", accessibilityTab);
-                formdata.append("durationInMinutes",duration)
-                formdata.append("courseType",courseType)
-                formdata.append("courseContentType", courseContentType);
+                // const formdata = new FormData();
+                // formdata.append("thumbnail", thumbnail);
+                // formdata.append("media", file);
+                // formdata.append("category", category);
+                // formdata.append("description", description);
+                // formdata.append("title", title);
+                // formdata.append("accessibility", accessibilityTab);
+                // formdata.append("durationInMinutes",duration)
+                // formdata.append("courseType",courseType)
+                // formdata.append("courseContentType", courseContentType);
+                const obj = {
+                    thumbnail:thumbnail,
+                    media:file,
+                    category:category,
+                    description:description,
+                    title:title,
+                    accessibility:accessibilityTab,
+                    durationInMinutes:duration,
+                    courseType:courseType,
+                    courseContentType:courseContentType,
+                    // type:courseContentType
+                }
 
                 setLoading(true)
-                const response = await createUnitaryCourse(formdata)
+                const response = await createUnitaryCourseNew(obj)
                 if(response?.status){
                     router.push("/content-management")
                 }else{
@@ -277,19 +310,28 @@ export default function Add() {
                     }
                     temp.push(obj)
                 })
-                const formdata = new FormData();
-                formdata.append("thumbnail", thumbnail);
-                formdata.append("category", category);
-                formdata.append("accessibility", accessibilityTab);
-                formdata.append("description", description);
-                formdata.append("title", title);
-                formdata.append("courseType",courseType)
-                formdata.append("courseContentType", courseContentType);
+                // const formdata = new FormData();
+                // formdata.append("thumbnail", thumbnail);
+                // formdata.append("category", category);
+                // formdata.append("accessibility", accessibilityTab);
+                // formdata.append("description", description);
+                // formdata.append("title", title);
+                // formdata.append("courseType",courseType)
+                // formdata.append("courseContentType", courseContentType);
+                const obj = {
+                    thumbnail:thumbnail,
+                    category:category,
+                    accessibility:accessibilityTab,
+                    description:description,
+                    title:title,
+                    courseType:courseType,
+                    courseContentType:courseContentType
+                }
                 setLoading(true)
                 toast.info(`Creating course`,{
                     toastId:`djhdsjdhsdm`
                 })
-                const response = await createCourse(formdata)
+                const response = await createCourseTwo(obj)
                 if(response?.status){
                     temp.map((item,index)=>{
                         addChapetrInCourseHandler(item,response.data._id,index+1 == temp.length ? true : false,index)
@@ -302,21 +344,30 @@ export default function Add() {
         }
     }
     const addChapetrInCourseHandler = async (obj,id,push,index) => {
-        toast.info(`Uploading content ${index+1}`,{
-            toastId:`djhd--${index}`
-        })
-        const formdata = new FormData();
-        formdata.append("thumbnail", obj?.thumbnail);
-        formdata.append("category", obj?.category);
-        formdata.append("accessibility", obj?.accessibility);
-        formdata.append("title", obj?.title);
-        formdata.append("media", obj?.media);
-        formdata.append("durationInMinutes", obj?.durationInMinutes);
-        const response = await addChapterInCourse(id,formdata)
+        // toast.info(`Uploading content ${index+1}`,{
+        //     toastId:`djhd--${index}`
+        // })
+        // const formdata = new FormData();
+        // formdata.append("thumbnail", obj.thumbnail);
+        // formdata.append("category", obj.category);
+        // formdata.append("accessibility", obj.accessibility);
+        // formdata.append("title", obj.title);
+        // formdata.append("media", obj.media);
+        // formdata.append("durationInMinutes", obj.durationInMinutes);
+        const apiObj = {
+            thumbnail:obj.thumbnail,
+            category:obj.category,
+            accessibility:obj.accessibility,
+            title:obj.title,
+            media:obj.media,
+            durationInMinutes:obj.durationInMinutes,
+            type:courseContentType
+        }
+        const response = await addChapterInCourseTwo(id,apiObj)
         if(response?.status){
-            toast.success(`Uploading done for content ${index+1}`,{
-                toastId:`djhd--${index}`
-            })
+            // toast.success(`Uploading done for content ${index+1}`,{
+            //     toastId:`djhd--${index}`
+            // })
             if(push){
                 router.push("/content-management")
             }
@@ -344,11 +395,13 @@ export default function Add() {
             <div  className='grid grid-cols-2 p-1 bg-[#DADDF1] rounded-[80px] mt-12'>
                 <h6 onClick={e=>{
                     setContentTab("course")
-                    setShowContent(false)    
+                    setShowContent(false)  
+                    setDisableButton(true)  
                 }} className={`text-sm p-2 text-center rounded-[80px] cursor-pointer ${contentTab == "course" ? "font-semibold text-[#00] bg-white":"font-normal text-[#818181] bg-transparent "} `}>Course</h6>
                 <h6  onClick={e=>{
                     setContentTab("single")
-                    setShowContent(false)    
+                    setShowContent(false) 
+                    setDisableButton(true)     
                 }} className={`text-sm p-2 text-center rounded-[80px] cursor-pointer ${contentTab == "single" ? "font-semibold text-[#00] bg-white":"font-normal text-[#818181] bg-transparent "} `}>Single</h6>
             </div>
             <h6 className='text-[#252322] font-semibold mt-5 text-sm mb-1'>Thumbnail</h6>
@@ -378,7 +431,7 @@ export default function Add() {
                 </label>
             </div>
             <h6 className='text-[#252322] font-semibold mt-5 text-sm mb-1'>Description</h6>
-            <textarea rows="4" value={description} onChange={e=>setDescription(e.target.value)} placeholder='Enter title' className='bg-white border border-solid border-[#E7E5E4] w-full rounded-xl py-3 px-4 resize-none'/>
+            <textarea rows="4" value={description} onChange={e=>setDescription(e.target.value)} placeholder='Enter description' className='bg-white border border-solid border-[#E7E5E4] w-full rounded-xl py-3 px-4 resize-none'/>
             {contentTab == 'course' && contentArray.length > 0 && !edited && <h6 className='text-[#252322] font-semibold mt-5 text-sm mb-1'>Content</h6>}
             {contentTab == 'course' && contentArray.length == 0 && !showContent &&  <div onClick={e=>setShowContent(true)} className='bg-[#3090E920] w-fit cursor-pointer mt-5 rounded-3xl px-3 py-2 flex items-center gap-2'>
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -397,17 +450,21 @@ export default function Add() {
             </div>}
             {contentTab == 'single' && <h6 className='text-[#252322] font-semibold mt-5 text-sm mb-1'>Upload content</h6>}
             {contentTab == 'single' && <AudioVideoUploader contentType={courseContentType} callback={audioHandler} />}
-            {!showContent && <button onClick={submitHanlder} className='p-4 text-white font-black mt-5 bg-[#AE445A] rounded-xl w-3/12 flex justify-center'>
-                {!loading ? "Save":<LoaderSmall />}
-            </button>}
-
-
+            <div className='flex items-center gap-5'>
+                {!showContent && disableButton && <button className='p-4 text-white font-black mt-5 bg-[#AE445A] opacity-30 rounded-xl w-3/12 flex justify-center'>
+                    {!loading ? "Save":<LoaderSmall />}
+                </button>}
+                {!showContent && !disableButton && <button onClick={submitHanlder} className='p-4 text-white font-black mt-5 bg-[#AE445A] rounded-xl w-3/12 flex justify-center'>
+                    {!loading ? "Save":<LoaderSmall />}
+                </button>}
+                {!showContent && <Link href="/content-management" className='w-3/12'><button className='p-4 text-[#AE445A] mt-5 font-black border border-[#AE445A] rounded-xl flex  justify-center'>Cancel</button></Link>}
+            </div>
             {/* content upload stuff */}
             {showContent && contentTab == 'course' &&  <div className='w-full'>
                 <h6 className='text-[#252322] font-semibold mt-5 text-sm mb-1'>{edited ? "Edit":'Add'} content to course</h6>
                 <h6 className='text-[#252322] font-semibold mt-5 text-sm mb-1'>Thumbnail</h6>
                 {!edited && <ImageUploader callback={thumbnailContentHandler} />}
-                {edited && <ImageUploader uploaded={true} fileAdded={contentThumbnail == 'string' ? contentThumbnail : URL.createObjectURL(contentThumbnail)} callback={thumbnailContentHandler} />}
+                {edited && <ImageUploader uploaded={true} fileAdded={contentThumbnail == 'string' ? contentThumbnail?.url : contentThumbnail?.url} callback={thumbnailContentHandler} />}
                 <h6 className='text-[#252322] font-semibold mt-5 text-sm mb-1'>Title</h6>
                 <input type="text" value={contentTitle} onChange={e=>setContentTitle(e.target.value)} placeholder='Enter title' className='bg-white border border-solid border-[#E7E5E4] w-full rounded-xl py-3 px-4'/>
     
@@ -427,18 +484,25 @@ export default function Add() {
                     </label>}
                 </div>
                 <h6 className='text-[#252322] font-semibold mt-5 text-sm mb-1'>Upload content</h6>
-                {!edited && <AudioVideoUploader callback={conteFileHandler}  contentType={courseContentType}  />}
-                {edited && <AudioVideoUploader type={type} contentType={courseContentType} uploaded={true} fileAdded={typeof contentFile == 'string' ?  contentFile ? contentFile : '' : contentFile == '' ? contentFile : URL.createObjectURL(contentFile)} callback={conteFileHandler} />}
-                {/* <AudioVideoUploader callback={conteFileHandler}  contentType={courseContentType}  /> */}
+                {!edited && <AudioVideoUploader callback={conteFileHandler} contentType={courseContentType}  />}
+                {edited && <AudioVideoUploader type={type} contentType={courseContentType} uploaded={true} fileAdded={typeof contentFile == 'string' ? contentFile ? contentFile : '' : contentFile == '' ? contentFile?.url : contentFile?.url} callback={conteFileHandler} />}
+                
                 <div className='mt-5 flex flex-wrap gap-5'>
-                    <div onClick={contentAddMoreHandler} className='bg-[#3090E920] w-fit cursor-pointer rounded-3xl p-4 flex items-center gap-2'>
+                    {!disableButton && <div onClick={contentAddMoreHandler} className='bg-[#3090E920] w-fit cursor-pointer rounded-3xl p-4 flex items-center gap-2'>
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
                             <path d="M15.1427 10.8554H10.857V15.1411C10.857 15.3685 10.7667 15.5865 10.6059 15.7472C10.4452 15.908 10.2272 15.9983 9.99983 15.9983C9.7725 15.9983 9.55449 15.908 9.39374 15.7472C9.233 15.5865 9.14269 15.3685 9.14269 15.1411V10.8554H4.85698C4.62965 10.8554 4.41163 10.7651 4.25088 10.6044C4.09014 10.4436 3.99983 10.2256 3.99983 9.99829C3.99983 9.77096 4.09014 9.55294 4.25088 9.3922C4.41163 9.23145 4.62965 9.14115 4.85698 9.14115H9.14269V4.85543C9.14269 4.62811 9.233 4.41009 9.39374 4.24934C9.55449 4.0886 9.7725 3.99829 9.99983 3.99829C10.2272 3.99829 10.4452 4.0886 10.6059 4.24934C10.7667 4.41009 10.857 4.62811 10.857 4.85543V9.14115H15.1427C15.37 9.14115 15.588 9.23145 15.7488 9.3922C15.9095 9.55294 15.9998 9.77096 15.9998 9.99829C15.9998 10.2256 15.9095 10.4436 15.7488 10.6044C15.588 10.7651 15.37 10.8554 15.1427 10.8554Z" fill="#3090E9"/>
                         </svg>
                         <h5 className='text-[#3090E9] text-sm font-normal'>Save & Add more lessons</h5>
-                    </div>
+                    </div>}
+                    {disableButton && <div className='bg-[#3090E920] opacity-50 w-fit cursor-pointer rounded-3xl p-4 flex items-center gap-2'>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M15.1427 10.8554H10.857V15.1411C10.857 15.3685 10.7667 15.5865 10.6059 15.7472C10.4452 15.908 10.2272 15.9983 9.99983 15.9983C9.7725 15.9983 9.55449 15.908 9.39374 15.7472C9.233 15.5865 9.14269 15.3685 9.14269 15.1411V10.8554H4.85698C4.62965 10.8554 4.41163 10.7651 4.25088 10.6044C4.09014 10.4436 3.99983 10.2256 3.99983 9.99829C3.99983 9.77096 4.09014 9.55294 4.25088 9.3922C4.41163 9.23145 4.62965 9.14115 4.85698 9.14115H9.14269V4.85543C9.14269 4.62811 9.233 4.41009 9.39374 4.24934C9.55449 4.0886 9.7725 3.99829 9.99983 3.99829C10.2272 3.99829 10.4452 4.0886 10.6059 4.24934C10.7667 4.41009 10.857 4.62811 10.857 4.85543V9.14115H15.1427C15.37 9.14115 15.588 9.23145 15.7488 9.3922C15.9095 9.55294 15.9998 9.77096 15.9998 9.99829C15.9998 10.2256 15.9095 10.4436 15.7488 10.6044C15.588 10.7651 15.37 10.8554 15.1427 10.8554Z" fill="#3090E9"/>
+                        </svg>
+                        <h5 className='text-[#3090E9] text-sm font-normal'>Save & Add more lessons</h5>
+                    </div>}
                     <button onClick={cancelHandler} className='p-4 text-[#AE445A] font-black border border-[#AE445A] rounded-xl flex w-3/12 justify-center'>Cancel</button>
-                    <button onClick={contentSaveHandler} className='p-4 text-white font-black bg-[#AE445A] rounded-xl flex w-3/12 justify-center'>Save</button>
+                    {!disableButton && <button onClick={contentSaveHandler} className='p-4 text-white font-black bg-[#AE445A] rounded-xl flex w-3/12 justify-center'>Save</button>}
+                    {disableButton && <button className='p-4 text-white font-black bg-[#AE445A] opacity-30 rounded-xl flex w-3/12 justify-center'>Save</button>}
                 </div>
             </div>}
         </div>

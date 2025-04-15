@@ -2,6 +2,7 @@
 import BackButton from "@/components/BackButton";
 import LoaderSmall from "@/components/LoaderSmall";
 import { getToken } from "@/Services/Cookie/userCookie";
+import emojiRegex from "emoji-regex";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -15,6 +16,10 @@ function Page() {
     pageType: "",
   });
   const [preview, setPreview] = useState(null);
+  const removeEmojis = (input) => {
+    const regex = emojiRegex();
+    return input.replace(regex, "");
+  };
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     setFormData({
@@ -23,6 +28,17 @@ function Page() {
     });
     if (files) {
       setPreview(URL.createObjectURL(files[0]));
+    }
+    else{
+      let sanitizedValue = value;
+      if (name === "name" || name === "description") {
+        sanitizedValue = removeEmojis(value);
+      }
+      setFormData({
+        ...formData,
+        [name]: sanitizedValue,
+      });
+    
     }
   };
   const isFormValid = formData.thumbnail && formData.name && formData.description && formData.pageType;

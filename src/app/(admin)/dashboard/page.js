@@ -290,7 +290,7 @@ export default function Page() {
                   className="flex items-center justify-between"
                 >
                   <div className="flex items-center justify-center gap-2">
-                    <img src="dash.png" alt="" />
+                    <img className="w-11 h-11 rounded-full object-cover" src={item.profilePic?.url} alt="" />
                     <p className="text-[#414554] text-sm font-normal font-sans">
                       {item.firstName} {item.lastName}
                     </p>

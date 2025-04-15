@@ -48,7 +48,7 @@ export const responseValidator = async (response) => {
   }
 };
 
-export const LoginApi = async (formdata,token) => {
+export const LoginApi = async (token) => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", `Bearer ${token}`);
 
@@ -58,13 +58,39 @@ export const LoginApi = async (formdata,token) => {
     // body: formdata,
     // redirect: "follow",
   };
- 
+
   try {
-    console.log( process.env.NEXT_PUBLIC_URL
-    )
+    console.log(process.env.NEXT_PUBLIC_URL);
     const response = await fetch(
       process.env.NEXT_PUBLIC_URL + "/users/me",
       // GET /users/me
+      requestOptions
+    );
+    return responseValidator(response);
+  } catch (e) {
+    return apiError(e);
+  }
+};
+
+export const loginNew = async (data,token) => {
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Authorization", `Bearer ${token}` );
+
+  const raw = JSON.stringify({
+    email: data.email,
+    password: data.password,
+  });
+
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow",
+  };
+  try {
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_URL + `/auth/admin-secretSignup`,
       requestOptions
     );
     return responseValidator(response);
