@@ -1,6 +1,6 @@
 "use client"
 import { addChapterInCourse, addChapterInCourseTwo, deleteMediaFromCourse, getAllCategories, getSingleChapter, getSingleCourse, updateChapterAccessibility, updateChapterInCourse, updateChapterInCourseTwo, updateCourse, updateCourseTwo } from '@/Utilities/Course'
-import AudioVideoUploader from '@/components/AUdioVideoUploader'
+import AudioVideoUploader from "@/components/AudiVideoUploader"
 import AddContentToCourseModal from '@/components/AddContentToCourseModal'
 import Dropdown from '@/components/Dropdown'
 import ImageUploader from '@/components/ImageUploader'
