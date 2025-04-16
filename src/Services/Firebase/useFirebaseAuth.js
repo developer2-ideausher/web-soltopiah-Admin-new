@@ -117,6 +117,7 @@ export default function useFirebaseAuth() {
       toast.success("Reset password email has been sent successfully", {
         toastId: "firebase-reset-password-sent-message",
       });
+      return { status: true };
     } catch (e) {
       const errorMessage = firebaseErrorFinder[e.code]
         ? firebaseErrorFinder[e.code]

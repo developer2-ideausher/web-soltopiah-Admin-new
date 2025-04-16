@@ -72,9 +72,9 @@ function Page() {
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   fetchData();
+  // }, []);
   useEffect(() => {
     fetchChartData(filter);
   }, [filter]);

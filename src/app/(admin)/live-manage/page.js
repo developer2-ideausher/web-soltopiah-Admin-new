@@ -227,7 +227,7 @@ function Page() {
                         {dayjs(item.startDate).format("DD/MM/YYYY")}
                       </span>
                       <span className="text-userblack font-sans font-semibold text-base">
-                        {dayjs(item.startDate).utc().format("hh:mm A")}
+                        {dayjs(item.startDate).format("hh:mm a")}
                       </span>
 
                       <div

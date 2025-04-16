@@ -4,6 +4,7 @@ import LoaderLarge from "@/components/LoaderLarge";
 import LoaderSmall from "@/components/LoaderSmall";
 import { getImageCacheRemover } from "@/Services/Api/Badges/BadgesApi";
 import { getToken } from "@/Services/Cookie/userCookie";
+import emojiRegex from "emoji-regex";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -33,6 +34,10 @@ function Page({ params }) {
   const router = useRouter();
   const token = getToken();
 
+  const removeEmojis = (input) => {
+    const regex = emojiRegex();
+    return input.replace(regex, "");
+  };
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     setFormData({
@@ -42,6 +47,14 @@ function Page({ params }) {
     if (files) {
       setPreview(URL.createObjectURL(files[0]));
     }
+    let sanitizedValue = value;
+    if (name === "name" || name === "description") {
+      sanitizedValue = removeEmojis(value);
+    }
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: sanitizedValue,
+    }));
   };
 
   const isFormChanged =
@@ -101,7 +114,7 @@ function Page({ params }) {
           thumbnail: result.data?.image?.url,
           name: result.data?.title,
           description: result.data?.description,
-          pageType: result.data?.pageType || "none", // Set the pageType from API
+          pageType: result.data?.pageType || "none", 
         };
         setFormData(fetchedData);
         setInitialData(fetchedData);

@@ -1,7 +1,7 @@
 "use client"
 import { addChapterInCourse, addChapterInCourseTwo, deleteMediaFromCourse, getAllCategories, getSingleChapter, getSingleCourse, updateChapterAccessibility, updateChapterInCourse, updateChapterInCourseTwo, updateCourse, updateCourseTwo } from '@/Utilities/Course'
-import AudioVideoUploader from "@/components/AudiVideoUploader"
 import AddContentToCourseModal from '@/components/AddContentToCourseModal'
+import AudioVideoUploader from '@/components/AudiVideoUploader'
 import Dropdown from '@/components/Dropdown'
 import ImageUploader from '@/components/ImageUploader'
 import LoaderLarge from '@/components/LoaderLarge'
@@ -453,7 +453,7 @@ export default function Add() {
                 <h6  onClick={e=>setContentTab("single")} className={`text-sm p-2 text-center rounded-[80px] cursor-pointer ${contentTab == "single" ? "font-semibold text-[#00] bg-white":"font-normal text-[#818181] bg-transparent "} `}>Single</h6>
             </div> */}
             <h6 className='text-[#252322] font-semibold mt-5 text-sm mb-1'>Thumbnail</h6>
-            <ImageUploader callback={thumbnailHandler} fileAdded={thumbnail?.url} uploaded={true} />
+            <ImageUploader callback={thumbnailHandler} fileAdded={thumbnail?.url} keyUrl={thumbnail?.key} uploaded={true} />
             <h6 className='text-[#252322] font-semibold mt-5 text-sm mb-1'>Title</h6>
             <input type="text" value={title} onChange={e=>{
                 setTitle(e.target.value)
@@ -527,7 +527,7 @@ export default function Add() {
                 <h6 className='text-[#252322] font-semibold mt-5 text-sm mb-1'>Add content to course</h6>
                 <h6 className='text-[#252322] font-semibold mt-5 text-sm mb-1'>Thumbnail</h6>
                 {!edited && <ImageUploader callback={thumbnailContentHandler} />}
-                {edited && <ImageUploader uploaded={true} fileAdded={contentThumbnail} callback={thumbnailContentHandler} />}
+                {edited && <ImageUploader uploaded={true} fileAdded={contentThumbnail} keyUrl={thumbnail?.key} callback={thumbnailContentHandler} />}
                 
                 <h6 className='text-[#252322] font-semibold mt-5 text-sm mb-1'>Title</h6>
                 <input type="text" value={contentTitle} onChange={e=>setContentTitle(e.target.value)} placeholder='Enter title' className='bg-white border border-solid border-[#E7E5E4] w-full rounded-xl py-3 px-4'/>
@@ -549,7 +549,7 @@ export default function Add() {
                 </div>
                 <h6 className='text-[#252322] font-semibold mt-5 text-sm mb-1'>Upload content</h6>
                 {!edited && <AudioVideoUploader contentType={courseContentType} callback={conteFileHandler} />}
-                {edited && <AudioVideoUploader type={type} contentType={courseContentType} uploaded={true} fileAdded={contentFile} callback={conteFileHandler} />}
+                {edited && <AudioVideoUploader type={type} contentType={courseContentType} uploaded={true} fileAdded={contentFile} keyUrl={contentFile?.key} callback={conteFileHandler} />}
                 
                 <div className='mt-5 flex flex-wrap gap-5'>
                     <div onClick={contentAddMoreHandler} className='bg-[#3090E920] w-fit cursor-pointer rounded-3xl p-4 flex items-center gap-2'>
