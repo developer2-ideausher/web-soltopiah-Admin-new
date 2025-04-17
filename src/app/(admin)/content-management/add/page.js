@@ -164,7 +164,6 @@ export default function Add() {
     const [categoryData,setCategoryData] = useState([])
     
     const dropdownHandler = (val,duration) => {
-      console.log(val)
         setCategory(val._id)
     }
 
@@ -328,9 +327,9 @@ export default function Add() {
                     courseContentType:courseContentType
                 }
                 setLoading(true)
-                toast.info(`Creating course`,{
-                    toastId:`djhdsjdhsdm`
-                })
+                // toast.info(`Creating course`,{
+                //     toastId:`djhdsjdhsdm`
+                // })
                 const response = await createCourseTwo(obj)
                 if(response?.status){
                     temp.map((item,index)=>{

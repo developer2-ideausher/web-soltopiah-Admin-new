@@ -89,7 +89,7 @@ export default function Add() {
             toast.info("Add description",{
                 toastId:"dkjhf"
             })
-        }else if(contentTab == 'single' && file == ''){
+        }else if(contentTab == 'single' && file?.url == ''){
             res = false
             toast.info("Upload content",{
                 toastId:"dkjhf"
@@ -271,6 +271,7 @@ export default function Add() {
                 <source src={file}  />
             </video>} */}
             {file != null && <AudioVideoUploader callback={audioHandler} uploaded={true} keyUrl={file?.key} type={data.chapter.type} fileAdded={file?.url} />}
+            {!file && <AudioVideoUploader callback={audioHandler} />}
             <button onClick={submitHanlder} className='p-4 text-white font-black mt-5 bg-[#AE445A] rounded-xl w-3/12 flex justify-center'>
                 {!loading ? "Save":<LoaderSmall color="#fff" size="20" />}
             </button>

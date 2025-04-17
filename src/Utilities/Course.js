@@ -399,25 +399,73 @@ export async function getUploadLink(file, media) {
     apiError(e);
   }
 }
-export async function uploadToS3(url, file) {
-  const token = await tokenValidator();
-  var myHeaders = new Headers();
-  myHeaders.append("Content-Type", file.type);
-  // myHeaders.append("Authorization", "Bearer "+token);
-  var requestOptions = {
-    method: "PUT",
-    body: file,
-    headers: myHeaders,
-    redirect: "follow",
-  };
-  try {
-    const response = await fetch(url, requestOptions);
-    if (response?.status > 199 && response.status < 300) {
-      return true;
-    }
-  } catch (e) {
-    apiError(e);
-  }
+// export async function uploadToS3(url, file) {
+//   const token = await tokenValidator();
+//   var myHeaders = new Headers();
+//   myHeaders.append("Content-Type", file.type);
+//   // myHeaders.append("Authorization", "Bearer "+token);
+//   var requestOptions = {
+//     method: "PUT",
+//     body: file,
+//     headers: myHeaders,
+//     redirect: "follow",
+//   };
+//   try {
+//     const response = await fetch(url, requestOptions);
+//     if (response?.status > 199 && response.status < 300) {
+//       return true;
+//     }
+//   } catch (e) {
+//     apiError(e);
+//   }
+// }
+export function uploadToS3(url, file, progressCallback) {
+  return new Promise((resolve) => {
+    const xhr = new XMLHttpRequest();
+
+    xhr.upload.addEventListener("progress", (event) => {
+      if (event.lengthComputable) {
+        const percent = Math.round((event.loaded / event.total) * 100);
+        if (progressCallback) progressCallback(percent);
+      }
+    });
+
+    xhr.addEventListener("load", () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve({
+          status: true,
+          data: {
+            url: url,
+            fileSize: file.size,
+            contentType: file.type,
+          },
+        });
+      } else {
+        resolve({
+          status: false,
+          message: `Upload failed`,
+        });
+      }
+    });
+
+    xhr.addEventListener("error", () => {
+      resolve({
+        status: false,
+        message: "Network error occurred during upload",
+      });
+    });
+
+    xhr.addEventListener("abort", () => {
+      resolve({
+        status: false,
+        message: "Upload was aborted",
+      });
+    });
+
+    xhr.open("PUT", url, true);
+    xhr.setRequestHeader("Content-Type", file.type);
+    xhr.send(file);
+  });
 }
 export async function removeFileFromS3(payload) {
   const token = await tokenValidator();

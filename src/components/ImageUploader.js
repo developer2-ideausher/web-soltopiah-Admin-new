@@ -9,6 +9,7 @@ export default function ImageUploader(props) {
     const fileRef = useRef(null);
     const [loading,setLoading] = useState(false)
     const [keyValue,setKeyValue] = useState(props.keyUrl)
+    const [progress, setProgress] = useState(0);
     
     const coverHandler = (e) => {
         if(e.target.files[0]){
@@ -16,11 +17,11 @@ export default function ImageUploader(props) {
                 (e.target.files[0].type === "image/png" ||
                     e.target.files[0].type === "image/jpg" ||
                     e.target.files[0].type === "image/jpeg") &&
-                e.target.files[0].size <= 10 * 1024 * 1024 // 5 MB in bytes
+                e.target.files[0].size <= 15 * 1024 * 1024 // 5 MB in bytes
             ) {
                 setFile(e.target.files[0]);
-            } else if (e.target.files[0].size > 10 * 1024 * 1024) {
-                toast.error("File size must not exceed 10 MB", {
+            } else if (e.target.files[0].size > 15 * 1024 * 1024) {
+                toast.error("File size must not exceed 15 MB", {
                     toastId: "upload-error-2",
                 });
             } else {
@@ -48,23 +49,55 @@ export default function ImageUploader(props) {
             uploadS3Handler(response.data?.url,response.data?.key,file)
         }
     }
-    const uploadS3Handler = async (url,key,file) => {
-        const response = await uploadToS3(url,file)
-        if(response){
-            const temp = url.split("?")
-            const obj = {
-                key:key,
-                url:temp[0]
-            }
-            props.callback(obj)
-            setKeyValue(key)
-            setUrl(URL.createObjectURL(file))
-            setIsUploaded(true);
-        }else{
+    
+    // const uploadS3Handler = async (url,key,file) => {
+    //     const response = await uploadToS3(url,file)
+    //     if(response){
+    //         const temp = url.split("?")
+    //         const obj = {
+    //             key:key,
+    //             url:temp[0]
+    //         }
+    //         props.callback(obj)
+    //         setKeyValue(key)
+    //         setUrl(URL.createObjectURL(file))
+    //         setIsUploaded(true);
+    //     }else{
             
+    //     }
+    //     setLoading(false)
+    // }
+    const uploadS3Handler = async (url, key, file) => {
+        try {
+            setLoading(true)
+            const response = await uploadToS3(url, file, (percent) => {
+                setProgress(percent);
+                // You can also log it or do something else with the progress
+                setProgress(percent)
+            });
+            if (response.status) {
+                const temp = url.split("?")
+                const obj = {
+                    key:key,
+                    url:temp[0]
+                }
+                props.callback(obj)
+                setKeyValue(key)
+                setUrl(URL.createObjectURL(file))
+                setIsUploaded(true);
+            }else{
+                setProgress(0)
+                toast.error(response?.message,{
+                    toastId:'hdhdswe2'
+                })
+            }
+        } catch (error) {
+            console.error('Upload error:', error);
+            // Handle error state if needed
+        } finally {
+            setLoading(false);
         }
-        setLoading(false)
-    }
+    };
     const backImage = {
         backgroundImage: isUploaded?`url("${url}")`:``,
         backgroundSize:"contain",
@@ -73,6 +106,7 @@ export default function ImageUploader(props) {
         // borderColor:"transparent"
     }
     const removeHandler = () => {
+        setProgress(0)
         removeApiHandler()
         setFile(null);
         setIsUploaded(false);
@@ -102,7 +136,7 @@ export default function ImageUploader(props) {
                 <h6 className='text-xs font-normal mt-2 text-[#9C9896] w-full text-center'>Drag and drop image(PNG,JPG or JPEG) or</h6>
                 <h6 className='text-xs font-semibold text-[#4655B9] mt-2'>Choose file</h6>
             </div>}
-            {loading && <LoaderLarge/>}
+            {loading && <h5 className='flex items-center justify-center text-3xl text-primary font-bold h-52'>{progress}%</h5>}
             {isUploaded && !loading && <h5 className={`text-sm font-normal text-[#AE445A] hidden group-hover:flex`}>Edit Picture</h5>}
             <input 
                 type='file'

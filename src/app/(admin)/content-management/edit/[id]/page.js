@@ -1,7 +1,7 @@
 "use client"
 import { addChapterInCourse, addChapterInCourseTwo, deleteMediaFromCourse, getAllCategories, getSingleChapter, getSingleCourse, updateChapterAccessibility, updateChapterInCourse, updateChapterInCourseTwo, updateCourse, updateCourseTwo } from '@/Utilities/Course'
-import AddContentToCourseModal from '@/components/AddContentToCourseModal'
 import AudioVideoUploader from '@/components/AudiVideoUploader'
+import AddContentToCourseModal from '@/components/AddContentToCourseModal'
 import Dropdown from '@/components/Dropdown'
 import ImageUploader from '@/components/ImageUploader'
 import LoaderLarge from '@/components/LoaderLarge'
@@ -86,7 +86,7 @@ export default function Add() {
             toast.info("Select content Accessibility",{
                 toastId:"dkjhf"
             })
-        }else if(contentFile == ''){
+        }else if(contentFile == '' || !contentFile?.url ){
             res = false
             toast.info("Upload content",{
                 toastId:"dkjhf"
@@ -379,7 +379,7 @@ export default function Add() {
                     thumbnail:item.thumbnail?.url,
                     title:item.title,
                     accessType:item.accessibility,
-                    media:item.media.url,
+                    media:item.media,
                     duration:item.durationInMinutes,
                     type:item.type,
                     _id:item._id
@@ -549,7 +549,7 @@ export default function Add() {
                 </div>
                 <h6 className='text-[#252322] font-semibold mt-5 text-sm mb-1'>Upload content</h6>
                 {!edited && <AudioVideoUploader contentType={courseContentType} callback={conteFileHandler} />}
-                {edited && <AudioVideoUploader type={type} contentType={courseContentType} uploaded={true} fileAdded={contentFile} keyUrl={contentFile?.key} callback={conteFileHandler} />}
+                {edited && <AudioVideoUploader type={type} contentType={courseContentType} uploaded={true} fileAdded={contentFile?.url} keyUrl={contentFile?.key} callback={conteFileHandler} />}
                 
                 <div className='mt-5 flex flex-wrap gap-5'>
                     <div onClick={contentAddMoreHandler} className='bg-[#3090E920] w-fit cursor-pointer rounded-3xl p-4 flex items-center gap-2'>

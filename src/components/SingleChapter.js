@@ -7,7 +7,7 @@ export default function SingleChapter(props) {
   return (
     <Link href={`/content-management/single/${props.data._id}`} className='w-full flex items-center justify-between py-4 px-5 border-t border-solid border-[#E9E9EC]'>
         <div className='flex items-center gap-2 w-3/12'>
-          <img src={getImageCacheRemover(props.data?.thumbnail?.url ,"/cm.svg")} className='w-2/12 rounded-md h-12' />
+          <img src={getImageCacheRemover(props.data?.thumbnail?.url ,"/cm.svg")} className='w-2/12 rounded-md h-12 object-contain hover:object-cover'  />
           <h6 className='text-[#252322] font-semibold text-sm'>{props.data?.title}</h6>
         </div>
         <h6 className='text-[#17161D] font-normal w-2/12 text-base'>{props.data?.description.substring(0, 50)}</h6>

@@ -12,7 +12,7 @@ export default function SingleCM(props) {
       <div className="flex items-center gap-2 w-3/12">
         <img
           src={getImageCacheRemover(props.data?.thumbnail?.url, "/cm.svg")}
-          className="w-2/12 rounded-md h-12"
+          className="w-2/12 rounded-md h-12 object-contain hover:object-cover"
         />
         <h6 className="text-[#252322] font-semibold text-sm">
           {props.data.title}

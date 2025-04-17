@@ -13,7 +13,9 @@ export default function AudioVideoUploader(props) {
     const [type, setType] = useState('');
     const [acceptType, setAcceptType] = useState('');
     const [duration, setDuration] = useState(null);
-    const [keyValue,setKeyValue] = useState(props.keyUrl)
+    const [keyValue,setKeyValue] = useState('')
+    const [progress, setProgress] = useState(0);
+
     const audioMimeTypes = [
         'audio/mpeg', 'audio/x-m4a', 'audio/wav','audio/mp4','audio/ogg',
         'audio/3gpp', // Added for .3gpp files with audio
@@ -94,24 +96,41 @@ export default function AudioVideoUploader(props) {
     const apiHandler = async (file,fileUrl) => {
         setLoading(true)
         const response = await getUploadLink(file,'media')
-        if(response.status){
+        if(response?.status){
             uploadS3Handler(file,fileUrl,response.data?.url,response.data?.key)
-        }
-    }
-    const uploadS3Handler = async (file,fileUrl,url,key) => {
-        const response = await uploadToS3(url,file)
-        if(response){
-            setUrl(fileUrl)
-            setKeyValue(key)
-            setIsUploaded(true);
-            calculateDuration(file.type,fileUrl,url,key)
         }else{
-            
+            setLoading(false)
         }
-        setLoading(false)
     }
+    const uploadS3Handler = async (file, fileUrl, url, key) => {
+        try {
+            
+            const response = await uploadToS3(url, file, (percent) => {
+                setProgress(percent);
+                // You can also log it or do something else with the progress
+                setProgress(percent)
+            });
+            if (response.status) {
+                setUrl(fileUrl);
+                setKeyValue(key);
+                setIsUploaded(true);
+                calculateDuration(file.type, fileUrl, url, key);
+            }else{
+                setProgress(0)
+                toast.error(response?.message,{
+                    toastId:'hdhdswe2'
+                })
+            }
+        } catch (error) {
+            console.error('Upload error:', error);
+            // Handle error state if needed
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const removeHandler = () => {
+        setProgress(0)
         removeApiHandler()
         setFile(null);
         setIsUploaded(false);
@@ -135,8 +154,9 @@ export default function AudioVideoUploader(props) {
             setType(props.type);
         }
         setAcceptType(props.contentType);
+        setKeyValue(props.keyUrl)
     }, [props.type, props.contentType]);
-
+    console.log(props)
     return (
         <div className={`bg-white p-2 rounded-xl flex flex-col items-center justify-center w-full`}>
             {!isUploaded && !loading && (
@@ -180,7 +200,7 @@ export default function AudioVideoUploader(props) {
                     />
                 </div>
             )}
-            {loading && <LoaderLarge/>}
+            {loading && <h5 className='flex items-center justify-center text-3xl text-primary font-bold h-52'>{progress}%</h5>}
             {isUploaded && !loading && type === 'video' && (
                 <video id="video" width="100%" className="rounded-xl" controls height="200">
                     <source src={url} type={file?.type} />
