@@ -15,6 +15,7 @@ import CountdownTimer from "@/components/CountDownTimer";
 import { LoginApi, loginNew } from "@/Services/Api/Login";
 import { getToken, setToken } from "@/Services/Cookie/userCookie";
 import useFirebaseAuth from "@/Services/Firebase/useFirebaseAuth";
+import LeftBlackarrow from "../../../icons/LeftBlackarrow";
 
 function Page() {
   const router = useRouter();
@@ -126,10 +127,11 @@ function Page() {
     try {
       const result = await forgotPassword(recoveryEmail);
       if (result?.status) {
-        setLoading(false)
+        setLoading(false);
+        setRecoveryEmail("")
         setShowlogin(true);
       } else {
-        toast.error(result.message || "Something went wrong");
+        setShowlogin(true);
       }
     } catch (error) {
       toast.error(error.message || "Error Occured");
@@ -231,7 +233,7 @@ function Page() {
         </div>
       )}
       {!showLogin && (
-        <div className="w-1/2  flex items-center justify-center bg-white">
+        <div className="w-1/2  flex  items-center justify-center bg-white">
           <form
             onSubmit={handleRecovery}
             className="flex flex-col w-4/6 xs:w-5/6 md:w-5/6"
@@ -245,13 +247,17 @@ function Page() {
                 className=""
               />
             </div>
-            <p className="text-primary text-xl mt-8 font-semibold font-sans">
-              Enter your email to receive recovery link
+            <button className="flex flex-row items-center gap-2" onClick={() => setShowlogin(true)}>
+              <LeftBlackarrow />
+              <p className="text-primary text-sm font-semibold font-sans">Back</p>
+            </button>
+            <p className="text-primary text-xl mt-8 mb-4 font-semibold font-sans">
+              Enter your email to receive reset link
             </p>
             <div className="flex flex-col gap-2">
-              <p className="text-sm font-semibold text-[#2E2E37] mt-3 font-sans">
+              {/* <p className="text-sm font-semibold text-[#2E2E37] mt-3 font-sans">
                 Email
-              </p>
+              </p> */}
               <input
                 value={recoveryEmail}
                 onChange={(e) => setRecoveryEmail(e.target.value)}
