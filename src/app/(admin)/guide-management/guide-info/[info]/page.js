@@ -7,6 +7,7 @@ import Frame1 from "../../../../../../public/Frame1.png";
 import GuideCards from "@/components/GuideCards";
 import Link from "next/link";
 import BackButton from "@/components/BackButton";
+import { saveAs } from "file-saver";
 
 import LoaderLarge from "@/components/LoaderLarge";
 import { truncateName } from "@/Utilities/helper";
@@ -24,27 +25,25 @@ function Page({ params }) {
   const [loading, setLoading] = useState(false);
   const [eduData, setEduData] = useState(null);
 
-  const handleDownload = async (url, fileName) => {
+  const handleDownload = async (url, fileName, fileType) => {
     try {
-      const response = await fetch(url, { method: 'HEAD' });
-  
-      if (response.ok) {
-        const blobResponse = await fetch(url);
-        const blob = await blobResponse.blob();
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = fileName;
-        link.click();
+      if (["jpeg", "jpg", "png", "gif"].includes(fileType)) {
+        const imageBlob = await fetch(url).then((res) => res.blob());
+        saveAs(imageBlob, fileName);
+      } else if (fileType === "pdf") {
+        const pdfBlob = await fetch(url).then((res) => res.blob());
+        saveAs(pdfBlob, fileName);
       } else {
-        toast.error('File not found'); 
+        toast.error("Unsupported file type");
       }
     } catch (error) {
-      console.error('Error downloading file:', error);
-      toast.error('The file could not be downloaded as the link is broken');
+      setLoading(false);
+      toast.error("Error downloading file as link is broken");
     }
   };
+
   const handleExport = async () => {
-    const element = document.getElementById("right-side"); // or any other element you want to capture
+    const element = document.getElementById("right-side");
     const titleElement = document.getElementById("titleName");
     const titleText = titleElement ? titleElement.textContent.trim() : "Record";
     html2canvas(element, {
@@ -127,6 +126,17 @@ function Page({ params }) {
           <Link href="/guide-management">
             <BackButton />
           </Link>
+          <button
+            onClick={() =>
+              handleDownload(
+                "https://media-hosting.imagekit.io/80919cd391b740c7/9040034f5d635f46a4fb92128964fcca.jpg?Expires=1839932497&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=VXnckACkpiyPFXCek0iqH~FbWFx8hXoyomrIGES6Gl8GuwYNJgj94equWqYvyelmXlTYu1ovr2-~QNgneIPz~2zXtHVflRSW7ZvucZE0qy5ToPC-mmxTPI-Y8HRfEsAQnFtHPVIznYyKwFiU2SFI9AoclB7LcknqMgECoUHXGdXz5Dqoshw33LFXwg~6DLfYTRU72tlW-Xc0OQws04w6aRvJ--Y~Y1JVV5Wv5AkCMYKAzauzMsxY2lnZL1C6Wu7tlLSOdvLb~z-89Q4s-Dhvvy7QRMF1IQHKCOf4BImi-AUR2N5A4HW~03cy0IYbC81M0dnJVDldFPRlmF8DhTlFJQ__",
+                "photo",
+                "pdf"
+              )
+            }
+          >
+            try download
+          </button>
           <p
             id="titleName"
             className="text-xl2 font-semibold text-userblack font-sans"
@@ -331,6 +341,7 @@ function Page({ params }) {
                   <p className="text-xl font-sans font-semibold text-userblack">
                     Academic Journey
                   </p>
+                 
                   {!loading &&
                     eduData &&
                     eduData.degrees &&
@@ -339,18 +350,24 @@ function Page({ params }) {
                         <p className="text-base font-sans font-semibold text-userblack">
                           Education
                         </p>
-                        <div className="flex flex-row items-start  gap-3 w-full">
+                        <div
+                          className={`flex flex-row items-start ${
+                            eduData.degrees.length > 2
+                              ? "overflow-x-scroll booking-table-wrapper  w-[98%]"
+                              : ""
+                          } gap-3  pb-1`}
+                        >
                           {eduData?.degrees.map((item, index) => (
                             <div
                               key={item._id || index}
-                              className="border-[#CE8F9C] border rounded-lg w-3/12"
+                              className="border-[#CE8F9C] border max-w-96 rounded-lg min-w-96"
                             >
                               <div className="flex flex-col items-center justify-center p-2 bg-[#ACADDB] rounded-t-md">
                                 {item.file?.type === "pdf" ? (
                                   <a
                                     href={item?.file?.url}
                                     target="_blank"
-                                    className="text-xl font-semibold font-sans px-4  hover:cursor-pointer flex items-center min-h-40 "
+                                    className="text-xl font-semibold  font-sans px-4  hover:cursor-pointer flex items-center min-h-40 "
                                   >
                                     Pdf
                                   </a>
@@ -363,7 +380,12 @@ function Page({ params }) {
                                 )}
                               </div>
                               <div className="flex flex-row justify-between items-center w-full py-2 px-3">
-                                <p className="truncate">{item.name}</p>
+                                <p
+                                  title={item.name}
+                                  className="truncate w-[80%]"
+                                >
+                                  {item.name}
+                                </p>
                                 <div className="flex gap-2">
                                   <a
                                     className="hover:cursor-pointer"
@@ -374,11 +396,11 @@ function Page({ params }) {
                                   </a>
 
                                   <button
-                                    className="hover:cursor-pointer"
                                     onClick={() =>
                                       handleDownload(
                                         item?.file?.url,
-                                        item?.file?.name || "Guide-Education"
+                                        item?.name || "Guide-Education",
+                                        item?.file?.type
                                       )
                                     }
                                   >
@@ -399,11 +421,17 @@ function Page({ params }) {
                         <p className="text-base font-sans font-semibold text-userblack">
                           Certifications
                         </p>
-                        <div className="flex flex-row items-start  gap-3 w-full">
+                        <div
+                          className={`flex flex-row items-start ${
+                            eduData.certifications.length > 2
+                              ? "overflow-x-scroll booking-table-wrapper  w-[98%]"
+                              : ""
+                          } gap-3  pb-1`}
+                        >
                           {eduData?.certifications.map((item, index) => (
                             <div
                               key={item._id || index}
-                              className="border-[#CE8F9C] border rounded-lg w-3/12"
+                              className="border-[#CE8F9C] border max-w-96 rounded-lg min-w-96"
                             >
                               <div className="flex flex-col items-center justify-center p-2 bg-[#ACADDB] rounded-t-md">
                                 {item.file?.type === "pdf" ? (
@@ -423,7 +451,12 @@ function Page({ params }) {
                                 )}
                               </div>
                               <div className="flex flex-row justify-between items-center w-full py-2 px-3">
-                                <p className="truncate">{item.name}</p>
+                                <p
+                                  title={item?.name}
+                                  className="truncate w-[80%]"
+                                >
+                                  {item.name}
+                                </p>
                                 <div className="flex gap-2">
                                   <a
                                     className="hover:cursor-pointer"
@@ -434,11 +467,11 @@ function Page({ params }) {
                                   </a>
 
                                   <button
-                                    className="hover:cursor-pointer"
                                     onClick={() =>
                                       handleDownload(
                                         item?.file?.url,
-                                        item?.file?.name || "Guide-Certificate"
+                                        item?.name || "Guide-Certification",
+                                        item?.file?.type
                                       )
                                     }
                                   >
@@ -450,6 +483,14 @@ function Page({ params }) {
                           ))}
                         </div>
                       </div>
+                    )}
+                     {!loading && eduData && eduData.degrees.length === 0 && (
+                    <p>No Education data added</p>
+                  )}
+                  {!loading &&
+                    eduData &&
+                    eduData.certifications.length === 0 && (
+                      <p>No Certification data added</p>
                     )}
                 </div>
               </div>

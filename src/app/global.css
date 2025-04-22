@@ -2,35 +2,50 @@
 @import "./styles/buttons.css";
 @import "./styles/phone-input.css";
 
+::-webkit-scrollbar {
+  width: 3px;
+  height: 5px;
+}
 
+::-webkit-scrollbar-track {
+  background-color: #f0f2f5; /* You can adjust this color for all scrollbars globally */
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background-color: #2e6a5e; /* Color for all scrollbars globally */
+}
 
 .booking-table-wrapper::-webkit-scrollbar {
-    width:3px;
-    height:5px;
+  width: 3px;
+  height: 5px;
 }
 .booking-table-wrapper::-webkit-scrollbar-track {
-    background-color:#F0F2F5;
-    /* border-bottom-left-radius: 8px; */
-    /* border-bottom-right-radius: 8px; */
+  background-color: #f0f2f5;
+  /* border-bottom-left-radius: 8px; */
+  /* border-bottom-right-radius: 8px; */
 }
 .booking-table-wrapper::-webkit-scrollbar-thumb {
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
-    background-color:#2E6A5E;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  background-color: #2e6a5e;
 }
 .sidebar-wrapper::-webkit-scrollbar {
-    width:3px;
-    height:5px;
+  width: 3px;
+  height: 5px;
 }
 .sidebar-wrapper::-webkit-scrollbar-track {
-    background-color:#232946;
-    /* border-bottom-left-radius: 8px; */
-    /* border-bottom-right-radius: 8px; */
+  background-color: #232946;
+  /* border-bottom-left-radius: 8px; */
+  /* border-bottom-right-radius: 8px; */
 }
 .sidebar-wrapper::-webkit-scrollbar-thumb {
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
-    background-color:#232946;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  background-color: #232946;
+}
+html, body {
+    overflow: auto; /* Allow auto scrollbars when content overflows */
 }
 /* .booking-table-wrapper::-webkit-scrollbar-thumb:hover {
     background: black;
