@@ -334,3 +334,22 @@ export const getGuideByID = async (id) => {
     apiError(error);
   }
 };
+
+export const guideEducation = async (id) => {
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
+
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+  try {
+    const response = await fetch(url + `/qualifications/${id}`, requestOptions);
+
+    const result = await responseValidator(response);
+    return result;
+  } catch (error) {
+    apiError(error);
+  }
+};

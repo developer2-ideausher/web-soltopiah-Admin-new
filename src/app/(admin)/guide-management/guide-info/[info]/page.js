@@ -12,14 +12,37 @@ import LoaderLarge from "@/components/LoaderLarge";
 import { truncateName } from "@/Utilities/helper";
 import dayjs from "dayjs";
 import html2canvas from "html2canvas";
-import { getGuideByID } from "@/Services/Api/Guide/GuideApi";
+import { getGuideByID, guideEducation } from "@/Services/Api/Guide/GuideApi";
+import Eye from "../../../../../../icons/Eye";
+import Download from "../../../../../../icons/Download";
+import { toast } from "react-toastify";
 
 function Page({ params }) {
   const { info } = params;
 
   const [IdData, setIdData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [eduData, setEduData] = useState(null);
 
+  const handleDownload = async (url, fileName) => {
+    try {
+      const response = await fetch(url, { method: 'HEAD' });
+  
+      if (response.ok) {
+        const blobResponse = await fetch(url);
+        const blob = await blobResponse.blob();
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = fileName;
+        link.click();
+      } else {
+        toast.error('File not found'); 
+      }
+    } catch (error) {
+      console.error('Error downloading file:', error);
+      toast.error('The file could not be downloaded as the link is broken');
+    }
+  };
   const handleExport = async () => {
     const element = document.getElementById("right-side"); // or any other element you want to capture
     const titleElement = document.getElementById("titleName");
@@ -42,6 +65,7 @@ function Page({ params }) {
 
   useEffect(() => {
     fetchData();
+    fetchEduData();
   }, []);
   const fetchData = async () => {
     setLoading(true);
@@ -54,6 +78,22 @@ function Page({ params }) {
       console.error(result.message);
     }
 
+    setLoading(false);
+  };
+  const fetchEduData = async () => {
+    try {
+      setLoading(true);
+      const result = await guideEducation(info);
+
+      if (result.status) {
+        console.log(result.data);
+        setEduData(result.data);
+      }
+
+      setLoading(false);
+    } catch (error) {
+      toast.error(error.message);
+    }
     setLoading(false);
   };
   // const getIdDataApi = () => {
@@ -115,7 +155,7 @@ function Page({ params }) {
           <LoaderLarge />
         </div>
       ) : (
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-5 overflow-y-scroll 2xl:max-h-[70vh] booking-table-wrapper max-h-[62vh]">
           {IdData && (
             <>
               {" "}
@@ -207,7 +247,7 @@ function Page({ params }) {
                   </div>
                 </div>
               </div>
-              <div className="bg-white  p-5 rounded-xl border flex flex-col gap-10 border-[#E9E9EC]">
+              <div className="bg-white  p-5 rounded-xl border  flex flex-col gap-10 border-[#E9E9EC] ">
                 <div className="flex flex-col gap-2">
                   <p className="text-xl font-sans font-semibold text-userblack">
                     Soul module data
@@ -240,7 +280,7 @@ function Page({ params }) {
                     </Link>
                   </div>
                 </div>
-                <div className="flex flex-col gap-2 mb-20">
+                <div className="flex flex-col gap-2 mb-5">
                   <p className="text-xl font-sans font-semibold text-userblack">
                     Mindful hub data
                   </p>
@@ -286,6 +326,131 @@ function Page({ params }) {
                       <GuideCards Title="Content uploaded" />
                     </Link>
                   </div>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <p className="text-xl font-sans font-semibold text-userblack">
+                    Academic Journey
+                  </p>
+                  {!loading &&
+                    eduData &&
+                    eduData.degrees &&
+                    eduData.degrees.length > 0 && (
+                      <div className="flex flex-col gap-2 mb-4">
+                        <p className="text-base font-sans font-semibold text-userblack">
+                          Education
+                        </p>
+                        <div className="flex flex-row items-start  gap-3 w-full">
+                          {eduData?.degrees.map((item, index) => (
+                            <div
+                              key={item._id || index}
+                              className="border-[#CE8F9C] border rounded-lg w-3/12"
+                            >
+                              <div className="flex flex-col items-center justify-center p-2 bg-[#ACADDB] rounded-t-md">
+                                {item.file?.type === "pdf" ? (
+                                  <a
+                                    href={item?.file?.url}
+                                    target="_blank"
+                                    className="text-xl font-semibold font-sans px-4  hover:cursor-pointer flex items-center min-h-40 "
+                                  >
+                                    Pdf
+                                  </a>
+                                ) : (
+                                  <img
+                                    className="object-contain max-h-40 min-h-40"
+                                    src={item?.file?.url || "/image01.png"}
+                                    alt=""
+                                  />
+                                )}
+                              </div>
+                              <div className="flex flex-row justify-between items-center w-full py-2 px-3">
+                                <p className="truncate">{item.name}</p>
+                                <div className="flex gap-2">
+                                  <a
+                                    className="hover:cursor-pointer"
+                                    href={item?.file?.url}
+                                    target="_blank"
+                                  >
+                                    <Download />
+                                  </a>
+
+                                  <button
+                                    className="hover:cursor-pointer"
+                                    onClick={() =>
+                                      handleDownload(
+                                        item?.file?.url,
+                                        item?.file?.name || "Guide-Education"
+                                      )
+                                    }
+                                  >
+                                    <Eye />
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  {!loading &&
+                    eduData &&
+                    eduData.certifications &&
+                    eduData.certifications.length > 0 && (
+                      <div className="flex flex-col gap-2">
+                        <p className="text-base font-sans font-semibold text-userblack">
+                          Certifications
+                        </p>
+                        <div className="flex flex-row items-start  gap-3 w-full">
+                          {eduData?.certifications.map((item, index) => (
+                            <div
+                              key={item._id || index}
+                              className="border-[#CE8F9C] border rounded-lg w-3/12"
+                            >
+                              <div className="flex flex-col items-center justify-center p-2 bg-[#ACADDB] rounded-t-md">
+                                {item.file?.type === "pdf" ? (
+                                  <a
+                                    href={item?.file?.url}
+                                    target="_blank"
+                                    className="text-xl font-semibold font-sans px-4  hover:cursor-pointer flex items-center min-h-40 "
+                                  >
+                                    Pdf
+                                  </a>
+                                ) : (
+                                  <img
+                                    className="object-contain  max-h-40  min-h-40"
+                                    src={item?.file?.url || "/image01.png"}
+                                    alt=""
+                                  />
+                                )}
+                              </div>
+                              <div className="flex flex-row justify-between items-center w-full py-2 px-3">
+                                <p className="truncate">{item.name}</p>
+                                <div className="flex gap-2">
+                                  <a
+                                    className="hover:cursor-pointer"
+                                    href={item?.file?.url}
+                                    target="_blank"
+                                  >
+                                    <Download />
+                                  </a>
+
+                                  <button
+                                    className="hover:cursor-pointer"
+                                    onClick={() =>
+                                      handleDownload(
+                                        item?.file?.url,
+                                        item?.file?.name || "Guide-Certificate"
+                                      )
+                                    }
+                                  >
+                                    <Eye />
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                 </div>
               </div>
             </>
