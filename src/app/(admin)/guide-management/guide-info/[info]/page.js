@@ -126,7 +126,7 @@ function Page({ params }) {
           <Link href="/guide-management">
             <BackButton />
           </Link>
-          <button
+          {/* <button
             onClick={() =>
               handleDownload(
                 "https://media-hosting.imagekit.io/80919cd391b740c7/9040034f5d635f46a4fb92128964fcca.jpg?Expires=1839932497&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=VXnckACkpiyPFXCek0iqH~FbWFx8hXoyomrIGES6Gl8GuwYNJgj94equWqYvyelmXlTYu1ovr2-~QNgneIPz~2zXtHVflRSW7ZvucZE0qy5ToPC-mmxTPI-Y8HRfEsAQnFtHPVIznYyKwFiU2SFI9AoclB7LcknqMgECoUHXGdXz5Dqoshw33LFXwg~6DLfYTRU72tlW-Xc0OQws04w6aRvJ--Y~Y1JVV5Wv5AkCMYKAzauzMsxY2lnZL1C6Wu7tlLSOdvLb~z-89Q4s-Dhvvy7QRMF1IQHKCOf4BImi-AUR2N5A4HW~03cy0IYbC81M0dnJVDldFPRlmF8DhTlFJQ__",
@@ -136,7 +136,7 @@ function Page({ params }) {
             }
           >
             try download
-          </button>
+          </button> */}
           <p
             id="titleName"
             className="text-xl2 font-semibold text-userblack font-sans"
