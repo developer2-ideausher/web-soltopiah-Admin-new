@@ -16,6 +16,8 @@ import { LoginApi, loginNew } from "@/Services/Api/Login";
 import { getToken, setToken } from "@/Services/Cookie/userCookie";
 import useFirebaseAuth from "@/Services/Firebase/useFirebaseAuth";
 import LeftBlackarrow from "../../../icons/LeftBlackarrow";
+import { EyeClosed, EyeClosedIcon, EyeIcon, EyeOff } from "lucide-react";
+import Eye from "../../../icons/Eye";
 
 function Page() {
   const router = useRouter();
@@ -25,6 +27,7 @@ function Page() {
     useFirebaseAuth();
 
   const [showLogin, setShowlogin] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
   const [recoveryEmail, setRecoveryEmail] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -192,7 +195,7 @@ function Page() {
                 className="py-4 px-4 rounded-lg bg-[#EEEEF6] text-[#000] text-base font-normal w-full"
               />
             </div>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 relative">
               <p className="text-sm font-semibold text-[#2E2E37] mt-6 font-sans">
                 Password
               </p>
@@ -201,9 +204,10 @@ function Page() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                type="password"
-                className="py-4 px-4 rounded-lg bg-[#EEEEF6] text-[#000] text-base font-normal w-full"
+                type={showPassword?"text":"password"}
+                className="py-4 px-4 rounded-lg bg-[#EEEEF6] text-[#000] text-base font-normal w-full "
               />
+              <button type="button" onClick={()=>setShowPassword(!showPassword)} className="absolute  bottom-4 right-2" >{showPassword?<EyeIcon />:<EyeOff />}</button >
             </div>
 
             {/* <PhoneInput

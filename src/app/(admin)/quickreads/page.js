@@ -160,7 +160,7 @@ function Page() {
                 <span className="text-[#666576] font-sans font-normal text-sm">
                   Title
                 </span>
-                <span className="text-[#666576] font-sans font-normal text-sm">
+                <span className="text-[#666576] ml-2 font-sans font-normal text-sm">
                   Created By
                 </span>
 
