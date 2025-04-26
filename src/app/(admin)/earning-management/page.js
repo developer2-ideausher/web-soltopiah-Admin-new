@@ -235,7 +235,7 @@ export default function Page() {
                 className="flex items-center justify-between"
               >
                 <div className="flex items-center justify-center gap-2">
-                  <img src="dash.png" alt="" />
+                  <img className="w-11 h-11 object-contain rounded-full" src={item.profilePic?.url} alt="" />
                   <p className="text-[#414554] text-sm font-normal font-sans">
                     {item.firstName} {item.lastName}
                   </p>
@@ -327,7 +327,7 @@ export default function Page() {
                   >
                     <div className="text-userblack w-full flex  gap-2 font-sans font-semibold text-base ">
                       <img
-                        src="/Frame1.png"
+                        src={item.profilePic?.url || "/frame1.png"}
                         alt="frame"
                         className="w-11 h-11 rounded-full"
                       />
@@ -394,7 +394,7 @@ export default function Page() {
                   >
                     <div className="text-userblack flex items-center gap-2 font-sans font-semibold text-base ">
                       <img
-                        src={item.guide?.profilePic || "/Frame1.png"}
+                        src={item.guide?.profilePic?.url || "/Frame1.png"}
                         alt="frame"
                         className="w-11 h-11 rounded-full"
                       />

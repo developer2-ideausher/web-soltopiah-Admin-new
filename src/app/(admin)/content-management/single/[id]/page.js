@@ -83,7 +83,14 @@ export default function ViewPage() {
 
           <h6 className='text-sm font-semibold text-[#121616] mt-5'>Category</h6>
           <h5 className='text-[#414554] font-normal text-lg'>{data?.category?.title}</h5>
+          <h6 className="text-sm font-semibold text-[#121616] mt-5">
+            Goals
+          </h6>
+          {data.goals.length===0?"No goals Added":""}
 
+          {data?.goals && data.goals.map((item,index)=>(<h5 key={item._id||index} className="text-[#414554] font-normal text-lg">
+            {(index+1)+". "+item?.title}
+          </h5>))}
           <h6 className='text-sm font-semibold text-[#121616] mt-5'>Content Added</h6>
           {/* <h5 className='text-[#414554] font-normal text-lg mb-1'>{data?.chapter?.title}</h5> */}
           {data?.chapter?.type == 'audio' && file != '' && <audio id="audio" className='w-2/5 xs:w-full' controls>

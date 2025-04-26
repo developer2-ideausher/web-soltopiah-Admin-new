@@ -194,7 +194,8 @@ function Page({ params }) {
             <p className="text-sm font-sans font-semibold text-userblack">
               Description
             </p>
-            <input
+            <textarea
+            rows={5}
               type="text"
               name="description"
               className="py-3 px-4 rounded-xl bg-white border border-[#E7E5E4] text-sm font-sans font-normal text-black"

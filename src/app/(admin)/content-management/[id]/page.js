@@ -118,6 +118,13 @@ export default function ViewPage() {
           <h5 className="text-[#414554] font-normal text-lg">
             {data?.category?.title}
           </h5>
+          <h6 className="text-sm font-semibold text-[#121616] mt-5">
+            Goals
+          </h6>
+          {data.goals.length===0?"No goals Added":""}
+          {data?.goals && data.goals.map((item,index)=>(<h5 key={item._id||index} className="text-[#414554] font-normal text-lg">
+            {(index+1)+". "+item?.title}
+          </h5>))}
 
           <h6 className="text-sm font-semibold text-[#121616] mt-5">
             Content Added

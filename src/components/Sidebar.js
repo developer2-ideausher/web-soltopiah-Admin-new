@@ -18,6 +18,7 @@ import BadgesandRewards from "../../icons/BadgesandRewards";
 import DashboardIco from "../../icons/DashboardIco";
 import Policy from "../../icons/Policy";
 import EarningIcon from "../../icons/EarningIcon";
+import Goals from "../../icons/Goals";
 export default function Sidebar() {
   const pathName = usePathname();
   return (
@@ -99,6 +100,17 @@ export default function Sidebar() {
             <Category />
             <h6 className="lg:text-xs xl:text-sm 2xl:text-base text-white font-normal font-sans group-hover:text-primary whitespace-nowrap">
               Category Management
+            </h6>
+          </Link>
+          <Link
+            href="/goals"
+            className={`flex items-center gap-2 lg:p-2 xl:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
+              pathName.startsWith("/goals") && "bg-pink on"
+            }`}
+          >
+            <Goals />
+            <h6 className="lg:text-xs xl:text-sm 2xl:text-base text-white font-normal font-sans group-hover:text-primary whitespace-nowrap">
+              Goals
             </h6>
           </Link>
           

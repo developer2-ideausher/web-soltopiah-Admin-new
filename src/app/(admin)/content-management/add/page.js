@@ -10,6 +10,8 @@ import {
   getAllCategories,
   getAllChapters,
 } from "@/Utilities/Course";
+import Select from "react-select";
+import { getAllGoals } from "@/Services/Api/Goals/goal";
 import AudioVideoUploader from "@/components/AudiVideoUploader";
 import AddContentToCourseModal from "@/components/AddContentToCourseModal";
 import Dropdown from "@/components/Dropdown";
@@ -72,16 +74,16 @@ export default function Add() {
     setContentAccessType(e.target.value);
   };
   const conteFileHandler = (url, key, duration, type) => {
-   if (!url) {
-     setContentFile('');            
-     setContentFileDuration('');    
-     setType('');                   
-    setDisableButton(true);   
-    if (!edited) {
-        setCourseContentType('both');
-      }     
-     return;
-   }
+    if (!url) {
+      setContentFile("");
+      setContentFileDuration("");
+      setType("");
+      setDisableButton(true);
+      if (!edited) {
+        setCourseContentType("both");
+      }
+      return;
+    }
     setContentFile({
       key: key,
       url: url,
@@ -186,7 +188,12 @@ export default function Add() {
   const dropdownHandler = (val, duration) => {
     setCategory(val._id);
   };
-
+  const [goalOptions, setGoalOptions] = useState([]);
+  const [selectedGoals, setSelectedGoals] = useState([]);
+  const dropdownGoalHandler = (val, duration) => {
+    setSelectedGoals(val._id);
+  };
+console.log(selectedGoals)
   // mutual related data
   const accessibilityTabHandler = (e) => {
     setAccessibilityTab(e.target.value);
@@ -195,10 +202,16 @@ export default function Add() {
     setThumbnail(val);
   };
   const dataSetter = async () => {
-    const response = await getAllCategories();
-    if (response?.status) {
-      setCategoryData(response.data.results);
-    } else {
+    //  categories
+    const catRes = await getAllCategories();
+    if (catRes?.status) {
+      setCategoryData(catRes.data.results);
+    }
+
+    // goals
+    const goalsRes = await getAllGoals(1);
+    if (goalsRes?.status) {
+      setGoalOptions(goalsRes.data.results);
     }
   };
 
@@ -218,6 +231,11 @@ export default function Add() {
       res = false;
       toast.info("Select category", {
         toastId: "dkjhf",
+      });
+    } else if (selectedGoals == "") {
+      res = false;
+      toast.info("Select goals", {
+        toastId: "dkjhfqucaf",
       });
     } else if (courseType == "") {
       res = false;
@@ -307,6 +325,7 @@ export default function Add() {
           thumbnail: thumbnail,
           media: file,
           category: category,
+          goals: selectedGoals,
           description: description,
           title: title,
           accessibility: accessibilityTab,
@@ -347,6 +366,8 @@ export default function Add() {
         const obj = {
           thumbnail: thumbnail,
           category: category,
+          goals: selectedGoals,
+
           accessibility: accessibilityTab,
           description: description,
           title: title,
@@ -497,6 +518,28 @@ export default function Add() {
               onChange={(e) => setCourseType(e.target.value)}
               placeholder="Ex. Blog"
               className="bg-white border border-solid border-[#E7E5E4] w-full rounded-xl py-3 px-4"
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-5 mt-5">
+          <div>
+            <h6 className="text-[#252322] font-semibold text-sm mb-1">Goals</h6>
+            {/* <Dropdown
+              placeholder="Select"
+              data={goalOptions}
+              callback={dropdownGoalHandler}
+            /> */}
+            <Select
+              isMulti
+              options={goalOptions.map((g) => ({
+                value: g._id,
+                label: g.title,
+              }))}
+              onChange={(selectedArr) => {
+                // selectedArr is an array of {value,label}
+                setSelectedGoals(selectedArr.map((s) => s.value));
+              }}
+              placeholder="Select one or more goals…"
             />
           </div>
         </div>
