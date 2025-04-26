@@ -170,7 +170,7 @@ export default function Add() {
 
   const [categoryData, setCategoryData] = useState([]);
   const dropdownHandler = (val) => {
-    setCategory(val);
+    setCategory(val._id);
     setSaveEdit(true);
   };
 
