@@ -28,7 +28,6 @@ function Page() {
   const [sort, setSort] = useState("desc");
   const [filter, setFilter] = useState("");
 
-
   const token = getToken();
   // const getAllNotificationApi = () => {
   //   const myHeaders = new Headers();
@@ -69,16 +68,18 @@ function Page() {
   // };
   const handleSearch = (term) => {
     setSearchTerm(term);
-    setCurrentPage(1)
-
-   
-    
+    setCurrentPage(1);
+  
+  };
+  const handleFilterChange = (value) => {
+    setFilter(value);
+    setCurrentPage(1);
   };
   const fetchData = async (page) => {
     setLoading(true);
     setNotificationData([]);
-    console.log(searchTerm,"Robin",filter,"amin")
-    const result = await getAllNotificationApi(page, sort, searchTerm,filter);
+    console.log(searchTerm, "Robin", filter, "amin");
+    const result = await getAllNotificationApi(page, sort, searchTerm, filter);
 
     if (result.status) {
       console.log(result.data.results);
@@ -136,7 +137,7 @@ function Page() {
   };
   useEffect(() => {
     fetchData(currentPage);
-  }, [refresh, currentPage,searchTerm, sort,filter]);
+  }, [refresh, currentPage, searchTerm, sort, filter]);
   return (
     <>
       {" "}
@@ -153,15 +154,15 @@ function Page() {
         </p>
         <div className="flex flex-col">
           <SearchBar
-           filterArray={[
-            { value: "", label: "All" },
-            { value: "Guide", label: "Guide" },
-            { value: "NormalUser", label: "Users" },
-          ]}
+            filterArray={[
+              { value: "", label: "All" },
+              { value: "Guide", label: "Guide" },
+              { value: "NormalUser", label: "Users" },
+            ]}
             name={"Sent to"}
             handleSort={sort}
             setHandleSort={setSort}
-            setHandleFilter={setFilter}
+            setHandleFilter={handleFilterChange}
             handleSearch={handleSearch}
             route={"/notification-management/create-notification"}
             showAddButton={true}
@@ -195,9 +196,7 @@ function Page() {
                     {filter && ` with filter "${filter}"`}.
                   </p>
                 ) : (
-                  <p className="text-gray-500 text-sm">
-                    No data found.
-                  </p>
+                  <p className="text-gray-500 text-sm">No data found.</p>
                 )}
               </div>
             )}

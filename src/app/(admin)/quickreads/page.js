@@ -44,6 +44,7 @@ function Page() {
 
     setCurrentPage(1);
   };
+
   const fetchData = async (page) => {
     setLoading(true);
     setQuickReadData([]);

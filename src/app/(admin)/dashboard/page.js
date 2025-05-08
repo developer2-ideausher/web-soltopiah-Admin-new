@@ -199,7 +199,7 @@ export default function Page() {
                 guide={
                   mapRevenueData(revenueData, "GuideSessionBookingRevenue") || 0
                 }
-                revenue={mapRevenueData(revenueData, "DonationRevenue") || 0}
+                // revenue={mapRevenueData(revenueData, "DonationRevenue") || 0}
                 subscription={
                   mapRevenueData(revenueData, "SubscriptionRevenue") || 0
                 }

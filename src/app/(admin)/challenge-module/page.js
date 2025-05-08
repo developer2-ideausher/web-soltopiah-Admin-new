@@ -61,6 +61,10 @@ function Page() {
 
     setCurrentPage(1);
   };
+  const handleFilterChange = (value) => {
+    setFilter(value);
+    setCurrentPage(1);
+  };
   const fetchData = async (page) => {
     setLoading(true);
     setChallengeData([]);
@@ -168,7 +172,7 @@ function Page() {
             name={"Type"}
             handleSort={sort}
             setHandleSort={setSort}
-            setHandleFilter={setFilter}
+            setHandleFilter={handleFilterChange}
             handleSearch={handleSearch}
             showAddButton={true}
             title="Create Challenge"

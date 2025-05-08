@@ -12,7 +12,7 @@ import {
   updateCourse,
   updateCourseTwo,
 } from "@/Utilities/Course";
-import { getAllGoals } from "@/Services/Api/Goals/goal";
+import { getAllActiveGoals, getAllGoals } from "@/Services/Api/Goals/goal";
 import AudioVideoUploader from "@/components/AudiVideoUploader";
 import AddContentToCourseModal from "@/components/AddContentToCourseModal";
 import Dropdown from "@/components/Dropdown";
@@ -193,7 +193,7 @@ export default function Add() {
       });
     }
 
-    const goalsRes = await getAllGoals(1);
+    const goalsRes = await getAllActiveGoals(1);
     if (goalsRes?.status) {
       setGoalsData(goalsRes.data.results);
     } else {

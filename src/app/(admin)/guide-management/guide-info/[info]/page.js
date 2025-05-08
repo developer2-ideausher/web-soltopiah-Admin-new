@@ -204,54 +204,67 @@ function Page({ params }) {
                   </div>
                 </div>
                 <div className="flex flex-row gap-2 justify-between  border border-[#CE8F9C] rounded-md p-3 w-4/12">
-                  <div className="text-base font-sans w-full font-normal text-[#71737F]">
+                  <div className="text-base font-sans w-1/3 font-normal text-[#71737F]">
                     <p>Total Services</p>
-                    <p>Service Category</p>
+                    {/* <p>Service Category</p> */}
                     <p>Focus Area</p>
                   </div>
-                  <div className="w-full flex flex-col  items-center">
+                  <div className="w-1/3 flex flex-col  items-center">
                     <p>:</p>
-                    <p>:</p>
+
                     <p>:</p>
                   </div>
-                  <div className="text-base font-sans font-semibold w-full text-userblack">
-                    <p>{IdData.services?.length}</p>
-                    <p>NAN</p>
-                    <p>
-                      {IdData.specialization
-                        ? truncateName(IdData.specialization)
+                  <div className="text-base font-sans font-semibold w-1/3 text-userblack">
+                    <p>Na</p>
+
+                    <p
+                      title={
+                        IdData.specializedCategories &&
+                        IdData.specializedCategories.length > 0
+                          ? IdData.specializedCategories
+                              .map((a) => a.title)
+                              .join(", ")
+                          : "No Services Added"
+                      }
+                      className="truncate w-[90%]"
+                    >
+                      {IdData.specializedCategories &&
+                      IdData.specializedCategories.length > 0
+                        ? IdData.specializedCategories
+                            .map((a) => a.title)
+                            .join(", ")
                         : "No Services Added"}
                     </p>
                   </div>
                 </div>
-                <div className="flex flex-col gap-2 border border-[#CE8F9C] rounded-md p-3 w-3/12">
-                  <div className="flex flex-row  gap-5">
+                <div className="flex flex-row gap-2 items-start justify-between border border-[#CE8F9C] rounded-md p-3 w-3/12">
+                  <div className="flex flex-col w-full  gap-2">
                     <p className="text-base font-sans font-normal text-[#71737F]">
-                      Total Revenue{" "}
+                      Total Revenue
                     </p>
-                    <p>:</p>
-                    <p className="text-userblack font-sans font-semibold text-base">
-                      {" "}
-                      {"$ " + IdData.totalMoneyWithdrawn}
+
+                    <p className="text-base font-sans font-normal text-[#71737F]">
+                      Audio Revenue
+                    </p>
+
+                    <p className="text-[#71737F] font-sans font-normal text-base">
+                      Video Revenue
                     </p>
                   </div>
-                  <div className="flex flex-row  gap-5">
-                    <p className="text-base font-sans font-normal text-[#71737F]">
-                      Audio Revenue{" "}
+                  <div className="w-full flex flex-col gap-2  items-center">
+                    <span>:</span>
+                    <span>:</span>
+                    <span>:</span>
+                  </div>
+                  <div className="flex flex-col w-full gap-2">
+                    <p className="text-base text-userBlack font-sans font-semibold">
+                      {"$ " + IdData.totalMoneyWithdrawn}
                     </p>
-                    <p>:</p>
-                    <p className="text-userblack font-sans font-semibold text-base">
+                    <p className="text-userBlack font-sans font-semibold text-base">
                       {" "}
                       {"$ " + IdData.totalAudioRevenue}
                     </p>
-                  </div>
-                  <div className="flex flex-row  gap-5">
-                    <p className="text-base font-sans font-normal text-[#71737F]">
-                      Video Revenue{" "}
-                    </p>
-                    <p>:</p>
-                    <p className="text-userblack font-sans font-semibold text-base">
-                      {" "}
+                    <p className="text-userBlack font-sans font-semibold text-base">
                       {"$ " + IdData.totalVideoRevenue}
                     </p>
                   </div>
@@ -341,7 +354,7 @@ function Page({ params }) {
                   <p className="text-xl font-sans font-semibold text-userblack">
                     Academic Journey
                   </p>
-                 
+
                   {!loading &&
                     eduData &&
                     eduData.degrees &&
@@ -484,7 +497,7 @@ function Page({ params }) {
                         </div>
                       </div>
                     )}
-                     {!loading && eduData && eduData.degrees.length === 0 && (
+                  {!loading && eduData && eduData.degrees.length === 0 && (
                     <p>No Education data added</p>
                   )}
                   {!loading &&

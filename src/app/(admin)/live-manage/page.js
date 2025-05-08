@@ -84,6 +84,10 @@ function Page() {
 
     setCurrentPage(1);
   };
+  const handleFilterChange = (value) => {
+    setFilter(value);
+    setCurrentPage(1);
+  };
   const fetchData = async (page) => {
     setLoading(true);
     setLiveManagementData([]);
@@ -144,7 +148,7 @@ function Page() {
             name={"Status"}
             handleSort={sort}
             setHandleSort={setSort}
-            setHandleFilter={setFilter}
+            setHandleFilter={handleFilterChange}
             handleSearch={handleSearch}
             showAddButton={false}
           />

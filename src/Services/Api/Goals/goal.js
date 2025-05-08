@@ -28,6 +28,27 @@ export const getAllGoals = async (page, search = "") => {
     apiError(error);
   }
 };
+export const getAllActiveGoals = async (page, ) => {
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
+
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+  try {
+    const response = await fetch(
+      url + `/goals?page=${page}&limit=10&isActive=true`,
+      requestOptions
+    );
+
+    const result = await responseValidator(response);
+    return result;
+  } catch (error) {
+    apiError(error);
+  }
+};
 export const updateGoal = async (id, data) => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));

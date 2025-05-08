@@ -25,6 +25,10 @@ function Page() {
 
     setCurrentPage(1);
   };
+  const handleFilterChange = (value) => {
+    setFilter(value);
+    setCurrentPage(1);
+  };
   const theme = createTheme({
     palette: {
       customRed: {
@@ -89,7 +93,7 @@ function Page() {
               name={"Type"}
               handleSort={sort}
               setHandleSort={setSort}
-              setHandleFilter={setFilter}
+              setHandleFilter={handleFilterChange}
               handleSearch={handleSearch}
               showAddButton={false}
             />

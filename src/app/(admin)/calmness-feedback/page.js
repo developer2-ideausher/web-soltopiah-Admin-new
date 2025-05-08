@@ -36,6 +36,10 @@ function Page() {
 
     setCurrentPage(1);
   };
+  const handleFilterChange = (value) => {
+    setFilter(value);
+    setCurrentPage(1);
+  };
   const handleExport = async () => {
     const element = document.getElementById("right-side"); // or any other element you want to capture
     const titleElement = document.getElementById("titleName");
@@ -107,7 +111,7 @@ function Page() {
             { value: "", label: "All" },
           ]}
           name={"Type"}
-          setHandleFilter={setFilter}
+          setHandleFilter={handleFilterChange}
           handleSort={sort}
           setHandleSort={setSort}
           handleSearch={handleSearch}

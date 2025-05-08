@@ -11,7 +11,7 @@ import {
   getAllChapters,
 } from "@/Utilities/Course";
 import Select from "react-select";
-import { getAllGoals } from "@/Services/Api/Goals/goal";
+import { getAllActiveGoals, getAllGoals } from "@/Services/Api/Goals/goal";
 import AudioVideoUploader from "@/components/AudiVideoUploader";
 import AddContentToCourseModal from "@/components/AddContentToCourseModal";
 import Dropdown from "@/components/Dropdown";
@@ -209,7 +209,7 @@ console.log(selectedGoals)
     }
 
     // goals
-    const goalsRes = await getAllGoals(1);
+    const goalsRes = await getAllActiveGoals(1);
     if (goalsRes?.status) {
       setGoalOptions(goalsRes.data.results);
     }

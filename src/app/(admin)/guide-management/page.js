@@ -36,6 +36,10 @@ function Page() {
 
     setCurrentPage(1);
   };
+  const handleFilterChange = (value) => {
+    setFilter(value);
+    setCurrentPage(1);
+  };
 
   const handleDelete = (id) => {
     const myHeaders = new Headers();
@@ -157,7 +161,7 @@ function Page() {
             name={"Type"}
             handleSort={sort}
             setHandleSort={setSort}
-            setHandleFilter={setFilter}
+            setHandleFilter={handleFilterChange}
             handleSearch={handleSearch}
             showAddButton={false}
           />
@@ -180,7 +184,7 @@ function Page() {
                   Revenue
                 </span>
                 <span className="text-[#666576] font-sans font-normal text-sm text-center">
-                  Total bookings
+                  Total Bookings
                 </span>
                 <span className="text-[#666576] font-sans font-normal text-sm"></span>
               </div>

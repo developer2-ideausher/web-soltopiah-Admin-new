@@ -8,7 +8,7 @@ import {
   updateCourse,
   updateCourseTwo,
 } from "@/Utilities/Course";
-import { getAllGoals } from "@/Services/Api/Goals/goal";
+import { getAllActiveGoals, getAllGoals } from "@/Services/Api/Goals/goal";
 
 import AudioVideoUploader from "@/components/AudiVideoUploader";
 import AddContentToCourseModal from "@/components/AddContentToCourseModal";
@@ -79,7 +79,7 @@ export default function Add() {
         toastId: "djhgf",
       });
     }
-    const goalsRes = await getAllGoals(1);
+    const goalsRes = await getAllActiveGoals(1);
     if (goalsRes?.status) {
       setGoalsData(goalsRes.data.results);
     } else {
