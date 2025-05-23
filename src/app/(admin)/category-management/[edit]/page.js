@@ -2,13 +2,16 @@
 import BackButton from "@/components/BackButton";
 import LoaderLarge from "@/components/LoaderLarge";
 import LoaderSmall from "@/components/LoaderSmall";
+import CropModal from "@/components/CropModal";
 import { getImageCacheRemover } from "@/Services/Api/Badges/BadgesApi";
 import { getToken } from "@/Services/Cookie/userCookie";
+import { getCroppedImg } from "@/Utilities/helper";
 import emojiRegex from "emoji-regex";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+
 
 function Page({ params }) {
   const { edit } = params;
@@ -26,11 +29,13 @@ function Page({ params }) {
     thumbnail: null,
     name: "",
     description: "",
-
     pageType: "none",
   });
 
   const [preview, setPreview] = useState(null);
+  const [cropModalOpen, setCropModalOpen] = useState(false);
+  const [originalImage, setOriginalImage] = useState(null);
+
   const router = useRouter();
   const token = getToken();
 
@@ -38,23 +43,75 @@ function Page({ params }) {
     const regex = emojiRegex();
     return input.replace(regex, "");
   };
+
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    setFormData({
-      ...formData,
-      [name]: files ? files[0] : value,
-    });
-    if (files) {
-      setPreview(URL.createObjectURL(files[0]));
+
+    if (files && files[0]) {
+      const file = files[0];
+      const imageUrl = URL.createObjectURL(file);
+      setOriginalImage(imageUrl);
+      setCropModalOpen(true);
+    } else {
+      let sanitizedValue = value;
+      if (name === "name" || name === "description") {
+        sanitizedValue = removeEmojis(value);
+      }
+      setFormData((prevState) => ({
+        ...prevState,
+        [name]: sanitizedValue,
+      }));
     }
-    let sanitizedValue = value;
-    if (name === "name" || name === "description") {
-      sanitizedValue = removeEmojis(value);
-    }
+  };
+
+  // const handleCropComplete = async (croppedAreaPixels) => {
+  //   try {
+  //     const croppedImage = await getCroppedImg(
+  //       originalImage,
+  //       croppedAreaPixels
+  //     );
+  //     const croppedImageUrl = URL.createObjectURL(croppedImage);
+
+  //     setFormData((prevState) => ({
+  //       ...prevState,
+  //       thumbnail: croppedImage,
+  //     }));
+  //     setPreview(croppedImageUrl);
+  //     setCropModalOpen(false);
+  //   } catch (e) {
+  //     console.error(e);
+  //     toast.error("Failed to crop image");
+  //   }
+  // };
+
+
+  const handleCropComplete = async (croppedAreaPixels) => {
+  try {
+    const croppedImageBlob = await getCroppedImg(originalImage, croppedAreaPixels);
+
+    const croppedImageFile = new File([croppedImageBlob], "thumbnail.jpg", { type: "image/jpeg" });
+
+    const croppedImageUrl = URL.createObjectURL(croppedImageFile);
+
     setFormData((prevState) => ({
       ...prevState,
-      [name]: sanitizedValue,
+      thumbnail: croppedImageFile, 
     }));
+    setPreview(croppedImageUrl);
+    setCropModalOpen(false);
+  } catch (e) {
+    console.error(e);
+    toast.error("Failed to crop image");
+  }
+};
+
+  const handleCropCancel = () => {
+    setCropModalOpen(false);
+    setOriginalImage(null);
+    const fileInput = document.querySelector('input[name="thumbnail"]');
+    if (fileInput) {
+      fileInput.value = "";
+    }
   };
 
   const isFormChanged =
@@ -93,6 +150,7 @@ function Page({ params }) {
       .catch((error) => {
         console.error(error);
         toast.error("Error Occurred");
+        setSmallLoading(false);
       });
   };
 
@@ -114,13 +172,16 @@ function Page({ params }) {
           thumbnail: result.data?.image?.url,
           name: result.data?.title,
           description: result.data?.description,
-          pageType: result.data?.pageType || "none", 
+          pageType: result.data?.pageType || "none",
         };
         setFormData(fetchedData);
         setInitialData(fetchedData);
         setPreview(result.data?.image?.url);
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
+      });
   };
 
   useEffect(() => {
@@ -129,7 +190,6 @@ function Page({ params }) {
     }
   }, [edit]);
 
-  // Function to handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isFormChanged) {
@@ -190,16 +250,16 @@ function Page({ params }) {
               onChange={handleChange}
             />
           </div>
+
           <div className="flex flex-col gap-2">
             <p className="text-sm font-sans font-semibold text-userblack">
               Description
             </p>
             <textarea
-            rows={5}
-              type="text"
+              rows={5}
               name="description"
               className="py-3 px-4 rounded-xl bg-white border border-[#E7E5E4] text-sm font-sans font-normal text-black"
-              placeholder="Enter title"
+              placeholder="Enter description"
               value={formData.description}
               onChange={handleChange}
             />
@@ -236,6 +296,13 @@ function Page({ params }) {
           </div>
         </form>
       )}
+
+n      <CropModal
+        isOpen={cropModalOpen}
+        onClose={handleCropCancel}
+        imageSrc={originalImage}
+        onCropComplete={handleCropComplete}
+      />
     </div>
   );
 }

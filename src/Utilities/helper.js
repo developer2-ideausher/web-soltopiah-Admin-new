@@ -168,3 +168,90 @@ export function buildQueryParams(params) {
     ) // Encode key and value
     .join("&"); // Join with `&`
 }
+
+// export default function getCroppedImg(imageSrc, pixelCrop) {
+//   const canvas = document.createElement("canvas");
+//   const ctx = canvas.getContext("2d");
+
+//   return new Promise((resolve, reject) => {
+//     const image = new Image();
+//     image.crossOrigin = "anonymous"; // to avoid CORS issues if remote image
+
+//     image.onload = () => {
+//       canvas.width = pixelCrop.width;
+//       canvas.height = pixelCrop.height;
+
+//       ctx.drawImage(
+//         image,
+//         pixelCrop.x,
+//         pixelCrop.y,
+//         pixelCrop.width,
+//         pixelCrop.height,
+//         0,
+//         0,
+//         pixelCrop.width,
+//         pixelCrop.height
+//       );
+
+//       canvas.toBlob((blob) => {
+//         if (!blob) {
+//           reject(new Error("Canvas is empty"));
+//           return;
+//         }
+//         blob.name = "cropped.jpeg";
+//         const croppedImageUrl = URL.createObjectURL(blob);
+//         resolve(croppedImageUrl);
+//       }, "image/jpeg");
+//     };
+
+//     image.onerror = (error) => reject(error);
+//     image.src = imageSrc;
+//   });
+// }
+
+const createImage = (url) =>
+  new Promise((resolve, reject) => {
+    const image = new Image();
+    image.addEventListener("load", () => resolve(image));
+    image.addEventListener("error", (error) => reject(error));
+    image.setAttribute("crossOrigin", "anonymous");
+    image.src = url;
+  });
+
+export const getCroppedImg = async (imageSrc, pixelCrop) => {
+  const image = await createImage(imageSrc);
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+
+  const maxSize = Math.max(image.width, image.height);
+  const safeArea = 2 * ((maxSize / 2) * Math.sqrt(2));
+
+  canvas.width = safeArea;
+  canvas.height = safeArea;
+
+  ctx.translate(safeArea / 2, safeArea / 2);
+  ctx.translate(-safeArea / 2, -safeArea / 2);
+
+  ctx.drawImage(
+    image,
+    safeArea / 2 - image.width * 0.5,
+    safeArea / 2 - image.height * 0.5
+  );
+
+  const data = ctx.getImageData(0, 0, safeArea, safeArea);
+
+  canvas.width = pixelCrop.width;
+  canvas.height = pixelCrop.height;
+
+  ctx.putImageData(
+    data,
+    Math.round(0 - safeArea / 2 + image.width * 0.5 - pixelCrop.x),
+    Math.round(0 - safeArea / 2 + image.height * 0.5 - pixelCrop.y)
+  );
+
+  return new Promise((resolve) => {
+    canvas.toBlob((file) => {
+      resolve(file);
+    }, "image/jpeg");
+  });
+};
