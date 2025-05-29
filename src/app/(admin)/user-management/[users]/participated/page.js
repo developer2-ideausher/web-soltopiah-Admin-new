@@ -133,12 +133,15 @@ function Page({ params }) {
                   </span>
 
                   <div className="font-sans font-normal text-base">
-                    {item.challengeCreator?.firstName ||
+                    {item.creatorRole === "NormalUser"
+                      ? "User"
+                      : item.creatorRole}
+                    {/* {item.challengeCreator?.firstName ||
                     item.challengeCreator?.lastName
                       ? `${item.challengeCreator?.firstName || ""} ${
                           item.challengeCreator?.lastName || ""
                         }`.trim()
-                      : "Admin"}
+                      : "Admin"} */}
                   </div>
                 </div>
               ))}

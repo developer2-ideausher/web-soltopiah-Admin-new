@@ -54,7 +54,7 @@ function Page({ params }) {
       const result = await patchApi(badge, selectedFile, description);
       if (result.status) {
         toast.success(
-          "Badge photo updated successfully!",
+          "Badge updated successfully!",
           router.push("/badgesandrewards")
         );
       } else {

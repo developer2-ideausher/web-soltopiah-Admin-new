@@ -239,15 +239,15 @@ function Page({ params }) {
                 </div>
                 <div className="flex flex-row gap-2 items-start justify-between border border-[#CE8F9C] rounded-md p-3 w-3/12">
                   <div className="flex flex-col w-full  gap-2">
-                    <p className="text-base font-sans font-normal text-[#71737F]">
+                    <p className="text-base font-sans font-normal text-[#71737F] truncate">
                       Total Revenue
                     </p>
 
-                    <p className="text-base font-sans font-normal text-[#71737F]">
+                    <p className="text-base font-sans font-normal text-[#71737F] truncate">
                       Audio Revenue
                     </p>
 
-                    <p className="text-[#71737F] font-sans font-normal text-base">
+                    <p className="text-[#71737F] font-sans font-normal text-base truncate">
                       Video Revenue
                     </p>
                   </div>
@@ -257,14 +257,23 @@ function Page({ params }) {
                     <span>:</span>
                   </div>
                   <div className="flex flex-col w-full gap-2">
-                    <p className="text-base text-userBlack font-sans font-semibold">
+                    <p
+                      title={"$ " + IdData.totalMoneyWithdrawn}
+                      className="text-base text-userBlack font-sans font-semibold truncate"
+                    >
                       {"$ " + IdData.totalMoneyWithdrawn}
                     </p>
-                    <p className="text-userBlack font-sans font-semibold text-base">
+                    <p
+                      title={"$ " + IdData.totalAudioRevenue}
+                      className="text-userBlack font-sans font-semibold text-base truncate"
+                    >
                       {" "}
                       {"$ " + IdData.totalAudioRevenue}
                     </p>
-                    <p className="text-userBlack font-sans font-semibold text-base">
+                    <p
+                      title={"$ " + IdData.totalVideoRevenue}
+                      className="text-userBlack font-sans font-semibold text-base truncate"
+                    >
                       {"$ " + IdData.totalVideoRevenue}
                     </p>
                   </div>

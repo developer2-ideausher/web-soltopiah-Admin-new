@@ -83,9 +83,9 @@ function Page({ params }) {
         <div className="w-full overflow-x-scroll booking-table-wrapper">
           <div className="bg-[#F0F2F5] min-w-fit w-full ">
             <div className="items-center grid grid-cols-sessionTable p-4 justify-between">
-              <span className="text-[#666576] font-sans font-normal text-sm">
+              {/* <span className="text-[#666576] font-sans font-normal text-sm">
                 Tran. id
-              </span>
+              </span> */}
               <span className="text-[#666576] font-sans font-normal text-sm">
                 User. id
               </span>
@@ -96,7 +96,10 @@ function Page({ params }) {
                 Date
               </span>
               <span className="text-[#666576] font-sans font-normal text-sm">
-                Time
+                Start Time
+              </span>
+              <span className="text-[#666576] font-sans font-normal text-sm">
+                End Time
               </span>
               <span className="text-[#666576] font-sans font-normal text-sm">
                 Session type
@@ -107,9 +110,9 @@ function Page({ params }) {
               <span className="text-[#666576] font-sans font-normal text-sm">
                 Status
               </span>
-              <span className="text-[#666576] font-sans font-normal text-sm">
+              {/* <span className="text-[#666576] font-sans font-normal text-sm">
                 Guide earning
-              </span>
+              </span> */}
             </div>
           </div>
           {loading && (
@@ -138,14 +141,14 @@ function Page({ params }) {
                   key={item._id || index}
                   className=" grid grid-cols-sessionTable border-b border-[#E9E9EC] items-center justify-between p-4"
                 >
-                  <span className="text-userblack text-base font-semibold font-sans">
+                  {/* <span className="text-userblack text-base font-semibold font-sans">
                     32861
-                  </span>
+                  </span> */}
                   <span
                     title={item._id}
                     className="text-userblack text-base font-semibold font-sans"
                   >
-                    {item._id.slice(-8)}
+                    {item._id.slice(0, 4) + "...." + item._id.slice(-4)}
                   </span>
 
                   <span className="text-base font-sans font-semibold text-userblack">
@@ -157,6 +160,9 @@ function Page({ params }) {
                   </span>
                   <span className="text-base font-sans font-semibold text-userblack">
                     {item.startTime}
+                  </span>
+                  <span className="text-base font-sans font-semibold text-userblack">
+                    {item.endTime}
                   </span>
                   <span className="text-base font-sans font-semibold text-userblack">
                     {item.cost == 0 ? "Free" : "Paid"}
@@ -171,9 +177,9 @@ function Page({ params }) {
                       item.endTime
                     )}
                   </span>
-                  <span className="text-base font-sans font-semibold text-userblack">
+                  {/* <span className="text-base font-sans font-semibold text-userblack">
                     $120 / hr
-                  </span>
+                  </span> */}
                 </div>
               ))}
           </div>

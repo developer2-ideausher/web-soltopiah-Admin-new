@@ -44,7 +44,7 @@ export default function Add() {
   const [contentTab, setContentTab] = useState("single");
   const [accessibilityTab, setAccessibilityTab] = useState("premium");
   const [courseType, setCourseType] = useState("");
-  const [saveEdit, setSaveEdit] = useState(false)
+  const [saveEdit, setSaveEdit] = useState(false);
 
   // course related data
   const [contentArray, setContentArray] = useState([]);
@@ -57,18 +57,18 @@ export default function Add() {
   const [categoryData, setCategoryData] = useState([]);
   const dropdownHandler = (val) => {
     setCategory(val._id);
-    setCategoryName(val.title)
-    setSaveEdit(true)
+    setCategoryName(val.title);
+    setSaveEdit(true);
   };
 
   // mutual related data
   const accessibilityTabHandler = (e) => {
     setAccessibilityTab(e.target.value);
-    setSaveEdit(true)
+    setSaveEdit(true);
   };
   const thumbnailHandler = (val) => {
     setThumbnail(val);
-    setSaveEdit(true)
+    setSaveEdit(true);
   };
   const dataSetter = async (val) => {
     const response = await getAllCategories();
@@ -151,7 +151,7 @@ export default function Add() {
       url: url,
     });
     setDuration(duration);
-    setSaveEdit(true)
+    setSaveEdit(true);
   };
   const submitHanlder = async (e) => {
     e.preventDefault();
@@ -182,7 +182,7 @@ export default function Add() {
         setLoading(true);
         const response = await updateCourseTwo(obj, params.id);
         if (response?.status) {
-            setSaveEdit(false);
+          setSaveEdit(false);
           router.push("/content-management");
         } else {
           setLoading(false);
@@ -293,8 +293,9 @@ export default function Add() {
           <input
             type="text"
             value={title}
-            onChange={(e) => {setTitle(e.target.value)
-                setSaveEdit(true)
+            onChange={(e) => {
+              setTitle(e.target.value);
+              setSaveEdit(true);
             }}
             placeholder="Enter title"
             className="bg-white border border-solid border-[#E7E5E4] w-full rounded-xl py-3 px-4"
@@ -319,8 +320,9 @@ export default function Add() {
                 <input
                   type="text"
                   value={courseType}
-                  onChange={(e) =>{ setCourseType(e.target.value)
-                    setSaveEdit(true)
+                  onChange={(e) => {
+                    setCourseType(e.target.value);
+                    setSaveEdit(true);
                   }}
                   placeholder="Ex. Blog"
                   className="bg-white border border-solid border-[#E7E5E4] w-full rounded-xl py-3 px-4"
@@ -341,13 +343,12 @@ export default function Add() {
                     label: g.title,
                   }))}
                   value={selectedGoals}
-                  onChange={newVals => {
-                    setSelectedGoals(newVals)
-                   setSaveEdit(true)        
+                  onChange={(newVals) => {
+                    setSelectedGoals(newVals);
+                    setSaveEdit(true);
                   }}
                   placeholder="Select one or more goals…"
                   className="w-full"
-                  
                 />
               </div>
             </div>
@@ -419,8 +420,9 @@ export default function Add() {
           <textarea
             rows="4"
             value={description}
-            onChange={(e) => {setDescription(e.target.value)
-                setSaveEdit(true)
+            onChange={(e) => {
+              setDescription(e.target.value);
+              setSaveEdit(true);
             }}
             placeholder="Enter description"
             className="bg-white border border-solid border-[#E7E5E4] w-full rounded-xl py-3 px-4 resize-none"
@@ -449,14 +451,26 @@ export default function Add() {
               uploaded={true}
               keyUrl={file?.key}
               type={data.chapter.type}
+              contentType={data.chapter.type}
               fileAdded={file?.url}
             />
           )}
+          {/* {file != null && (
+            <AudioVideoUploader
+              callback={audioHandler}
+              uploaded={true}
+              keyUrl={file?.key}
+              type={data.chapter.type}
+              fileAdded={file?.url}
+            />
+          )} */}
           {!file && <AudioVideoUploader callback={audioHandler} />}
           <button
             onClick={submitHanlder}
             disabled={!saveEdit}
-            className={`p-4 text-white font-black mt-5 ${!saveEdit?"bg-gray-400 cursor-not-allowed":"bg-[#AE445A]"}  rounded-xl w-3/12 flex justify-center`}
+            className={`p-4 text-white font-black mt-5 ${
+              !saveEdit ? "bg-gray-400 cursor-not-allowed" : "bg-[#AE445A]"
+            }  rounded-xl w-3/12 flex justify-center`}
           >
             {!loading ? "Save" : <LoaderSmall color="#fff" size="20" />}
           </button>

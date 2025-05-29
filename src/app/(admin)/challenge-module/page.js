@@ -256,7 +256,9 @@ function Page() {
                       {item.durationInDays + " " + "days"}
                     </span>
                     <span className="text-userblack font-sans font-semibold text-sm">
-                      Soltopiah
+                       {item.creatorRole === "NormalUser"
+                      ? "User"
+                      : item.creatorRole}
                     </span>
                     <span className="text-userblack font-sans w-[300px] font-semibold text-sm">
                       {item.accessibility.toUpperCase()}

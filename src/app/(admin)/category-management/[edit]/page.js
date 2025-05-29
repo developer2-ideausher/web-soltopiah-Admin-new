@@ -297,7 +297,7 @@ function Page({ params }) {
         </form>
       )}
 
-n      <CropModal
+      <CropModal
         isOpen={cropModalOpen}
         onClose={handleCropCancel}
         imageSrc={originalImage}
