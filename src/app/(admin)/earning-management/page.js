@@ -113,7 +113,9 @@ export default function Page() {
     }
     setLoading(false);
   };
-
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [table, sort, searchTerm, filter]);
   useEffect(() => {
     const tableData =
       table === "a"
@@ -121,7 +123,7 @@ export default function Page() {
         : table === "b"
         ? "GuideSessionBookingRevenue"
         : "DonationRevenue";
-    setCurrentPage(1);
+
     fetchData(tableData, currentPage);
   }, [table, currentPage, sort, searchTerm, filter]);
   useEffect(() => {
@@ -235,7 +237,11 @@ export default function Page() {
                 className="flex items-center justify-between"
               >
                 <div className="flex items-center justify-center gap-2">
-                  <img className="w-11 h-11 object-contain rounded-full" src={item.profilePic?.url} alt="" />
+                  <img
+                    className="w-11 h-11 object-contain rounded-full"
+                    src={item.profilePic?.url}
+                    alt=""
+                  />
                   <p className="text-[#414554] text-sm font-normal font-sans">
                     {item.firstName} {item.lastName}
                   </p>
@@ -327,7 +333,7 @@ export default function Page() {
                   >
                     <div className="text-userblack w-full flex  gap-2 font-sans font-semibold text-base ">
                       <img
-                        src={item.profilePic?.url || "/frame1.png"}
+                        src={item.user?.profilePic?.url || "/frame1.png"}
                         alt="frame"
                         className="w-11 h-11 rounded-full"
                       />
@@ -342,13 +348,13 @@ export default function Page() {
                       $ {item.amount}
                     </span>
                     <span
-                      title={item.payment?.checkoutSessionId}
+                      title={item.transactionId}
                       className="text-userblack flex items-center gap-2 font-sans font-normal text-base break-all cursor-pointer"
                     >
-                      {truncateName(item.payment?.checkoutSessionId)}
+                      {truncateName(item.transactionId)}
                     </span>
                     <span className="text-userblack flex items-center gap-2 font-sans font-normal text-base ">
-                      {dayjs(item.createdAt).format("DD/MM/YYYY,HH:mm")}
+                      {dayjs(item.createdAt).format("DD/MM/YYYY, HH:mm ")}
                     </span>
                   </div>
                 ))}
@@ -400,7 +406,7 @@ export default function Page() {
                       />
                       <div className="flex flex-col  gap-1">
                         <p>
-                          {item.guide?.firstName + " " + item.guide?.lastName}
+                          {item.guide?.firstName + " " + item.guide?.lastName }
                         </p>
                         <p className="font-normal">{item.guide?.email}</p>
                       </div>
@@ -463,7 +469,7 @@ export default function Page() {
                   >
                     <div className="text-userblack flex items-center gap-2 font-sans font-semibold text-base ">
                       <img
-                        src={item.guide?.profilePic || "/Frame1.png"}
+                        src={item.guide?.profilePic?.url || "/Frame1.png"}
                         alt="frame"
                         className="w-11 h-11 rounded-full"
                       />
