@@ -44,7 +44,7 @@ module.exports = {
   			userAudioTable: '350px 450px 200px 200px 100px ',
 			userCourses : '300px 200px 200px 100px',
   			guideTable: '288px 301px 152px 150px 100px 140px 40px',
-  			guideTable1: '288px 301px 152px 150px 100px 140px 100px 40px',
+  			guideTable1: '288px 301px 252px 150px 100px 140px 100px 40px',
   			contentTable: '408px 400px 200px 200px 150px 150px 100px ',
   			contentSinglesTable: '350px  200px 200px 150px 150px 100px ',
   			categoryTable: '258px 320px 382px 168px 150px 150px 50px',

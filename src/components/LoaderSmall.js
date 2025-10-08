@@ -1,7 +1,5 @@
-import React from 'react'
+import React from "react";
 
 export default function LoaderSmall() {
-  return (
-    <img src="/loader.gif" alt="" className='h-8 w-8' />
-  )
+  return <img src="/L1.gif" alt="" className="h-8 w-8" />;
 }

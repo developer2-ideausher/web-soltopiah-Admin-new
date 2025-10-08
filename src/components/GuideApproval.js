@@ -84,7 +84,7 @@ const GuideApproval = () => {
           { value: "rejected", label: "Rejected" },
           { value: "", label: "All" },
         ]}
-        name={"status"}
+        name={"Status"}
         showFilters={true}
         handleSort={handleSort}
         setHandleSort={setSortOrder}
@@ -169,7 +169,17 @@ const GuideApproval = () => {
                         </p>
                       </div>
                     </div>
-                    <span className="text-base font-sans font-semibold text-userblack">
+                    <span
+                      title={
+                        item?.specializedCategories?.length
+                          ? item.specializedCategories
+                              .map((category) => category?.title)
+                              .filter(Boolean)
+                              .join(", ")
+                          : "--"
+                      }
+                      className="text-base font-sans font-semibold text-userblack truncate"
+                    >
                       {item?.specializedCategories?.length
                         ? item.specializedCategories
                             .map((category) => category?.title)
@@ -187,11 +197,11 @@ const GuideApproval = () => {
                     <span
                       className={`text-base font-sans font-semibold  rounded-full border p-1 text-center ml-2 capitalize ${
                         item?.onboarding?.status === "pending"
-                          ? "border-green-500 bg-green-100 text-green-500 "
+                          ? "border-[#ff6700] bg-[#ffd7b5] text-[#ff6700] "
                           : "border-red-500 bg-red-100 text-red-500"
                       }`}
                     >
-                      {item?.onboarding?.status}
+                      {item?.onboarding?.status || "--"}
                     </span>
                     <button
                       onClick={() =>

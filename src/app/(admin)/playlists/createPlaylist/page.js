@@ -544,7 +544,7 @@ const Page = () => {
                 disabled={!selectedContent}
                 className={`px-4 py-2 rounded-lg transition-colors ${
                   selectedContent
-                    ? "bg-green-500 text-white hover:bg-green-600"
+                    ? "bg-[#AE4455] text-white hover:bg-red-800"
                     : "bg-gray-200 text-gray-400 cursor-not-allowed"
                 }`}
               >

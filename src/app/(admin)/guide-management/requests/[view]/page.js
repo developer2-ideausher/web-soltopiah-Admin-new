@@ -91,13 +91,18 @@ const Page = () => {
               <img
                 src={guideData?.profilePic?.url}
                 alt=""
-                className="w-10 h-10 rounded-full"
+                className="w-10 h-10 rounded-full object-cover"
               />
               <div className="flex flex-col">
                 <p className="text-sm font-semibold text-[#17161D]">
                   {guideData?.firstName ?? "--"} {guideData?.lastName ?? "--"}
                 </p>
-                <p className="text-sm font-normal text-[#AE445A] truncate max-w-4/5">
+                <p
+                  title={guideData?.specializedCategories
+                    ?.map((item) => item.title)
+                    .join(", ")}
+                  className="text-sm font-normal text-[#AE445A] truncate w-[500px]"
+                >
                   {guideData?.specializedCategories
                     ?.map((item) => item.title)
                     .join(", ")}

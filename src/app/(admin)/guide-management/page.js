@@ -174,7 +174,7 @@ function Page() {
             }  font-sans text-base py-2 px-6`}
             type="button"
           >
-            Approval Requests 
+            Approval Requests
           </button>
         </div>
         {activeTab === "onboarded" && (
