@@ -27,7 +27,7 @@ export default function Sidebar() {
       <div className="flex flex-col p-3 justify-start h-full w-full gap-1 font-sans ">
         <div className="flex justify-center">
           <Image
-            src="/logo.svg"
+            src="/SoltopiahLogo.svg"
             layout="responsive"
             width="300"
             height="200"

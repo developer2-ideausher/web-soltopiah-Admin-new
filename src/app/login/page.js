@@ -160,7 +160,7 @@ function Page() {
   return (
     <div className="flex flex-wrap h-screen ">
       <div className="w-1/2 bg-primary flex justify-center items-center">
-        <img src="LoginImage.png" alt="" />
+        <img src="/SoltopiahLogo.svg" alt="Soltopiah Logo" className="w-full h-full"  />
       </div>
       <div id="recaptcha-container" ref={recaptchaContainer}></div>
 
@@ -170,15 +170,15 @@ function Page() {
             onSubmit={handleLogin}
             className="flex flex-col w-4/6 xs:w-5/6 md:w-5/6"
           >
-            <div className="hidden justify-center xs:flex sm:flex">
+            {/* <div className="hidden justify-center xs:flex sm:flex">
               <Image
-                src="/logo.svg"
+                src="/SoltopiahLogo.svg"
                 alt="Logo"
                 width="200"
                 height="100"
                 className=""
               />
-            </div>
+            </div> */}
             <p className="text-primary text-[32px] font-semibold font-sans">
               Login
             </p>
