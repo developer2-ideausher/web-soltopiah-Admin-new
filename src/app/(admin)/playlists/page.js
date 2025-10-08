@@ -103,7 +103,7 @@ const Page = () => {
             { value: "video", label: "video" },
             { value: "", label: "All" },
           ]}
-          name={"Created By"}
+          name={"Media Type"}
           handleSort={handleSort}
           setHandleSort={setSortOrder}
           setHandleFilter={handleFilterChange}
@@ -121,15 +121,15 @@ const Page = () => {
               <span className="text-[#666576] font-sans font-normal text-sm">
                 Description
               </span>
-              <span className="text-[#666576] ml-2 font-sans font-normal text-sm">
+              {/* <span className="text-[#666576] ml-2 font-sans font-normal text-sm">
                 Created By
-              </span>
+              </span> */}
 
               <span className="text-[#666576] font-sans font-normal text-sm">
                 Date
               </span>
               <span className="text-[#666576] font-sans font-normal text-sm">
-                type
+                Media Type
               </span>
               <span className="text-[#666576] font-sans font-normal text-sm text-center">
                 Status
@@ -182,25 +182,25 @@ const Page = () => {
                     >
                       {item.description}
                     </span>
-                    <div className="flex flex-row items-center gap-2">
-                      {/* <img
+                    {/* <div className="flex flex-row items-center gap-2">
+                      <img
                           className={`w-8 h-8 object-cover rounded-full`}
                           src={
                             item?.thumbnail?.url
                           }
                           alt=""
-                        /> */}
+                        />
                       <span className="text-userblack font-sans font-semibold text-sm text-center ml-2">
                         {item.creatorRole == "Guide"
                           ? item?.creator?.firstName
                           : "Soltopiah"}
                       </span>
-                    </div>
+                    </div> */}
 
                     <span className="text-userblack font-sans font-semibold text-sm">
                       {dayjs(item.createdAt).format("MMM DD YYYY")}
                     </span>
-                    <span className="text-userblack font-sans font-semibold text-sm">
+                    <span className="text-userblack font-sans font-semibold text-sm capitalize">
                       {item?.type}
                     </span>
                     <span

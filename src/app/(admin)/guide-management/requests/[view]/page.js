@@ -97,7 +97,11 @@ const Page = () => {
                 <p className="text-sm font-semibold text-[#17161D]">
                   {guideData?.firstName ?? "--"} {guideData?.lastName ?? "--"}
                 </p>
-                <p className="text-sm font-normal text-[#AE445A]">Meditation</p>
+                <p className="text-sm font-normal text-[#AE445A] truncate max-w-4/5">
+                  {guideData?.specializedCategories
+                    ?.map((item) => item.title)
+                    .join(", ")}
+                </p>
               </div>
             </div>
             <div className="flex flex-row items-center gap-2">
@@ -123,6 +127,16 @@ const Page = () => {
               {guideData?.bio ?? "--"}
             </p>
           </div>
+          {guideData?.onboarding?.status === "rejected" && (
+            <div className="flex flex-col gap-2 items-start w-2/5">
+              <p className="text-xl font-semibold text-[#17161D]">
+                Rejection Reason
+              </p>
+              <p className="border bg-[#F8F9FD] w-full px-4 py-3 rounded-lg text-[#13171EB2] font-normal hover:shadow-lg">
+                {guideData?.onboarding?.rejectionReason ?? "--"}
+              </p>
+            </div>
+          )}
           <div className="flex flex-col gap-2">
             <p className="text-xl font-sans font-semibold text-userblack">
               Academic Journey

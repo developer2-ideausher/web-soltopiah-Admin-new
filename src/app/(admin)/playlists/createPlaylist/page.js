@@ -70,21 +70,21 @@ const Page = () => {
   const router = useRouter();
 
   const handleAddContent = () => {
-    if (selectedContent) {
-      const selectedChapter = chapters.find((ch) => ch._id === selectedContent);
-      if (selectedChapter && !content.find((c) => c._id === selectedContent)) {
-        const newContent = [...content, selectedChapter];
-        setContent(newContent);
-        setValue(
-          "chapters",
-          newContent.map((c) => c._id)
-        );
-        toast.success("Content added successfully");
-      }
-      setSelectedContent("");
-      setShowModal(false);
+  if (selectedContent) {
+    const selectedChapter = chapters.find((ch) => ch._id === selectedContent);
+    if (selectedChapter) {
+      const newContent = [...content, selectedChapter];
+      setContent(newContent);
+      setValue(
+        "chapters",
+        newContent.map((c) => c._id)
+      );
+      toast.success("Content added successfully");
     }
-  };
+    setSelectedContent("");
+    setShowModal(false);
+  }
+};
 
   const handleRemoveContent = (contentId) => {
     const newContent = content.filter((c) => c._id !== contentId);
@@ -166,7 +166,7 @@ const Page = () => {
           <BackButton />
         </Link>
         <p className="text-userblack font-semibold text-xl2 font-sans">
-          Create Playlists
+          Create Playlist
         </p>
       </div>
       <form
@@ -248,7 +248,7 @@ const Page = () => {
 
         <div className="flex flex-col gap-2">
           <p className="text-base font-semibold nuni text-userblack">
-            Media <span className="text-red-500">*</span>
+            Media Type <span className="text-red-500">*</span>
           </p>
           <select
             {...register("media")}
@@ -266,7 +266,7 @@ const Page = () => {
             disabled={content.length > 0}
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none"
           >
-            <option value="">Select option</option>
+            <option disabled value="">Select option</option>
             <option value="audio">Audio</option>
             <option value="video">Video</option>
           </select>
@@ -334,7 +334,7 @@ const Page = () => {
                   No content
                 </p>
                 <p className="text-xs font-normal text-[#25232270] font-sans">
-                  Please add audio or videos to your playlist
+                {`  Please add ${selected} to your playlist`}
                 </p>
                 <button
                   type="button"
@@ -451,58 +451,70 @@ const Page = () => {
                   {searchQuery ? "No results found" : "No content available"}
                 </p>
               ) : (
-                chapters.map((item) => (
-                  <div
-                    key={item._id}
-                    className={`flex flex-row justify-between items-center gap-3 w-full bg-white rounded-lg p-3 border cursor-pointer transition-all ${
-                      selectedContent === item._id
-                        ? "border-green-500 bg-green-50"
-                        : "border-gray-200 hover:border-gray-300"
-                    }`}
-                  >
-                    <div
-                      className="flex flex-row items-start gap-3 flex-1"
-                      onClick={() => {
-                        if (item.media?.url) {
-                          window.open(item.media.url, "_blank");
-                        }
-                      }}
-                    >
-                      <img
-                        className="w-14 h-16 object-cover rounded"
-                        src={item.thumbnail?.url}
-                        alt="content thumbnail"
-                        onError={(e) => {
-                          e.target.src =
-                            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='64' viewBox='0 0 56 64'%3E%3Crect width='56' height='64' fill='%23f3f4f6'/%3E%3Ctext x='28' y='32' text-anchor='middle' fill='%236b7280' font-size='12'%3EImage%3C/text%3E%3C/svg%3E";
-                        }}
-                      />
-                      <div className="flex flex-col gap-1">
-                        <span className="text-[#3090E9] font-normal text-xs">
-                          {item.type}
-                        </span>
-                        <p className="text-sm font-medium text-gray-900 truncate max-w-md">
-                          {item.title}
-                        </p>
-                        <span className="text-[#848BB3] font-normal text-xs">
-                          {item.durationInMinutes} min
-                        </span>
+                (() => {
+                  const availableChapters = chapters.filter(
+                    (chapter) => !content.find((c) => c._id === chapter._id)
+                  );
+
+                  return availableChapters.length === 0 ? (
+                    <p className="text-center py-4 text-gray-500">
+                      All available content has been added to the playlist
+                    </p>
+                  ) : (
+                    availableChapters.map((item) => (
+                      <div
+                        key={item._id}
+                        className={`flex flex-row justify-between items-center gap-3 w-full bg-white rounded-lg p-3 border cursor-pointer transition-all ${
+                          selectedContent === item._id
+                            ? "border-green-500 bg-green-50"
+                            : "border-gray-200 hover:border-gray-300"
+                        }`}
+                      >
+                        <div
+                          className="flex flex-row items-start gap-3 flex-1"
+                          onClick={() => {
+                            if (item.media?.url) {
+                              window.open(item.media.url, "_blank");
+                            }
+                          }}
+                        >
+                          <img
+                            className="w-14 h-16 object-cover rounded"
+                            src={item.thumbnail?.url}
+                            alt="content thumbnail"
+                            onError={(e) => {
+                              e.target.src =
+                                "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='64' viewBox='0 0 56 64'%3E%3Crect width='56' height='64' fill='%23f3f4f6'/%3E%3Ctext x='28' y='32' text-anchor='middle' fill='%236b7280' font-size='12'%3EImage%3C/text%3E%3C/svg%3E";
+                            }}
+                          />
+                          <div className="flex flex-col gap-1">
+                            <span className="text-[#3090E9] font-normal text-xs">
+                              {item.type}
+                            </span>
+                            <p className="text-sm font-medium text-gray-900 truncate max-w-md">
+                              {item.title}
+                            </p>
+                            <span className="text-[#848BB3] font-normal text-xs">
+                              {item.durationInMinutes} min
+                            </span>
+                          </div>
+                        </div>
+                        <div
+                          onClick={() => handleContentSelect(item._id)}
+                          className={`rounded-full w-5 h-5 border-2 flex items-center justify-center ${
+                            selectedContent === item._id
+                              ? "border-green-500 bg-green-500"
+                              : "border-gray-300"
+                          }`}
+                        >
+                          {selectedContent === item._id && (
+                            <div className="w-2 h-2 bg-white rounded-full"></div>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                    <div
-                      onClick={() => handleContentSelect(item._id)}
-                      className={`rounded-full w-5 h-5 border-2 flex items-center justify-center ${
-                        selectedContent === item._id
-                          ? "border-green-500 bg-green-500"
-                          : "border-gray-300"
-                      }`}
-                    >
-                      {selectedContent === item._id && (
-                        <div className="w-2 h-2 bg-white rounded-full"></div>
-                      )}
-                    </div>
-                  </div>
-                ))
+                    ))
+                  );
+                })()
               )}
               {chapters && chapters.length > 0 && (
                 <RobinPagination

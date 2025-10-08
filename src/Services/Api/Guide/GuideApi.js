@@ -424,7 +424,7 @@ export const guideApprovalStatus = async (id, status, msg) => {
   myHeaders.append("Content-Type", "application/json");
   myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
   const raw = JSON.stringify({
-    accept: status ,
+    accept: status,
     rejectionReason: msg || "",
   });
 
@@ -591,6 +591,29 @@ export const updateAdminPlaylist = async (id, formdata) => {
   try {
     const response = await fetch(
       url + `/playlists/${id}/soltopiah`,
+      requestOptions
+    );
+
+    const result = await responseValidator(response);
+    return result;
+  } catch (error) {
+    apiError(error);
+  }
+};
+
+export const changePlaylistStatus = async (id) => {
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
+
+  const requestOptions = {
+    method: "PATCH",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+
+  try {
+    const response = await fetch(
+      url + `/playlists/${id}/status`,
       requestOptions
     );
 

@@ -80,7 +80,7 @@ const GuideApproval = () => {
       <SearchBar
         filterArray={[
           { value: "pending", label: "Pending" },
-          { value: "approved", label: "Approved" },
+          // { value: "approved", label: "Approved" },
           { value: "rejected", label: "Rejected" },
           { value: "", label: "All" },
         ]}
@@ -185,8 +185,8 @@ const GuideApproval = () => {
                       {dayjs(item.createdAt).format("DD/MM/YYYY")}
                     </span>
                     <span
-                      className={`text-base font-sans font-semibold  rounded-full border p-1 text-center ml-2  ${
-                        item?.onboarding?.status === "approved"
+                      className={`text-base font-sans font-semibold  rounded-full border p-1 text-center ml-2 capitalize ${
+                        item?.onboarding?.status === "pending"
                           ? "border-green-500 bg-green-100 text-green-500 "
                           : "border-red-500 bg-red-100 text-red-500"
                       }`}

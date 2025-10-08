@@ -38,7 +38,7 @@ function Header() {
         {/* <div className="size-8 rounded-full	bg-[#AE445A] flex items-center justify-center text-white text-sm font-black ">
           A
         </div> */}
-        <img src="/SoltopiahLogo.svg" className="w-16  object-contain" alt="logo" />
+        <img src="/smallLogo.svg" className="w-12 h-12  object-contain" alt="logo" />
 
         <h5 className="text-[#393E59]  font-semibold text-sm"> Admin</h5>
       </button>

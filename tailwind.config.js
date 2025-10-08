@@ -68,7 +68,7 @@ module.exports = {
   			quickreadsTable: '400px 250px 250px 300px 100px ',
   			quickReadsRequestTable: '350px 280px 250px  150px 50px ',
   			contentUploadedTable: '300px 300px 150px 80px 80px  ',
-  			testTable: '300px 200px 150px 120px 80px 80px 80px ',
+  			testTable: '300px 300px 150px 120px 80px 80px  ',
   		},
   		fontSize: {
   			xl2: '22px'
