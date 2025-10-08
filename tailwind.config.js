@@ -43,7 +43,8 @@ module.exports = {
   			guideVideoTable: '300px 350px 250px 150px 150px 100px',
   			userAudioTable: '350px 450px 200px 200px 100px ',
 			userCourses : '300px 200px 200px 100px',
-  			guideTable: '288px 251px 152px 150px 100px 140px 40px',
+  			guideTable: '288px 301px 152px 150px 100px 140px 40px',
+  			guideTable1: '288px 301px 152px 150px 100px 140px 100px 40px',
   			contentTable: '408px 400px 200px 200px 150px 150px 100px ',
   			contentSinglesTable: '350px  200px 200px 150px 150px 100px ',
   			categoryTable: '258px 320px 382px 168px 150px 150px 50px',
@@ -66,7 +67,8 @@ module.exports = {
   			liveCreatedTable: '200px 200px 200px 300px 100px ',
   			quickreadsTable: '400px 250px 250px 300px 100px ',
   			quickReadsRequestTable: '350px 280px 250px  150px 50px ',
-  			contentUploadedTable: '300px 300px 150px 80px 80px  '
+  			contentUploadedTable: '300px 300px 150px 80px 80px  ',
+  			testTable: '300px 200px 150px 120px 80px 80px 80px ',
   		},
   		fontSize: {
   			xl2: '22px'

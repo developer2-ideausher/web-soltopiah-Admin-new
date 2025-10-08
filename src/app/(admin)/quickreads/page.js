@@ -30,13 +30,11 @@ function Page() {
   const [sort, setSort] = useState("desc");
   const [filter, setFilter] = useState("");
 
-
   const handleFilterChange = (value) => {
     setFilter(value);
     setCurrentPage(1); // Reset page to 1 whenever filter changes
   };
   const router = useRouter();
-
 
   const token = getToken();
   const handleSearch = (term) => {
@@ -200,9 +198,13 @@ function Page() {
                   <Link
                     key={item._id || index}
                     href={`/quickreads/${item._id}`}
+                    className="hover:bg-slate-100"
                   >
                     <div className=" grid grid-cols-quickreadsMainTable justify-between border-b border-[#E9E9EC] items-center p-4">
-                      <span className="text-userblack font-sans font-semibold text-sm">
+                      <span
+                        title={item.title}
+                        className="text-userblack font-sans font-semibold text-sm truncate"
+                      >
                         {item.title}
                       </span>
                       <div className="flex flex-row items-center gap-2">

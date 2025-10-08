@@ -15,7 +15,7 @@ function RobinPagination({ currentPage, totalPages, onPageChange }) {
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
         >
-          {currentPage === 1?(<LeftGrey />):(<LeftBlackarrow1/>)}
+          {currentPage === 1 ? <LeftGrey /> : <LeftBlackarrow1 />}
         </button>
 
         <p className="py-[10px] px-[14px] border-r rounded-l-lg border-[#DCDBE1] bg-white">
@@ -26,9 +26,13 @@ function RobinPagination({ currentPage, totalPages, onPageChange }) {
         <button
           className="py-[10px] px-[14px]  rounded-r-lg border-[#DCDBE1] bg-white"
           onClick={() => onPageChange(currentPage + 1)}
-          disabled={currentPage === totalPages|| totalPages===0} // Disable if on the last page
+          disabled={currentPage === totalPages || totalPages === 0} // Disable if on the last page
         >
-          {currentPage === totalPages|| totalPages===0?(<RightGrey />):(<RightBlackArrow1/>)}
+          {currentPage === totalPages || totalPages === 0 ? (
+            <RightGrey />
+          ) : (
+            <RightBlackArrow1 />
+          )}
         </button>
       </div>
     </div>

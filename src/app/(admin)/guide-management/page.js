@@ -17,12 +17,14 @@ import { truncateName } from "@/Utilities/helper";
 import RobinPagination from "@/components/Pagination";
 import SearchBar from "@/components/AddSearchBar";
 import { getAllGuideApi } from "@/Services/Api/Guide/GuideApi";
+import GuideApproval from "@/components/GuideApproval";
 
 function Page() {
   const [popupIndex, setPopupIndex] = useState(null);
   const [guideData, setGuideData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [activeTab, setActiveTab] = useState("onboarded");
   const [guideToDelete, setGuideToDelete] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [refresh, setRefresh] = useState(false);
@@ -151,158 +153,187 @@ function Page() {
         <p className="text-userblack font-semibold text-xl2 font-sans">
           Guide Management
         </p>
-        <div className="flex flex-col">
-          <SearchBar
-            filterArray={[
-              { value: "free", label: "Free" },
-              { value: "premium", label: "Premium" },
-              { value: "", label: "All" },
-            ]}
-            name={"Type"}
-            handleSort={sort}
-            setHandleSort={setSort}
-            setHandleFilter={handleFilterChange}
-            handleSearch={handleSearch}
-            showAddButton={false}
-          />
-          <div className="w-full overflow-x-scroll booking-table-wrapper  ">
-            <div className="bg-[#F0F2F5] min-w-fit w-full ">
-              <div className="items-center grid grid-cols-guideTable p-4 justify-between">
-                <span className="text-[#666576] font-sans font-normal text-sm">
-                  User Id
-                </span>
-                <span className="text-[#666576] font-sans font-normal text-sm">
-                  Guide Name
-                </span>
-                <span className="text-[#666576] font-sans font-normal text-sm">
-                  Account Created
-                </span>
-                <span className="text-[#666576] font-sans font-normal text-sm text-center">
-                  Type
-                </span>
-                <span className="text-[#666576] font-sans font-normal text-sm text-center">
-                  Revenue
-                </span>
-                <span className="text-[#666576] font-sans font-normal text-sm text-center">
-                  Total Bookings
-                </span>
-                <span className="text-[#666576] font-sans font-normal text-sm"></span>
+        <div className="flex flex-row items-center ">
+          <button
+            onClick={() => setActiveTab("onboarded")}
+            className={`${
+              activeTab === "onboarded"
+                ? "bg-[#0000000D]   font-semibold text-[#252322]  border-b-2 border-[#1C1C1C]"
+                : "font-normal text-[#838383] "
+            }  font-sans  text-base py-2 px-6`}
+            type="button"
+          >
+            Onboarded Guides
+          </button>
+          <button
+            onClick={() => setActiveTab("approval")}
+            className={`${
+              activeTab === "approval"
+                ? "bg-[#0000000D]   font-semibold text-[#252322]  border-b-2 border-[#1C1C1C]"
+                : "text-[#838383] font-normal"
+            }  font-sans text-base py-2 px-6`}
+            type="button"
+          >
+            Approval Requests 
+          </button>
+        </div>
+        {activeTab === "onboarded" && (
+          <div className="flex flex-col">
+            <SearchBar
+              filterArray={[
+                { value: "free", label: "Free" },
+                { value: "premium", label: "Premium" },
+                { value: "", label: "All" },
+              ]}
+              name={"Type"}
+              handleSort={sort}
+              setHandleSort={setSort}
+              setHandleFilter={handleFilterChange}
+              handleSearch={handleSearch}
+              showAddButton={false}
+            />
+            <div className="w-full overflow-x-scroll booking-table-wrapper  ">
+              <div className="bg-[#F0F2F5] min-w-fit w-full ">
+                <div className="items-center grid grid-cols-guideTable p-4 justify-between">
+                  <span className="text-[#666576] font-sans font-normal text-sm">
+                    User Id
+                  </span>
+                  <span className="text-[#666576] font-sans font-normal text-sm">
+                    Guide Name
+                  </span>
+                  <span className="text-[#666576] font-sans font-normal text-sm">
+                    Account Created
+                  </span>
+                  <span className="text-[#666576] font-sans font-normal text-sm text-center">
+                    Type
+                  </span>
+                  <span className="text-[#666576] font-sans font-normal text-sm text-center">
+                    Revenue
+                  </span>
+                  <span className="text-[#666576] font-sans font-normal text-sm text-center">
+                    Total Bookings
+                  </span>
+                  <span className="text-[#666576] font-sans font-normal text-sm"></span>
+                </div>
               </div>
-            </div>
-            {loading && (
-              <div className="flex justify-center bg-white items-center p-10 w-full ">
-                <LoaderLarge />
-              </div>
-            )}
-            {!loading && guideData && guideData.length === 0 && (
-              <div className="flex justify-center items-center bg-white p-10 w-full">
-                {searchTerm || filter ? (
-                  <p className="text-gray-500 text-sm">
-                    No data found
-                    {searchTerm && ` for "${searchTerm}"`}
-                  </p>
-                ) : (
-                  <p className="text-gray-500 text-sm">No data found.</p>
-                )}
-              </div>
-            )}
-            <div className="flex flex-col bg-white min-w-fit w-full ">
-              <>
-                {guideData &&
-                  guideData.map((item, index) => {
-                    return (
-                      <div
-                        key={item._id || index}
-                        className=" grid grid-cols-guideTable border-b border-[#E9E9EC] items-center justify-between p-4 relative"
-                      >
-                        <span className="text-userblack text-base font-semibold font-sans">
-                          {item._id}
-                        </span>
-                        <div className="flex flex-row items-center gap-2">
-                          <img
-                            className="w-8 h-8 object-cover rounded-full"
-                            src={
-                              item.profilePic ? item.profilePic.url : Frame1.src
-                            }
-                            alt=""
-                          />
-                          <div className="flex flex-col">
-                            <p className="text-base font-semibold font-sans text-userblack">
-                              {truncateName(
-                                item.firstName + " " + item.lastName
-                              )}
-                            </p>
-                            <p className="text-base font-sans font-normal text-[#666576]">
-                              {item.phone}
-                            </p>
-                          </div>
-                        </div>
-                        <span className="text-base font-sans font-semibold text-userblack">
-                          {dayjs(item.createdAt).format("MMM DD YYYY")}
-                        </span>
-                        <span className="text-base font-sans font-semibold text-userblack text-center">
-                          {item.hasPremiumPlan ? "Premium" : "Free"}
-                        </span>
-                        <span className="text-base font-sans font-semibold text-userblack text-center">
-                          0
-                        </span>
-                        <span className="text-base font-sans font-semibold text-userblack text-center">
-                          {item.bookingsCount}
-                        </span>
-                        <button
-                          onClick={() =>
-                            setPopupIndex(popupIndex === index ? null : index)
-                          }
-                          className="text-base font-sans font-semibold text-userblack"
+              {loading && (
+                <div className="flex justify-center bg-white items-center p-10 w-full ">
+                  <LoaderLarge />
+                </div>
+              )}
+              {!loading && guideData && guideData.length === 0 && (
+                <div className="flex justify-center items-center bg-white p-10 w-full">
+                  {searchTerm || filter ? (
+                    <p className="text-gray-500 text-sm">
+                      No data found
+                      {searchTerm && ` for "${searchTerm}"`}
+                    </p>
+                  ) : (
+                    <p className="text-gray-500 text-sm">No data found.</p>
+                  )}
+                </div>
+              )}
+              <div className="flex flex-col bg-white min-w-fit w-full ">
+                <>
+                  {guideData &&
+                    guideData.map((item, index) => {
+                      return (
+                        <div
+                          key={item._id || index}
+                          className=" grid grid-cols-guideTable border-b border-[#E9E9EC] items-center justify-between p-4 relative"
                         >
-                          <MenuDots />
-                        </button>
-                        {popupIndex === index && (
-                          <div className="bg-[#FDF8F9] border-[#D7A1AC] border p-3 rounded-xl myPopup shadow-lg w-[166px]  absolute right-12 top-8 flex flex-col gap-3  z-50">
-                            <div className="flex flex-row items-center justify-between">
-                              <p className="text-sm font-sans font-normal text-userblack">
-                                Action
+                          <span className="text-userblack text-base font-semibold font-sans">
+                            {item._id}
+                          </span>
+                          <div className="flex flex-row items-center gap-2">
+                            <img
+                              className="w-8 h-8 object-cover rounded-full"
+                              src={
+                                item.profilePic
+                                  ? item.profilePic.url
+                                  : Frame1.src
+                              }
+                              alt=""
+                            />
+                            <div className="flex flex-col">
+                              <p className="text-base font-semibold font-sans text-userblack">
+                                {truncateName(
+                                  item.firstName + " " + item.lastName
+                                )}
                               </p>
-                              <button onClick={() => setPopupIndex(null)}>
-                                <GreyCross />
-                              </button>
+                              <p className="text-base font-sans font-normal text-[#666576]">
+                                {item.phone}
+                              </p>
                             </div>
-                            <Link
-                              href={`/guide-management/guide-info/${item._id}`}
-                            >
-                              <div className="flex flex-row items-center gap-3">
-                                <TopRightArrow />
-                                <p className="text-sm font-sans font-normal text-[#753B5B]">
-                                  Open full view
+                          </div>
+                          <span className="text-base font-sans font-semibold text-userblack">
+                            {dayjs(item.createdAt).format("MMM DD YYYY")}
+                          </span>
+                          <span className="text-base font-sans font-semibold text-userblack text-center">
+                            {item.hasPremiumPlan ? "Premium" : "Free"}
+                          </span>
+                          <span className="text-base font-sans font-semibold text-userblack text-center">
+                            0
+                          </span>
+                          <span className="text-base font-sans font-semibold text-userblack text-center">
+                            {item.bookingsCount}
+                          </span>
+                          <button
+                            onClick={() =>
+                              setPopupIndex(popupIndex === index ? null : index)
+                            }
+                            className="text-base font-sans font-semibold text-userblack"
+                          >
+                            <MenuDots />
+                          </button>
+                          {popupIndex === index && (
+                            <div className="bg-[#FDF8F9] border-[#D7A1AC] border p-3 rounded-xl myPopup shadow-lg w-[166px]  absolute right-12 top-8 flex flex-col gap-3  z-50">
+                              <div className="flex flex-row items-center justify-between">
+                                <p className="text-sm font-sans font-normal text-userblack">
+                                  Action
+                                </p>
+                                <button onClick={() => setPopupIndex(null)}>
+                                  <GreyCross />
+                                </button>
+                              </div>
+                              <Link
+                                href={`/guide-management/guide-info/${item._id}`}
+                              >
+                                <div className="flex flex-row items-center gap-3">
+                                  <TopRightArrow />
+                                  <p className="text-sm font-sans font-normal text-[#753B5B]">
+                                    Open full view
+                                  </p>
+                                </div>
+                              </Link>
+
+                              <div
+                                onClick={() => confirmDelete(item._id)}
+                                className="flex flex-row items-center gap-3"
+                              >
+                                <Backspace />
+                                <p className="text-sm font-sans font-normal text-[#EE3E3E] cursor-pointer">
+                                  Remove
                                 </p>
                               </div>
-                            </Link>
-
-                            <div
-                              onClick={() => confirmDelete(item._id)}
-                              className="flex flex-row items-center gap-3"
-                            >
-                              <Backspace />
-                              <p className="text-sm font-sans font-normal text-[#EE3E3E] cursor-pointer">
-                                Remove
-                              </p>
                             </div>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-              </>
+                          )}
+                        </div>
+                      );
+                    })}
+                </>
+              </div>
             </div>
+            {guideData && guideData.length > 0 && (
+              <RobinPagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+              />
+            )}
           </div>
-          {guideData && guideData.length > 0 && (
-            <RobinPagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-            />
-          )}
-        </div>
+        )}
+        {activeTab === "approval" && <GuideApproval />}
       </div>
     </>
   );

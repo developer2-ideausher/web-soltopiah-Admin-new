@@ -406,7 +406,7 @@ export default function Page() {
                       />
                       <div className="flex flex-col  gap-1">
                         <p>
-                          {item.guide?.firstName + " " + item.guide?.lastName }
+                          {item.guide?.firstName + " " + item.guide?.lastName}
                         </p>
                         <p className="font-normal">{item.guide?.email}</p>
                       </div>
