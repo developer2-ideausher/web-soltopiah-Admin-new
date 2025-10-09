@@ -165,6 +165,7 @@ const Page = () => {
     if (!file) {
       toast.error("Please upload a thumbnail image");
       return;
+      
     }
 
     if (data.chapters.length === 0) {
