@@ -101,7 +101,7 @@ const Page = () => {
                   title={guideData?.specializedCategories
                     ?.map((item) => item.title)
                     .join(", ")}
-                  className="text-sm font-normal text-[#AE445A] truncate w-[500px]"
+                  className="text-sm font-normal text-[#AE445A] truncate w-[300px]"
                 >
                   {guideData?.specializedCategories
                     ?.map((item) => item.title)
@@ -114,7 +114,7 @@ const Page = () => {
                 <PhoneCall color="gray" size={16} />
               </span>
               <p className="text-[#71737F] font-normal text-sm">
-                {guideData?.phone ?? "--"}
+                {"+ " + guideData?.phone ?? "--"}
               </p>
             </div>
             <div className="flex flex-row items-center gap-2">
@@ -132,16 +132,17 @@ const Page = () => {
               {guideData?.bio ?? "--"}
             </p>
           </div>
-          {guideData?.onboarding?.status === "rejected" && (
-            <div className="flex flex-col gap-2 items-start w-2/5">
-              <p className="text-xl font-semibold text-[#17161D]">
-                Rejection Reason
-              </p>
-              <p className="border bg-[#F8F9FD] w-full px-4 py-3 rounded-lg text-[#13171EB2] font-normal hover:shadow-lg">
-                {guideData?.onboarding?.rejectionReason ?? "--"}
-              </p>
-            </div>
-          )}
+          {guideData?.onboarding?.status === "rejected" ||
+            ("re-verify" && (
+              <div className="flex flex-col gap-2 items-start w-2/5">
+                <p className="text-xl font-semibold text-[#17161D]">
+                  Rejection Reason
+                </p>
+                <p className="border bg-[#F8F9FD] w-full px-4 py-3 rounded-lg text-[#13171EB2] font-normal hover:shadow-lg">
+                  {guideData?.onboarding?.rejectionReason ?? "--"}
+                </p>
+              </div>
+            ))}
           <div className="flex flex-col gap-2">
             <p className="text-xl font-sans font-semibold text-userblack">
               Academic Journey

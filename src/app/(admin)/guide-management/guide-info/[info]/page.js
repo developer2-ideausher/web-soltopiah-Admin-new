@@ -516,6 +516,24 @@ function Page({ params }) {
                     )}
                 </div>
               </div>
+               <div className="flex flex-col gap-2 w-full">
+            <p className="text-xl font-sans font-semibold mb-3 text-[#17161D]">
+              Onboarding Questions
+            </p>
+            {IdData?.onboarding?.questionnaire?.length === 0 && (
+              <p>No Onboarding Questions added</p>
+            )}
+            {IdData?.onboarding?.questionnaire?.map((ques, idxx) => (
+              <div key={ques._id || idxx} className="flex flex-col gap-2">
+                <p className="text-[#13171E] font-semibold text-[18px] break-words max-w-[600px] ">
+                  {idxx + 1 + ". " + ques?.question ?? "--"}
+                </p>
+                <p className="border bg-[#F8F9FD] w-2/5 px-4 py-3 rounded-lg text-[#13171EB2] font-normal hover:shadow-lg">
+                  {ques?.answer ?? "--"}
+                </p>
+              </div>
+            ))}
+          </div>
             </>
           )}
         </div>

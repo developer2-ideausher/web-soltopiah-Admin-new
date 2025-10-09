@@ -164,18 +164,39 @@ const EditPlaylistPage = () => {
     }
     setDeleting(false);
   };
-  const handleImageChange = (e) => {
-    const f = e.target.files?.[0] || null;
-    setFile(f);
-    if (f) {
-      const reader = new FileReader();
-      reader.onloadend = () => setPreview(String(reader.result));
-      reader.readAsDataURL(f);
-    } else {
-      setPreview(null);
-    }
-  };
+  // const handleImageChange = (e) => {
+  //   const f = e.target.files?.[0] || null;
+  //   setFile(f);
+  //   if (f) {
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => setPreview(String(reader.result));
+  //     reader.readAsDataURL(f);
+  //   } else {
+  //     setPreview(null);
+  //   }
+  // };
 
+
+   const handleImageChange = (e) => {
+      const f = e.target.files?.[0] || null;
+  
+      if (f) {
+        const maxSize = 5 * 1024 * 1024;
+        if (f.size > maxSize) {
+          toast.error("Image size should not exceed 5 MB");
+          e.target.value = "";
+          return;
+        }
+  
+        setFile(f);
+        const reader = new FileReader();
+        reader.onloadend = () => setPreview(String(reader.result));
+        reader.readAsDataURL(f);
+      } else {
+        setFile(null);
+        setPreview(null);
+      }
+    };
   const onSubmit = async (data) => {
     if (!preview && !file) {
       toast.error("Please upload a thumbnail image");

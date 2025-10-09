@@ -70,21 +70,21 @@ const Page = () => {
   const router = useRouter();
 
   const handleAddContent = () => {
-  if (selectedContent) {
-    const selectedChapter = chapters.find((ch) => ch._id === selectedContent);
-    if (selectedChapter) {
-      const newContent = [...content, selectedChapter];
-      setContent(newContent);
-      setValue(
-        "chapters",
-        newContent.map((c) => c._id)
-      );
-      toast.success("Content added successfully");
+    if (selectedContent) {
+      const selectedChapter = chapters.find((ch) => ch._id === selectedContent);
+      if (selectedChapter) {
+        const newContent = [...content, selectedChapter];
+        setContent(newContent);
+        setValue(
+          "chapters",
+          newContent.map((c) => c._id)
+        );
+        toast.success("Content added successfully");
+      }
+      setSelectedContent("");
+      setShowModal(false);
     }
-    setSelectedContent("");
-    setShowModal(false);
-  }
-};
+  };
 
   const handleRemoveContent = (contentId) => {
     const newContent = content.filter((c) => c._id !== contentId);
@@ -96,18 +96,38 @@ const Page = () => {
     toast.success("Content removed");
   };
 
+  // const handleImageChange = (e) => {
+  //   const f = e.target.files?.[0] || null;
+  //   setFile(f);
+  //   if (f) {
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => setPreview(String(reader.result));
+  //     reader.readAsDataURL(f);
+  //   } else {
+  //     setPreview(null);
+  //   }
+  // };
+
   const handleImageChange = (e) => {
     const f = e.target.files?.[0] || null;
-    setFile(f);
+
     if (f) {
+      const maxSize = 5 * 1024 * 1024;
+      if (f.size > maxSize) {
+        toast.error("Image size should not exceed 5 MB");
+        e.target.value = "";
+        return;
+      }
+
+      setFile(f);
       const reader = new FileReader();
       reader.onloadend = () => setPreview(String(reader.result));
       reader.readAsDataURL(f);
     } else {
+      setFile(null);
       setPreview(null);
     }
   };
-
   const onSubmit = async (data) => {
     if (!file) {
       toast.error("Please upload a thumbnail image");
@@ -132,7 +152,7 @@ const Page = () => {
       });
 
       const result = await createPlaylist(formData);
-      if (result) {
+      if (result.data) {
         toast.success("Playlist created successfully");
         router.push("/playlists");
       }
@@ -201,6 +221,9 @@ const Page = () => {
                   Browse and choose the files you want to upload from your
                   computer.
                 </p>
+                <span className="text-red-500 font-normal text-xs">
+                  Max Size-5 MB
+                </span>
               </div>
             )}
           </div>
@@ -216,7 +239,13 @@ const Page = () => {
           <input
             type="text"
             id="name"
-            {...register("name", { required: "Playlist name is required" })}
+            {...register("name", {
+              required: "Playlist name is required",
+              maxLength: {
+                value: 60,
+                message: "Name should not exceed 60 characters",
+              },
+            })}
             className="py-3 px-4 rounded-xl border border-[#E7E5E4] bg-white text-sm font-sans font-normal text-userblack"
             placeholder="Enter Name"
           />
@@ -237,6 +266,10 @@ const Page = () => {
             id="Description"
             {...register("description", {
               required: "Description is required",
+              maxLength: {
+                value: 250,
+                message: "Description should not exceed 250 characters",
+              },
             })}
             className="py-3 px-4 rounded-xl border border-[#E7E5E4] bg-white text-sm font-sans font-normal text-userblack"
             placeholder="Enter Description"
@@ -266,7 +299,9 @@ const Page = () => {
             disabled={content.length > 0}
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none"
           >
-            <option disabled value="">Select option</option>
+            <option disabled value="">
+              Select option
+            </option>
             <option value="audio">Audio</option>
             <option value="video">Video</option>
           </select>
@@ -334,7 +369,7 @@ const Page = () => {
                   No content
                 </p>
                 <p className="text-xs font-normal text-[#25232270] font-sans">
-                {`  Please add ${selected} to your playlist`}
+                  {`  Please add ${selected} to your playlist`}
                 </p>
                 <button
                   type="button"
