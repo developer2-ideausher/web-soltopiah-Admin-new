@@ -108,14 +108,46 @@ const Page = () => {
   //   }
   // };
 
+  // const handleImageChange = (e) => {
+  //   const f = e.target.files?.[0] || null;
+
+  //   if (f) {
+  //     const maxSize = 5 * 1024 * 1024;
+  //     if (f.size > maxSize) {
+  //       toast.error("Image size should not exceed 5 MB");
+  //       e.target.value = "";
+  //       return;
+  //     }
+
+  //     setFile(f);
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => setPreview(String(reader.result));
+  //     reader.readAsDataURL(f);
+  //   } else {
+  //     setFile(null);
+  //     setPreview(null);
+  //   }
+  // };
   const handleImageChange = (e) => {
     const f = e.target.files?.[0] || null;
 
     if (f) {
-      const maxSize = 5 * 1024 * 1024;
+      const validTypes = ["image/jpeg", "image/jpg", "image/png"];
+      const maxSize = 5 * 1024 * 1024; // 5 MB
+
+      if (!validTypes.includes(f.type)) {
+        toast.error("Only JPG, JPEG, or PNG images are allowed");
+        e.target.value = "";
+        setFile(null);
+        setPreview(null);
+        return;
+      }
+
       if (f.size > maxSize) {
         toast.error("Image size should not exceed 5 MB");
         e.target.value = "";
+        setFile(null);
+        setPreview(null);
         return;
       }
 
@@ -128,6 +160,7 @@ const Page = () => {
       setPreview(null);
     }
   };
+
   const onSubmit = async (data) => {
     if (!file) {
       toast.error("Please upload a thumbnail image");
@@ -201,10 +234,10 @@ const Page = () => {
             Thumbnail Image <span className="text-red-500">*</span>
           </label>
 
-          <div className="relative 2xl:w-40 2xl:h-40 w-32 h-32 border border-dashed border-primary rounded-lg flex items-center justify-center shadow-md">
+          <div className="relative 2xl:w-40 2xl:h-40 w-36 h-36 border border-dashed border-primary rounded-lg flex items-center justify-center shadow-md">
             <input
               type="file"
-              accept="image/*"
+              accept="image/png, image/jpeg, image/jpg"
               onChange={handleImageChange}
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
             />
@@ -219,7 +252,7 @@ const Page = () => {
                 <CloudUpload color="gray" />
                 <p className="2xl:text-sm text-xs font-semibold nuni text-gray-400">
                   Browse and choose the files you want to upload from your
-                  computer.
+                  computer.(png, jpeg,jpg)
                 </p>
                 <span className="text-red-500 font-normal text-xs">
                   Max Size-5 MB

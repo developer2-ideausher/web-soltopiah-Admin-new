@@ -80,7 +80,7 @@ const GuideApproval = () => {
       <SearchBar
         filterArray={[
           { value: "pending", label: "Pending" },
-          // { value: "approved", label: "Approved" },
+          { value: "re-verify", label: "Re-verify" },
           { value: "rejected", label: "Rejected" },
           { value: "", label: "All" },
         ]}

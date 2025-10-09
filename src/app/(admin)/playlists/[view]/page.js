@@ -176,27 +176,58 @@ const EditPlaylistPage = () => {
   //   }
   // };
 
+  // const handleImageChange = (e) => {
+  //   const f = e.target.files?.[0] || null;
 
-   const handleImageChange = (e) => {
-      const f = e.target.files?.[0] || null;
-  
-      if (f) {
-        const maxSize = 5 * 1024 * 1024;
-        if (f.size > maxSize) {
-          toast.error("Image size should not exceed 5 MB");
-          e.target.value = "";
-          return;
-        }
-  
-        setFile(f);
-        const reader = new FileReader();
-        reader.onloadend = () => setPreview(String(reader.result));
-        reader.readAsDataURL(f);
-      } else {
+  //   if (f) {
+  //     const maxSize = 5 * 1024 * 1024;
+  //     if (f.size > maxSize) {
+  //       toast.error("Image size should not exceed 5 MB");
+  //       e.target.value = "";
+  //       return;
+  //     }
+
+  //     setFile(f);
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => setPreview(String(reader.result));
+  //     reader.readAsDataURL(f);
+  //   } else {
+  //     setFile(null);
+  //     setPreview(null);
+  //   }
+  // };
+  const handleImageChange = (e) => {
+    const f = e.target.files?.[0] || null;
+
+    if (f) {
+      const validTypes = ["image/jpeg", "image/jpg", "image/png"];
+      const maxSize = 5 * 1024 * 1024; // 5 MB
+
+      if (!validTypes.includes(f.type)) {
+        toast.error("Only JPG, JPEG, or PNG images are allowed");
+        e.target.value = "";
         setFile(null);
         setPreview(null);
+        return;
       }
-    };
+
+      if (f.size > maxSize) {
+        toast.error("Image size should not exceed 5 MB");
+        e.target.value = "";
+        setFile(null);
+        setPreview(null);
+        return;
+      }
+
+      setFile(f);
+      const reader = new FileReader();
+      reader.onloadend = () => setPreview(String(reader.result));
+      reader.readAsDataURL(f);
+    } else {
+      setFile(null);
+      setPreview(null);
+    }
+  };
   const onSubmit = async (data) => {
     if (!preview && !file) {
       toast.error("Please upload a thumbnail image");
@@ -303,8 +334,13 @@ const EditPlaylistPage = () => {
                 status ? "bg-green-700" : "bg-red-700"
               } px-5 py-3 rounded-lg text-base `}
             >
-              {statusLoading ? <LoaderSmall /> : status ? "Enable Playlist" : "Disable Playlist"}
-              
+              {statusLoading ? (
+                <LoaderSmall />
+              ) : status ? (
+                "Enable Playlist"
+              ) : (
+                "Disable Playlist"
+              )}
             </button>
           )}
           <button
@@ -327,7 +363,7 @@ const EditPlaylistPage = () => {
           <div className="relative 2xl:w-40 2xl:h-40 w-32 h-32 border border-dashed border-primary rounded-lg flex items-center justify-center shadow-md">
             <input
               type="file"
-              accept="image/*"
+              accept="image/png, image/jpeg, image/jpg"
               onChange={handleImageChange}
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
             />

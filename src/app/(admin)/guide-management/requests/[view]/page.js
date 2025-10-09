@@ -8,6 +8,7 @@ import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import LeftBlackarrow from "../../../../../../icons/LeftBlackarrow";
 import LoaderLarge from "@/components/LoaderLarge";
+import dayjs from "dayjs";
 
 const Page = () => {
   const params = useParams();
@@ -132,17 +133,33 @@ const Page = () => {
               {guideData?.bio ?? "--"}
             </p>
           </div>
-          {guideData?.onboarding?.status === "rejected" ||
-            ("re-verify" && (
+          {(guideData?.onboarding?.status === "rejected" ||
+            guideData?.onboarding?.status === "re-verify") && (
               <div className="flex flex-col gap-2 items-start w-2/5">
                 <p className="text-xl font-semibold text-[#17161D]">
-                  Rejection Reason
+                  Rejection History
                 </p>
-                <p className="border bg-[#F8F9FD] w-full px-4 py-3 rounded-lg text-[#13171EB2] font-normal hover:shadow-lg">
-                  {guideData?.onboarding?.rejectionReason ?? "--"}
-                </p>
+                <div className="border bg-[#F8F9FD] w-full px-4 py-3 rounded-lg hover:shadow-lg flex flex-col gap-3 overflow-y-auto max-h-[400px]">
+                  {guideData?.onboarding?.rejection?.length > 0 ? (
+                    guideData.onboarding.rejection.map((item, index) => (
+                      <div
+                        key={index}
+                        className="flex flex-col gap-1 pb-3 border-b border-gray-200 last:border-b-0 last:pb-0"
+                      >
+                        <p className="text-xs text-gray-500 font-medium">
+                          {dayjs(item.date).format('MMM D, YYYY, hh:mm A')}
+                        </p>
+                        <p className="text-[#13171EB2] font-normal">
+                          {item.reason}
+                        </p>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-[#13171EB2] font-normal">--</p>
+                  )}
+                </div>
               </div>
-            ))}
+            )}
           <div className="flex flex-col gap-2">
             <p className="text-xl font-sans font-semibold text-userblack">
               Academic Journey
