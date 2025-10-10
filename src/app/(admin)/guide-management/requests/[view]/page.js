@@ -3,7 +3,7 @@ import BackButton from "@/components/BackButton";
 import Modal from "@/components/Modal";
 import RejectGuideModal from "@/components/RejectGuideModal";
 import { getApprovalGuideById } from "@/Services/Api/Guide/GuideApi";
-import { Download, Eye, Mail, PhoneCall } from "lucide-react";
+import { Download, Eye, Mail, PhoneCall, User } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import LeftBlackarrow from "../../../../../../icons/LeftBlackarrow";
@@ -112,6 +112,14 @@ const Page = () => {
             </div>
             <div className="flex flex-row items-center gap-2">
               <span>
+                <User color="gray" size={16} />
+              </span>
+              <p className="text-[#71737F] font-normal text-sm">
+                { guideData?.username ?? "--"}
+              </p>
+            </div>
+            <div className="flex flex-row items-center gap-2">
+              <span>
                 <PhoneCall color="gray" size={16} />
               </span>
               <p className="text-[#71737F] font-normal text-sm">
@@ -128,11 +136,18 @@ const Page = () => {
             </div>
           </div>
           <div className="flex flex-col gap-2 items-start w-2/5">
+            <p className="text-xl font-semibold text-[#17161D]">Years of Experience</p>
+            <p className="border bg-[#F8F9FD] w-full px-4 py-3 rounded-lg text-[#13171EB2] font-normal hover:shadow-lg">
+              {guideData?.experienceYears ?? "--"}
+            </p>
+          </div>
+          <div className="flex flex-col gap-2 items-start w-2/5">
             <p className="text-xl font-semibold text-[#17161D]">Bio</p>
             <p className="border bg-[#F8F9FD] w-full px-4 py-3 rounded-lg text-[#13171EB2] font-normal hover:shadow-lg">
               {guideData?.bio ?? "--"}
             </p>
           </div>
+          
           {(guideData?.onboarding?.status === "rejected" ||
             guideData?.onboarding?.status === "re-verify") && (
               <div className="flex flex-col gap-2 items-start w-2/5">

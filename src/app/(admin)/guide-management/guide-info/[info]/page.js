@@ -17,6 +17,7 @@ import { getGuideByID, guideEducation } from "@/Services/Api/Guide/GuideApi";
 import Eye from "../../../../../../icons/Eye";
 import Download from "../../../../../../icons/Download";
 import { toast } from "react-toastify";
+import { User } from "lucide-react";
 
 function Page({ params }) {
   const { info } = params;
@@ -189,6 +190,14 @@ function Page({ params }) {
                     </div>
                   </div>
                   <div className="flex flex-col  gap-1">
+                    <div className="flex flex-row items-center gap-2">
+                      <span>
+                        <User color="gray" size={16} />
+                      </span>
+                      <p className="text-[#71737F] font-normal text-sm">
+                        {IdData?.username ?? "--"}
+                      </p>
+                    </div>
                     <div className="flex flex-row items-center gap-2">
                       <Phone />
                       <p className="text-base font-sans font-normal text-[#71737F]">

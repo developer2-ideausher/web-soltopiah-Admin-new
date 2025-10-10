@@ -162,10 +162,13 @@ const GuideApproval = () => {
                           title={item.firstName}
                           className="text-base font-semibold font-sans text-userblack truncate"
                         >
-                          {truncateName(item.firstName + " " + item.lastName)}
+                          {truncateName(item?.firstName + " " + item?.lastName)}
                         </p>
                         <p className="text-base font-sans font-normal text-[#666576]">
-                          {item.phone}
+                          {item.username??"--"}
+                        </p>
+                        <p className="text-base font-sans font-normal text-[#666576]">
+                          {item?.phone}
                         </p>
                       </div>
                     </div>
@@ -189,10 +192,10 @@ const GuideApproval = () => {
                     </span>
 
                     <span className="text-base font-sans font-semibold text-userblack text-center">
-                      {item.experienceYears}
+                      {item?.experienceYears}
                     </span>
                     <span className="text-base font-sans font-semibold text-userblack text-center">
-                      {dayjs(item.createdAt).format("DD/MM/YYYY")}
+                      {dayjs(item?.createdAt).format("DD/MM/YYYY")}
                     </span>
                     <span
                       className={`text-base font-sans font-semibold  rounded-full border p-1 text-center ml-2 capitalize ${

@@ -13,6 +13,7 @@ function UserDetailsBox({user,sData}) {
                 <p className="text-base font-sans font-semibold text-userblack">
                   {user?.firstName} {user?.lastName}
                 </p>
+                <p className="text-[#666576] text-base font-sans font-normal truncate">{user?.username??"--"}</p>
                 <p className="text-[#666576] text-base font-sans font-normal">
                 {user?.phone || '--'}
                 </p>

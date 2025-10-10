@@ -258,25 +258,28 @@ function Page() {
                             <div className="flex flex-col">
                               <p className="text-base font-semibold font-sans text-userblack">
                                 {truncateName(
-                                  item.firstName + " " + item.lastName
+                                  item?.firstName + " " + item?.lastName
                                 )}
                               </p>
+                              <p className="text-base font-sans font-normal text-[#666576] truncate">
+                                {item?.username??"--"}
+                              </p>
                               <p className="text-base font-sans font-normal text-[#666576]">
-                                {item.phone}
+                                {item?.phone}
                               </p>
                             </div>
                           </div>
                           <span className="text-base font-sans font-semibold text-userblack">
-                            {dayjs(item.createdAt).format("MMM DD YYYY")}
+                            {dayjs(item?.createdAt).format("MMM DD YYYY")}
                           </span>
                           <span className="text-base font-sans font-semibold text-userblack text-center">
-                            {item.hasPremiumPlan ? "Premium" : "Free"}
+                            {item?.hasPremiumPlan ? "Premium" : "Free"}
                           </span>
                           <span className="text-base font-sans font-semibold text-userblack text-center">
                             0
                           </span>
                           <span className="text-base font-sans font-semibold text-userblack text-center">
-                            {item.bookingsCount}
+                            {item?.bookingsCount}
                           </span>
                           <button
                             onClick={() =>
