@@ -378,7 +378,7 @@ const EditPlaylistPage = () => {
                 <CloudUpload color="gray" />
                 <p className="2xl:text-sm text-xs font-semibold nuni text-gray-400">
                   Browse and choose the files you want to upload from your
-                  computer.
+                  device.
                 </p>
               </div>
             )}

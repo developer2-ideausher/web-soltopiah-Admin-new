@@ -165,7 +165,6 @@ const Page = () => {
     if (!file) {
       toast.error("Please upload a thumbnail image");
       return;
-      
     }
 
     if (data.chapters.length === 0) {
@@ -253,7 +252,7 @@ const Page = () => {
                 <CloudUpload color="gray" />
                 <p className="2xl:text-sm text-xs font-semibold nuni text-gray-400">
                   Browse and choose the files you want to upload from your
-                  computer.(png, jpeg,jpg)
+                  device.(png, jpeg,jpg)
                 </p>
                 <span className="text-red-500 font-normal text-xs">
                   Max Size-5 MB
