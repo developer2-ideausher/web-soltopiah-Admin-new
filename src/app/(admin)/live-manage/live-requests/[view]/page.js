@@ -18,6 +18,7 @@ function Page({ params }) {
   const [requestData, setRequestData] = useState(null);
   const [modal, setModal] = useState(false);
   const { view } = params;
+  const [featureChoice, setFeatureChoice] = useState(null);
 
   const router = useRouter();
 
@@ -43,7 +44,7 @@ function Page({ params }) {
       .catch((error) => console.error(error));
   };
   const handleApprove = () => {
-    const raw = { status: "approved" };
+    const raw = { status: "approved", featured: featureChoice === true };
     const myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer " + token);
     myHeaders.append("Content-Type", "application/json");
@@ -162,6 +163,37 @@ function Page({ params }) {
                   {dayjs(requestData.startDate).format("hh:mm A")}
                 </p>
               </div>
+              {requestData?.featureRequested === true && (
+                <div className="flex flex-col gap-1">
+                  <p className="text-base font-sans font-semibold text-[#888A94]">
+                    Feature requested
+                  </p>
+                  <div className="flex flex-col items-start gap-2">
+                    <div className="flex flex-row items-center justify-between w-64">
+                      <label htmlFor="feature-yes">Feature this live</label>
+                      <input
+                        type="radio"
+                        id="feature-yes"
+                        name="feature"
+                        checked={featureChoice === true}
+                        onChange={() => setFeatureChoice(true)}
+                      />
+                    </div>
+                    <div className="flex flex-row items-center justify-between w-64">
+                      <label htmlFor="feature-no">
+                        Do not feature this live
+                      </label>
+                      <input
+                        type="radio"
+                        id="feature-no"
+                        name="feature"
+                        checked={featureChoice === false}
+                        onChange={() => setFeatureChoice(false)}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
               <div className="flex flex-col gap-1">
                 <p className="text-base font-sans font-semibold text-[#888A94]">
                   Hosted by

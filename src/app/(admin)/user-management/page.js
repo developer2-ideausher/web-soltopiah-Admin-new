@@ -160,7 +160,7 @@ function Page() {
                               {item.username || "--"}
                             </p> */}
                             <p className="text-base font-normal font-sans text-[#666576]">
-                              {"+ "+item.phone || "--"}
+                              {"+ " + item.phone || "--"}
                             </p>
                           </div>
                         </div>

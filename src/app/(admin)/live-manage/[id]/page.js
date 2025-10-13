@@ -97,6 +97,14 @@ function Page({ params }) {
               </div>
               <div className="flex flex-col gap-1">
                 <p className="text-base font-sans font-semibold text-[#888A94]">
+                  Featured ?
+                </p>
+                <p className="text-xl text-[#414554] font-normal font-sans">
+                 {requestData.featured ? "Yes" : "No"}
+                </p>
+              </div>
+              <div className="flex flex-col gap-1">
+                <p className="text-base font-sans font-semibold text-[#888A94]">
                   Hosted by
                 </p>
                 <div className="flex flex-row items-center gap-2">

@@ -168,6 +168,9 @@ function Page() {
                 <span className="text-[#666576] font-sans font-normal text-sm">
                   Time
                 </span>
+                <span className="text-[#666576] font-sans font-normal text-sm">
+                  Featured
+                </span>
 
                 <span className="text-[#666576] text-center font-sans font-normal text-sm">
                   Status
@@ -232,6 +235,9 @@ function Page() {
                       </span>
                       <span className="text-userblack font-sans font-semibold text-base">
                         {dayjs(item.startDate).format("hh:mm a")}
+                      </span>
+                      <span className="text-userblack font-sans font-semibold text-base">
+                        {item.featured ? "Yes" : "No"}
                       </span>
 
                       <div
