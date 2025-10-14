@@ -393,15 +393,16 @@ function Page({ params }) {
                               key={item._id || index}
                               className="border-[#CE8F9C] border max-w-96 rounded-lg min-w-96"
                             >
-                              <div className="flex flex-col items-center justify-center p-2 bg-[#ACADDB] rounded-t-md">
+                              <a
+                                href={item?.file?.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex flex-col items-center justify-center p-2 bg-[#ACADDB] rounded-t-md hover:cursor-pointer"
+                              >
                                 {item.file?.type === "pdf" ? (
-                                  <a
-                                    href={item?.file?.url}
-                                    target="_blank"
-                                    className="text-xl font-semibold  font-sans px-4  hover:cursor-pointer flex items-center min-h-40 "
-                                  >
+                                  <div className="text-xl font-semibold font-sans px-4 flex items-center min-h-40">
                                     Pdf
-                                  </a>
+                                  </div>
                                 ) : (
                                   <img
                                     className="object-contain max-h-40 min-h-40"
@@ -409,7 +410,7 @@ function Page({ params }) {
                                     alt=""
                                   />
                                 )}
-                              </div>
+                              </a>
                               <div className="flex flex-row justify-between items-center w-full py-2 px-3">
                                 <p
                                   title={item.name}
@@ -417,7 +418,7 @@ function Page({ params }) {
                                 >
                                   {item.name}
                                 </p>
-                                <div className="flex gap-2">
+                                {/* <div className="flex gap-2">
                                   <a
                                     className="hover:cursor-pointer"
                                     href={item?.file?.url}
@@ -437,7 +438,7 @@ function Page({ params }) {
                                   >
                                     <Eye />
                                   </button>
-                                </div>
+                                </div> */}
                               </div>
                             </div>
                           ))}
@@ -464,15 +465,16 @@ function Page({ params }) {
                               key={item._id || index}
                               className="border-[#CE8F9C] border max-w-96 rounded-lg min-w-96"
                             >
-                              <div className="flex flex-col items-center justify-center p-2 bg-[#ACADDB] rounded-t-md">
+                              <a
+                                href={item?.file?.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex flex-col items-center justify-center p-2 bg-[#ACADDB] rounded-t-md hover:cursor-pointer"
+                              >
                                 {item.file?.type === "pdf" ? (
-                                  <a
-                                    href={item?.file?.url}
-                                    target="_blank"
-                                    className="text-xl font-semibold font-sans px-4  hover:cursor-pointer flex items-center min-h-40 "
-                                  >
+                                  <div className="text-xl font-semibold font-sans px-4 flex items-center min-h-40">
                                     Pdf
-                                  </a>
+                                  </div>
                                 ) : (
                                   <img
                                     className="object-contain  max-h-40  min-h-40"
@@ -480,7 +482,7 @@ function Page({ params }) {
                                     alt=""
                                   />
                                 )}
-                              </div>
+                              </a>
                               <div className="flex flex-row justify-between items-center w-full py-2 px-3">
                                 <p
                                   title={item?.name}
@@ -488,7 +490,7 @@ function Page({ params }) {
                                 >
                                   {item.name}
                                 </p>
-                                <div className="flex gap-2">
+                                {/* <div className="flex gap-2">
                                   <a
                                     className="hover:cursor-pointer"
                                     href={item?.file?.url}
@@ -508,7 +510,7 @@ function Page({ params }) {
                                   >
                                     <Eye />
                                   </button>
-                                </div>
+                                </div> */}
                               </div>
                             </div>
                           ))}

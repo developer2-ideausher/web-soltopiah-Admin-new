@@ -20,6 +20,7 @@ import Policy from "../../icons/Policy";
 import EarningIcon from "../../icons/EarningIcon";
 import Goals from "../../icons/Goals";
 import { Music } from "lucide-react";
+import QRIcon1 from "../../icons/QRIcon1";
 export default function Sidebar() {
   const pathName = usePathname();
   return (
@@ -99,7 +100,7 @@ export default function Sidebar() {
               pathName.startsWith("/quickreads") && "bg-pink on"
             }`}
           >
-            <Quickreads />
+            <QRIcon1 />
             <h6 className="lg:text-xs xl:text-sm 2xl:text-base text-white font-normal font-sans group-hover:text-primary whitespace-nowrap">
               Quick Reads
             </h6>
