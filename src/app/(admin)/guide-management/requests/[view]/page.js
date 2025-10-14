@@ -145,9 +145,9 @@ const Page = () => {
           </div>
           <div className="flex flex-col gap-2 items-start w-2/5">
             <p className="text-xl font-semibold text-[#17161D]">Bio</p>
-            <p className="border bg-[#F8F9FD] w-full px-4 py-3 rounded-lg text-[#13171EB2] font-normal hover:shadow-lg">
+            <textarea disabled className="border bg-[#F8F9FD] w-full px-4 py-3 rounded-lg text-[#13171EB2] font-normal hover:shadow-lg">
               {guideData?.bio ?? "--"}
-            </p>
+            </textarea>
           </div>
 
           {(guideData?.onboarding?.status === "rejected" ||
