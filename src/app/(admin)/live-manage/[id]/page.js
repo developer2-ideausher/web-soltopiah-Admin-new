@@ -84,7 +84,7 @@ function Page({ params }) {
                   Date
                 </p>
                 <p className="text-xl text-[#414554] font-normal font-sans">
-                  {dayjs(requestData.startDate).format("ddd MMM DD,YY")}
+                  {dayjs(requestData.startDate).format("DD/MM/YYYY")}
                 </p>
               </div>
               <div className="flex flex-col gap-1">
@@ -92,7 +92,7 @@ function Page({ params }) {
                   Time
                 </p>
                 <p className="text-xl text-[#414554] font-normal font-sans">
-                  {dayjs(requestData.startDate).utc().format("hh:mm A")}
+                  {dayjs(requestData.startDate).format("hh:mm A")}
                 </p>
               </div>
               <div className="flex flex-col gap-1">
