@@ -69,6 +69,7 @@ module.exports = {
   			quickReadsRequestTable: '350px 280px 250px  150px 50px ',
   			contentUploadedTable: '300px 300px 150px 80px 80px  ',
   			testTable: '300px 300px 150px 120px 80px 80px  ',
+  			userInviteTable: '200px 280px 150px 120px  150px 150px 150px  ',
   		},
   		fontSize: {
   			xl2: '22px'

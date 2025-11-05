@@ -204,11 +204,10 @@ const Page = () => {
                       {item?.type}
                     </span>
                     <span
-                      className={`py-1 px-5 text-center w-[100px]  rounded-[78px] border font-sans font-normal text-base capitalize ${
-                        item.isDisabled
+                      className={`py-1 px-5 text-center w-[100px]  rounded-[78px] border font-sans font-normal text-base capitalize ${item.isDisabled
                           ? "bg-red-100 text-red-500 border-red-500"
                           : "bg-[#DDFDE8] text-[#08A03C] border-[#A8FBC4]"
-                      }`}
+                        }`}
                     >
                       {item.isDisabled ? "Disabled" : "Active"}
                     </span>

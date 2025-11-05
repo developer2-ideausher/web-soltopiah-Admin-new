@@ -21,6 +21,7 @@ import EarningIcon from "../../icons/EarningIcon";
 import Goals from "../../icons/Goals";
 import { Music } from "lucide-react";
 import QRIcon1 from "../../icons/QRIcon1";
+import Invites from "../../icons/Invites";
 export default function Sidebar() {
   const pathName = usePathname();
   return (
@@ -47,6 +48,17 @@ export default function Sidebar() {
 
             <h6 className="lg:text-xs xl:text-sm 2xl:text-base font-sans text-white font-normal group-hover:text-primary">
               Dashboard
+            </h6>
+          </Link>
+          <Link
+            href="/invites"
+            className={`flex items-center gap-2 lg:p-2 xl:p-2 2xl:p-4 rounded-lg w-full hover:bg-pink group cursor-pointer sidebar-link mt-3 ${
+              pathName.startsWith("/invites") && "bg-pink on"
+            }`}
+          >
+            <Invites />
+            <h6 className="lg:text-xs xl:text-sm 2xl:text-base text-white font-normal font-sans group-hover:text-primary">
+             Invites
             </h6>
           </Link>
           <Link
