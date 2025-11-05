@@ -58,7 +58,7 @@ const UserGuideTable = ({ refreshKey }) => {
         <div className="bg-[#F0F2F5] min-w-fit w-full">
           <div className="items-center grid grid-cols-userInviteTable justify-between p-4">
             <span className="text-[#666576] font-sans font-normal text-sm">
-              User
+              Users
             </span>
             <span className="text-[#666576] font-sans font-normal text-sm">
               Email Id
