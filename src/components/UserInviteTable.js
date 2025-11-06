@@ -11,19 +11,27 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 dayjs.extend(utc);
 
-const UserInviteTable = ({refreshKey}) => {
+const UserInviteTable = ({ refreshKey }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("");
+  const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState("desc");
-
   const fetchData = async () => {
     try {
       setLoading(true);
-      const result = await getAllInvites("NormalUser",currentPage, 10);
+      const result = await getAllInvites(
+        "NormalUser",
+        currentPage,
+        10,
+        filter,
+        searchTerm,
+        sortBy,
+        sortOrder
+      );
       if (result.data) {
         setData(result.data.results || []);
         setTotalPages(result.data.totalPages || 1);
@@ -34,22 +42,38 @@ const UserInviteTable = ({refreshKey}) => {
     }
     setLoading(false);
   };
+  const handleFilterChange = (value) => {
+    setFilter(value);
+    setCurrentPage(1); 
+  };
+  const handleSort = (order) => {
+    setSortOrder(order); 
+    setSortBy("createdAt"); 
+    setCurrentPage(1);
+  };
+  const handleSearch = (value) => {
+    setSearchTerm(value);
+    setCurrentPage(1);
+  };
   useEffect(() => {
     fetchData();
-  }, [refreshKey,currentPage]);
+  }, [refreshKey, currentPage, filter, searchTerm, sortBy, sortOrder]);
   return (
     <div className="flex flex-col">
       <AddSearchBar
         filterArray={[
-          { value: "audio", label: "Audio" },
-          { value: "video", label: "Video" },
           { value: "", label: "All" },
+
+          { value: "accepted", label: "Accepted" },
+          { value: "pending", label: "Pending" },
+          { value: "revoked", label: "Revoked" },
+          { value: "expired", label: "Expired" },
         ]}
-        name={"Media Type"}
-        // handleSort={handleSort}
-        // setHandleSort={setSortOrder}
-        // setHandleFilter={handleFilterChange}
-        // handleSearch={handleSearch}
+        name={"Status"}
+        handleSearch={handleSearch}
+        handleSort={handleSort}
+        setHandleSort={setSortOrder}
+        setHandleFilter={handleFilterChange}
         showAddButton={false}
         title="Add new"
         route="/playlists/createPlaylist"
@@ -109,11 +133,7 @@ const UserInviteTable = ({refreshKey}) => {
         <div className="flex flex-col bg-white min-w-fit w-full ">
           {data &&
             data.map((item, index) => (
-              <Link
-                key={item._id || index}
-                href={`/playlists/${item._id}`}
-                className="hover:bg-slate-100"
-              >
+              <div key={item._id || index} className="hover:bg-slate-100">
                 <div className=" grid grid-cols-userInviteTable justify-between border-b border-[#E9E9EC] items-center p-4">
                   <div className="flex flex-row items-center gap-2">
                     {/* <img
@@ -184,7 +204,7 @@ const UserInviteTable = ({refreshKey}) => {
                     </span>
                   </div>
                 </div>
-              </Link>
+              </div>
             ))}
         </div>
       </div>

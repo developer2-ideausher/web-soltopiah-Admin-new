@@ -16,7 +16,7 @@ import dayjs from "dayjs";
 import { toast } from "react-toastify";
 
 const Page = () => {
-  const [activeTab, setActiveTab] = useState("users");
+  const [activeTab, setActiveTab] = useState("guides");
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -94,6 +94,7 @@ const Page = () => {
         setShowModal(false);
         setForm({ name: "", email: "", expiryHours: "", expiryDate: "" });
         setRefreshKey((prev) => prev + 1);
+        fetchData()
       }
     } catch (error) {
       toast.error(error.message || "Failed to send invite");
@@ -151,17 +152,7 @@ const Page = () => {
           />
         </div>
         <div className="flex flex-row items-center ">
-          <button
-            onClick={() => setActiveTab("users")}
-            className={`${
-              activeTab === "users"
-                ? "bg-[#0000000D]   font-semibold text-[#252322]  border-b-2 border-[#1C1C1C]"
-                : "font-normal text-[#838383] "
-            }  font-sans  text-base py-2 px-6`}
-            type="button"
-          >
-            Users
-          </button>
+          
           <button
             onClick={() => setActiveTab("guides")}
             className={`${
@@ -172,6 +163,17 @@ const Page = () => {
             type="button"
           >
             Guides
+          </button>
+          <button
+            onClick={() => setActiveTab("users")}
+            className={`${
+              activeTab === "users"
+                ? "bg-[#0000000D]   font-semibold text-[#252322]  border-b-2 border-[#1C1C1C]"
+                : "font-normal text-[#838383] "
+            }  font-sans  text-base py-2 px-6`}
+            type="button"
+          >
+            Users
           </button>
         </div>
         {activeTab === "users" ? (

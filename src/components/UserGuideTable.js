@@ -18,12 +18,20 @@ const UserGuideTable = ({ refreshKey }) => {
   const [totalPages, setTotalPages] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("");
+  const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState("desc");
-
   const fetchData = async () => {
     try {
       setLoading(true);
-      const result = await getAllInvites("Guide",currentPage, 10);
+      const result = await getAllInvites(
+        "Guide",
+        currentPage,
+        10,
+        filter,
+        searchTerm,
+        sortBy,
+        sortOrder
+      );
       if (result.data) {
         setData(result.data.results || []);
         setTotalPages(result.data.totalPages || 1);
@@ -34,22 +42,39 @@ const UserGuideTable = ({ refreshKey }) => {
     }
     setLoading(false);
   };
+  const handleSort = (order) => {
+    setSortOrder(order);
+    setSortBy("createdAt");
+    setCurrentPage(1);
+  };
+  const handleSearch = (value) => {
+    setSearchTerm(value);
+    setCurrentPage(1);
+  };
+
+  const handleFilterChange = (value) => {
+    setFilter(value);
+    setCurrentPage(1);
+  };
   useEffect(() => {
     fetchData();
-  }, [refreshKey,currentPage]);
+  }, [refreshKey, currentPage, filter, searchTerm, sortBy, sortOrder]);
   return (
     <div className="flex flex-col">
       <AddSearchBar
         filterArray={[
-          { value: "audio", label: "Audio" },
-          { value: "video", label: "Video" },
           { value: "", label: "All" },
+
+          { value: "accepted", label: "Accepted" },
+          { value: "pending", label: "Pending" },
+          { value: "revoked", label: "Revoked" },
+          { value: "expired", label: "Expired" },
         ]}
-        name={"Media Type"}
-        // handleSort={handleSort}
-        // setHandleSort={setSortOrder}
-        // setHandleFilter={handleFilterChange}
-        // handleSearch={handleSearch}
+        name={"Status"}
+        handleSearch={handleSearch}
+        handleSort={handleSort}
+        setHandleSort={setSortOrder}
+        setHandleFilter={handleFilterChange}
         showAddButton={false}
         title="Add new"
         route="/playlists/createPlaylist"
@@ -109,11 +134,7 @@ const UserGuideTable = ({ refreshKey }) => {
         <div className="flex flex-col bg-white min-w-fit w-full ">
           {data &&
             data.map((item, index) => (
-              <Link
-                key={item._id || index}
-                href={`/playlists/${item._id}`}
-                className="hover:bg-slate-100"
-              >
+              <div key={item._id || index} className="hover:bg-slate-100">
                 <div className=" grid grid-cols-userInviteTable justify-between border-b border-[#E9E9EC] items-center p-4">
                   <div className="flex flex-row items-center gap-2">
                     {/* <img
@@ -169,14 +190,16 @@ const UserGuideTable = ({ refreshKey }) => {
                   </span>
                   <div className="flex justify-center">
                     <span
-                      className={`py-1 px-5  w-[100px] rounded-[78px] border font-sans font-normal text-base capitalize  
+                      className={`py-1 px-5 w-[100px] rounded-[78px] border font-sans font-normal text-base capitalize  
     ${
-      item.status === "revoked" || item.status === "expired"
+      item.status === "revoked"
         ? "bg-red-100 text-red-500 border-red-500"
         : item.status === "accepted"
         ? "bg-[#DDFDE8] text-[#08A03C] border-[#A8FBC4]"
         : item.status === "pending"
         ? "bg-orange-100 text-orange-500 border-orange-500"
+        : item.status === "expired"
+        ? "bg-red-200 text-red-700 border-red-700"
         : ""
     }`}
                     >
@@ -184,7 +207,7 @@ const UserGuideTable = ({ refreshKey }) => {
                     </span>
                   </div>
                 </div>
-              </Link>
+              </div>
             ))}
         </div>
       </div>
