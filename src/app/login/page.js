@@ -244,7 +244,7 @@ function Page() {
           >
             <div className="hidden justify-center xs:flex sm:flex">
               <Image
-                src="/logo.svg"
+                src="/smallLogo.svg"
                 alt="Logo"
                 width="200"
                 height="100"
