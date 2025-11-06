@@ -2,24 +2,43 @@
 import LoaderLarge from "@/components/LoaderLarge";
 import RobinPagination from "@/components/Pagination";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import AddSearchBar from "@/components/AddSearchBar";
-import { getAllInvites } from "@/Services/Api/Invites/page";
+import { getAllInvites, revokeInviteApi } from "@/Services/Api/Invites/page";
 import { set } from "react-hook-form";
 import { toast } from "react-toastify";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import RedDustbin from "../../icons/RedDustbin";
+import Modal from "./Modal";
 dayjs.extend(utc);
 
 const UserInviteTable = ({ refreshKey }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [smallLoading, setSmallLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("");
   const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState("desc");
+  const [showModal, setShowModal] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
+
+  const openRevokeModal = (id) => {
+    setSelectedId(id);
+    setShowModal(true);
+  };
+
+  const closeRevokeModal = () => {
+    setShowModal(false);
+    setSelectedId(null);
+  };
+  const selectedInvite = useMemo(
+    () => data.find((d) => d._id === selectedId) || null,
+    [data, selectedId]
+  );
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -44,16 +63,30 @@ const UserInviteTable = ({ refreshKey }) => {
   };
   const handleFilterChange = (value) => {
     setFilter(value);
-    setCurrentPage(1); 
+    setCurrentPage(1);
   };
   const handleSort = (order) => {
-    setSortOrder(order); 
-    setSortBy("createdAt"); 
+    setSortOrder(order);
+    setSortBy("createdAt");
     setCurrentPage(1);
   };
   const handleSearch = (value) => {
     setSearchTerm(value);
     setCurrentPage(1);
+  };
+  const revokeInvite = async () => {
+    try {
+      setSmallLoading(true);
+      const result = await revokeInviteApi(selectedId);
+      if (result.data) {
+        toast.success("Invite revoked successfully");
+        closeRevokeModal();
+        fetchData();
+      }
+    } catch (error) {
+      toast.error(error.message || "Error occured, please try again");
+    }
+    setSmallLoading(false);
   };
   useEffect(() => {
     fetchData();
@@ -203,10 +236,47 @@ const UserInviteTable = ({ refreshKey }) => {
                       {item.status}
                     </span>
                   </div>
+                  {item.status !== "expired" && item.status !== "revoked" && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openRevokeModal(item._id);
+                      }}
+                    >
+                      <RedDustbin />
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
         </div>
+        {showModal && selectedInvite && (
+          <Modal>
+            <div className="bg-[#F0F1FD] w-[32vw] rounded-lg p-3 flex flex-col gap-8">
+              <p className="font-sans font-semibold text-base text-primary">
+                Are you sure you want to revoke this invite?
+              </p>
+              <div className="flex flex-row items-center justify-between gap-3">
+                <button
+                  disabled={smallLoading}
+                  type="button"
+                  onClick={closeRevokeModal}
+                  className="p-2 text-[#AE445A] font-semibold text-sm font-sans w-full rounded-md border border-[#AE445A]"
+                >
+                  Cancel
+                </button>
+                <button
+                  disabled={smallLoading}
+                  type="button"
+                  onClick={revokeInvite}
+                  className="p-2 bg-[#AE445A] text-white font-semibold text-sm font-sans w-full rounded-md border border-[#AE445A] flex items-center justify-center"
+                >
+                  {smallLoading ? "Revoking..." : "Revoke Invite"}
+                </button>
+              </div>
+            </div>
+          </Modal>
+        )}
       </div>
       {!loading && data && data.length > 0 && totalPages > 1 && (
         <RobinPagination

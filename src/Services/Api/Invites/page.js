@@ -35,14 +35,16 @@ export const getAllInvites = async (
   };
 
   try {
-    const response = await fetch(`${url}/invite?${queryParams.toString()}`, requestOptions);
+    const response = await fetch(
+      `${url}/invite?${queryParams.toString()}`,
+      requestOptions
+    );
     const result = await responseValidator(response);
     return result;
   } catch (error) {
     apiError(error);
   }
 };
-
 
 export const getInviteStats = async () => {
   const myHeaders = new Headers();
@@ -84,6 +86,32 @@ export const createInvite = async (data) => {
 
   try {
     const response = await fetch(url + `/invite`, requestOptions);
+
+    const result = await responseValidator(response);
+    return result;
+  } catch (error) {
+    apiError(error);
+  }
+};
+
+export const revokeInviteApi = async (id) => {
+  const myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer " + (await tokenValidator()));
+
+  myHeaders.append("Content-Type", "application/json");
+
+  const raw = JSON.stringify({
+    status: "revoked",
+  });
+
+  const requestOptions = {
+    method: "PATCH",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow",
+  };
+  try {
+    const response = await fetch(url + `/invite/${id}/status`, requestOptions);
 
     const result = await responseValidator(response);
     return result;
