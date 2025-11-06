@@ -68,8 +68,17 @@ const Page = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
     if (!form.name || !form.email || !form.expiryHours) {
       toast.error("Please fill all fields properly");
+      return;
+    }
+    if (form.name.length > 30) {
+      toast.error("Name cannot exceed 30 characters");
+      return;
+    }
+    if (!emailRegex.test(form.email)) {
+      toast.error("Please enter a valid email address");
       return;
     }
 
@@ -94,7 +103,7 @@ const Page = () => {
         setShowModal(false);
         setForm({ name: "", email: "", expiryHours: "", expiryDate: "" });
         setRefreshKey((prev) => prev + 1);
-        fetchData()
+        fetchData();
       }
     } catch (error) {
       toast.error(error.message || "Failed to send invite");
@@ -152,7 +161,6 @@ const Page = () => {
           />
         </div>
         <div className="flex flex-row items-center ">
-          
           <button
             onClick={() => setActiveTab("guides")}
             className={`${
@@ -205,9 +213,10 @@ const Page = () => {
                 Name
               </label>
               <input
+                maxLength={30}
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                placeholder="Enter name"
+                placeholder="Enter name (max 30 characters)"
                 className="w-full focus:outline-none p-2 rounded-md"
               />
             </div>

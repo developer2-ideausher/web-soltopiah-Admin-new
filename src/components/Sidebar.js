@@ -56,9 +56,9 @@ export default function Sidebar() {
               pathName.startsWith("/invites") && "bg-pink on"
             }`}
           >
-            <Invites />
+            <Invites active={pathName.startsWith("/invites")} />
             <h6 className="lg:text-xs xl:text-sm 2xl:text-base text-white font-normal font-sans group-hover:text-primary">
-             Invites
+              Invites
             </h6>
           </Link>
           <Link
