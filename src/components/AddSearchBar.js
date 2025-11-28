@@ -6,6 +6,7 @@ import Sort from "../../icons/Sort";
 import Export from "../../icons/Export";
 import Plus from "../../icons/Plus";
 import Link from "next/link";
+import { Check, RefreshCcw } from "lucide-react";
 
 function SearchBar({
   title = "Add",
@@ -20,6 +21,10 @@ function SearchBar({
   handleSearch,
   name,
   filterArray,
+  showRefresh = false,
+  showApproveButton = false,
+  handleRefresh,
+  handleApprove,
 }) {
   const [showSort, setShowSort] = useState(false);
   const [showFilterDropDown, setShowFilterDropDown] = useState(false);
@@ -52,9 +57,8 @@ function SearchBar({
   const handleInputChange = (e) => {
     const value = e.target.value.trimStart(); // Remove leading spaces
     setSearchTerm?.(value);
-    console.log(searchTerm,"robin")
-    if(value.length>3){
-      
+    console.log(searchTerm, "robin");
+    if (value.length > 3) {
     }
     // Clear previous debounce timeout
     if (debounceTimeout) {
@@ -63,7 +67,7 @@ function SearchBar({
 
     // Handle empty input immediately
     if (value.trim() === "") {
-      setSearchTerm("")
+      setSearchTerm("");
       handleSearch?.(""); // Fetch default data
       return;
     }
@@ -190,8 +194,18 @@ function SearchBar({
                 </label>
               </div>
             )}
+           
           </div>
+          
         )}
+         {showApproveButton && (
+              <button
+                onClick={handleApprove}
+                className="flex flex-row items-center gap-2 border text-sm font-sans font-normal text-black rounded-md py-2 px-3  hover:shadow-md"
+              >
+                Approve <Check size={16} />
+              </button>
+            )}
       </div>
       {showAddButton && (
         <Link href={route}>
@@ -202,6 +216,14 @@ function SearchBar({
             <Plus />
           </button>
         </Link>
+      )}
+      {showRefresh && (
+        <button
+          onClick={handleRefresh}
+          className="flex flex-row items-center gap-2 border text-sm font-sans font-normal text-black rounded-md py-2 px-3  hover:shadow-md"
+        >
+          Refresh <RefreshCcw size={16} />
+        </button>
       )}
     </div>
   );

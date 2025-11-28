@@ -1,22 +1,19 @@
 "use client";
 import Card from "@/components/DashBoardNew/Card";
-import LoaderLarge from "@/components/LoaderLarge";
-import RobinPagination from "@/components/Pagination";
-import { Plus, User, X } from "lucide-react";
-import Link from "next/link";
+import { Plus, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import AddSearchBar from "@/components/AddSearchBar";
 import UserGuideTable from "@/components/UserGuideTable";
 import UserInviteTable from "@/components/UserInviteTable";
-import { set } from "react-hook-form";
 import { createInvite, getInviteStats } from "@/Services/Api/Invites/page";
 import LoaderSmall from "@/components/LoaderSmall";
 import Modal from "@/components/Modal";
 import dayjs from "dayjs";
 import { toast } from "react-toastify";
+import UserRequestTable from "@/components/UserRequestTable";
+import Select from "react-select";
 
 const Page = () => {
-  const [activeTab, setActiveTab] = useState("guides");
+  const [activeTab, setActiveTab] = useState("users");
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -27,7 +24,13 @@ const Page = () => {
     email: "",
     expiryHours: "",
     expiryDate: "",
+    role: null,
   });
+
+  const roleOptions = [
+    { value: "NormalUser", label: "User" },
+    { value: "Guide", label: "Guide" },
+  ];
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -43,17 +46,13 @@ const Page = () => {
   const handleExpiryChange = (e) => {
     let value = e.target.value;
 
-    // Allow only numbers
     if (!/^\d*$/.test(value)) return;
 
-    // Convert to number
     let num = Number(value);
 
-    // Constrain between 1 and 168
     if (num > 168) num = 168;
     if (num < 1 && value !== "") num = 1;
 
-    // Calculate expiry date if valid
     let expiryDate = "";
     if (num >= 1 && num <= 168) {
       expiryDate = dayjs().add(num, "hour").format("DD/MM/YYYY HH:mm");
@@ -68,8 +67,8 @@ const Page = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-    if (!form.name || !form.email || !form.expiryHours) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    if (!form.name || !form.email || !form.expiryHours || !form.role) {
       toast.error("Please fill all fields properly");
       return;
     }
@@ -92,7 +91,7 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
       const payload = {
         name: form.name,
         email: form.email,
-        role: "Guide",
+        role: form.role.value,
         expiryDurationHours: Number(form.expiryHours),
         expiry: expiryLocal,
       };
@@ -101,7 +100,7 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
       if (result.data) {
         toast.success("Invite sent successfully!");
         setShowModal(false);
-        setForm({ name: "", email: "", expiryHours: "", expiryDate: "" });
+        setForm({ name: "", email: "", expiryHours: "", expiryDate: "", role: null });
         setRefreshKey((prev) => prev + 1);
         fetchData();
       }
@@ -162,17 +161,6 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
         </div>
         <div className="flex flex-row items-center ">
           <button
-            onClick={() => setActiveTab("guides")}
-            className={`${
-              activeTab === "guides"
-                ? "bg-[#0000000D]   font-semibold text-[#252322]  border-b-2 border-[#1C1C1C]"
-                : "text-[#838383] font-normal"
-            }  font-sans text-base py-2 px-6`}
-            type="button"
-          >
-            Guides
-          </button>
-          <button
             onClick={() => setActiveTab("users")}
             className={`${
               activeTab === "users"
@@ -183,12 +171,33 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
           >
             Users
           </button>
+
+          <button
+            onClick={() => setActiveTab("userRequests")}
+            className={`${
+              activeTab === "userRequests"
+                ? "bg-[#0000000D]   font-semibold text-[#252322]  border-b-2 border-[#1C1C1C]"
+                : "text-[#838383] font-normal"
+            }  font-sans text-base py-2 px-6`}
+            type="button"
+          >
+            User Requests
+          </button>
+          <button
+            onClick={() => setActiveTab("guides")}
+            className={`${
+              activeTab === "guides"
+                ? "bg-[#0000000D]   font-semibold text-[#252322]  border-b-2 border-[#1C1C1C]"
+                : "text-[#838383] font-normal"
+            }  font-sans text-base py-2 px-6`}
+            type="button"
+          >
+            Guides
+          </button>
         </div>
-        {activeTab === "users" ? (
-          <UserInviteTable refreshKey={refreshKey} />
-        ) : (
-          <UserGuideTable refreshKey={refreshKey} />
-        )}
+        {activeTab === "users" && <UserInviteTable refreshKey={refreshKey} />}
+        {activeTab === "userRequests" && <UserRequestTable refreshKey={refreshKey} />}
+        {activeTab === "guides" && <UserGuideTable refreshKey={refreshKey} />}
       </div>
       {showModal && (
         <Modal>
@@ -198,7 +207,7 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
           >
             <div className="flex flex-row items-center justify-between">
               <p className="text-[#232946] font-semibold text-base font-sans">
-                Create new guide invitation
+                Create new invitation
               </p>
               <span
                 onClick={() => setShowModal(false)}
@@ -207,7 +216,27 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
                 <X />
               </span>
             </div>
-
+            <div className="flex flex-col gap-1 mt-4">
+              <label className="text-sm font-sans font-medium text-[#252322]">
+                Role
+              </label>
+              <Select
+                value={form.role}
+                onChange={(selectedOption) =>
+                  setForm({ ...form, role: selectedOption })
+                }
+                options={roleOptions}
+                placeholder="Select role"
+                className="w-full "
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    borderRadius: "0.375rem",
+                    padding: "0.125rem",
+                  }),
+                }}
+              />
+            </div>
             <div className="flex flex-col gap-1 mt-4">
               <label className="text-sm font-sans font-medium text-[#252322]">
                 Name
