@@ -182,7 +182,8 @@ const UserRequestTable = ({ refreshKey }) => {
           { value: "", label: "All" },
 
           { value: "accepted", label: "Accepted" },
-          { value: "pending", label: "In-Progress" },
+          { value: "pending", label: "Approved" },
+          { value: "approved", label: "Active" },
           { value: "revoked", label: "Revoked" },
           { value: "expired", label: "Expired" },
           { value: "requested", label: "Requested" },
@@ -347,7 +348,9 @@ const UserRequestTable = ({ refreshKey }) => {
     }`}
                     >
                       {item.status?.toLowerCase() === "pending"
-                        ? "In-progress"
+                        ? "Approved"
+                        : item.status?.toLowerCase() === "approved"
+                        ? "Active"
                         : item.status?.toLowerCase() === "requested"
                         ? "Requested"
                         : item.status}
