@@ -3,13 +3,13 @@ import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyD8mMYebBiG3vVR0SjuS0toPFS_RQNN2u8",
-  authDomain: "soltopiah.firebaseapp.com",
-  projectId: "soltopiah",
-  storageBucket: "soltopiah.appspot.com",
-  messagingSenderId: "403682641442",
-  appId: "1:403682641442:web:7eb2e904e04694fd56ec7b",
-  measurementId: "G-2RPQ91V16E"
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
